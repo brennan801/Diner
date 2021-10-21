@@ -2,7 +2,6 @@
 {
     public class Order
     {
-        static private int count;
         private readonly int id;
         private Party party;
         private string state;
@@ -13,7 +12,6 @@
 
         public Order(Party party)
         {
-
             this.party = party;
         }
     }

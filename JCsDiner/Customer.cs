@@ -4,9 +4,10 @@ namespace JCsDiner
 {
     public class Customer
     {
-        internal Order Order()
+        public (int appitizers,int platers) Order()
         {
-            throw new NotImplementedException();
+            var rand = new Random();
+            return (rand.Next(3), rand.Next(1,3));
         }
     }
 }

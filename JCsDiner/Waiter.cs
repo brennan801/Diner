@@ -27,13 +27,7 @@ namespace JCsDiner
 
         public Order GetOrder(Party party)
         {
-            Order newOrder = new Order(party);
-            foreach(Customer customer in party.customers)
-            {
-                Order customerOrder = customer.Order();
-                newOrder.Appetizers += customerOrder.Appetizers;
-                newOrder.Platers += customerOrder.Platers;
-            }
+            Order newOrder = party.Order();
             return newOrder;
         }
     }

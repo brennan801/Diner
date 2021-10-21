@@ -10,25 +10,38 @@ namespace JCsDiner
     {
         static int count;
         private readonly int id;
-        private string currentState;
         private Room assignedRoom;
         private Queue<string> workQueue;
 
         public int ID { get { return id; } }
-        public string CurrentState { get { return currentState; } }
+        public string State { get; set; }
         public Room AssignedRoom { get { return assignedRoom; } }
 
+        public Waiter()
+        {
+
+        }
         public Waiter(Room assignedRoom)
         {
-            count++;
-            this.id = count;
+            /*count++;
+            this.id = count;*/
             this.assignedRoom = assignedRoom;
         }
 
         public Order GetOrder(Party party)
         {
-            Order newOrder = party.Order();
-            return newOrder;
+            return party.Order();
+        }
+
+        public Order SendOrder(Order order)
+        {
+            //TODO
+            return null;
+        }
+
+        public void DeliverOrder(Order order)
+        {
+           //TODO
         }
     }
 }

@@ -8,13 +8,14 @@ namespace JCsDiner
         public List<Customer> Customers { get; internal set; }
         public string State { get; set; }
 
-        public Party(int numOfCustomers)
+        public Party(int numOfCustomers, string state)
         {
             Customers = new List<Customer>();
            for(int i = 0; i < numOfCustomers; i++)
             {
                 Customers.Add(new Customer());
             }
+            this.State = state;
         }
 
         public bool Enter()

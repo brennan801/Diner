@@ -17,7 +17,7 @@ namespace RestaurantTests
         [Given(@"there is a party of (.*)")]
         public void GivenThereIsAPartyOf(int numOfCustomers)
         {
-            var party = new Party(numOfCustomers);
+            var party = new Party(numOfCustomers, "walking in");
             context.Add("party", party);
         }
         

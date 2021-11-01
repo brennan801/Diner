@@ -26,7 +26,7 @@ namespace RestaurantTests
         {
             var party = context.Get<Party>("party");
             var waiter = context.Get<Waiter>("waiter");
-            var order = waiter.GetOrder(party);
+            var order = waiter.GetAndSendOrder(party);
             context.Add("order", order);
         }
         

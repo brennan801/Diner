@@ -15,15 +15,11 @@ namespace RestaurantTests
         {
             this.context = context;
         }
-        [Given(@"there are (.*) tables")]
-        public void GivenThereAre___Tables(int numberOfTables)
+        [Given(@"there are (.*) tables in a room")]
+        public void GivenThereAre___TablesInARom(int numberOfTables)
         {
-            List<JCsDiner.Table> tables = new List<JCsDiner.Table>();
-            for(int i = 0; i < numberOfTables; i++)
-            {
-                tables.Add(new JCsDiner.Table());
-            }
-            context.Add("tables", tables);
+            Room room = new Room(numberOfTables);
+            context.Add("room", room);
         }
 
         [Given(@"there is a busser")]
@@ -34,34 +30,41 @@ namespace RestaurantTests
         }
 
 
-        [When(@"the busser puts them together")]
-        public void WhenTheBusserPutsThemTogether()
+        [When(@"the busser puts tables together for a party")]
+        public void WhenTheBusserPutsTablesTogetherForAParty()
         {
-            var tables = context.Get<List<JCsDiner.Table>>("tables");
             var busser = context.Get<Busser>("busser");
-            var actualTable = busser.CombineTables(tables);
-            context.Add("actualTable", actualTable);
+            var room = context.Get<Room>("room");
+            var party = context.Get<Party>("party");
+            (var actualParty, var actaulTable) = busser.CombineTablesForParty(party, room);
+            context.Add("actualTable", actaulTable);
+            context.Add("actualParty", actualParty);
         }
-        
-        [Then(@"they should seat (.*) people")]
-        public void ThenTheyShouldSeatPeople(int expectedNumberOfPeople)
+
+
+        [Then(@"a table should be created that should seat (.*) people")]
+        public void ThenATableShouldBeCreatedThatShouldSeat____People(int expectedNumberOfPeople)
         {
             var actualTable = context.Get<JCsDiner.Table>("actualTable");
             actualTable.numOfChairs.Should().Be(expectedNumberOfPeople);
         }
 
-        [Then(@"should be made up of (.*) tables")]
-        public void ThenShouldBeMadeUpOf(int expectedNuberOfTables)
+        [Then(@"the table should be made up of (.*) tables")]
+        public void ThenTheTableShouldBeMadeUpOf___Tables(int expectedNuberOfTables)
         {
             var actualTable = context.Get<JCsDiner.Table>("actualTable");
             actualTable.numOfTables.Should().Be(expectedNuberOfTables);
         }
 
-        [Given(@"there is a table made up of (.*) tables and (.*) chairs")]
-        public void GivenThereIsATableMadeUpOf____TablesAnd____Chairs(int numberOfTables, int numberOfChairs)
+        [Given(@"there is a table made up of (.*) tables and (.*) chairs in a room")]
+        public void GivenThereIsATableMadeUpOf____TablesAnd____ChairsInARoom(int numberOfTables, int numberOfChairs)
         {
             JCsDiner.Table combinedTable = new JCsDiner.Table(numberOfTables, numberOfChairs);
             context.Add("combinedTable", combinedTable);
+            List<JCsDiner.Table> tablesInRoom = new();
+            tablesInRoom.Add(combinedTable);
+            Room room = new(tablesInRoom);
+            context.Add("room", room);
         }
 
         [When(@"The busser seperates the tables")]
@@ -69,7 +72,8 @@ namespace RestaurantTests
         {
             var busser = context.Get<Busser>("busser");
             var combinedTable = context.Get<JCsDiner.Table>("combinedTable");
-            var seperatedTables = busser.SeperateTables(combinedTable);
+            var room = context.Get<Room>("room");
+            var seperatedTables = busser.SeperateTables(room, combinedTable);
             context.Add("seperatedTables", seperatedTables);
         }
 

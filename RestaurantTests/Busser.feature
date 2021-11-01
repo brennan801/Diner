@@ -3,19 +3,21 @@
 
 @mytag
 Scenario Outline: 2,3, and 4 tables need to be put together
-	Given there are <numberOfTables> tables
+	Given there are <numberOfTablesInRoom> tables in a room
 	And there is a busser
-	When the busser puts them together
-	Then they should seat <expectedNumberOfChairs> people
-	And should be made up of <expectedNumberOfTables> tables
+	And there is a party of <partySize>
+	When the busser puts tables together for a party
+	Then a table should be created that should seat <expectedNumberOfChairs> people
+	And the table should be made up of <expectedNumberOfTables> tables
+	And the party should have state <partyState>
 Examples: 
-| numberOfTables | expectedNumberOfChairs | expectedNumberOfTables |
-| 2              | 10                     | 2                      |
-| 3              | 13                     | 3                      |
-| 4              | 16                     | 4                      |
+| numberOfTablesInRoom | partySize | expectedNumberOfChairs | expectedNumberOfTables | partyState |
+| 2                    | 8         | 10                     | 2                      | "seated"   |
+| 3                    | 12        | 13                     | 3                      | "seated"   |
+| 4                    | 15        | 16                     | 4                      | "seated"   |
 
 Scenario Outline: Tables of different sizes need to be seperated
-	Given there is a table made up of <numberOfTables> tables and <numberOfChairs> chairs
+	Given there is a table made up of <numberOfTables> tables and <numberOfChairs> chairs in a room
 	And there is a busser
 	When The busser seperates the tables
 	Then There should be <numberOfExpectedTables> tables each with <numberOfExpectedChairs> chairs

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace JCsDiner
 {
@@ -10,7 +11,11 @@ namespace JCsDiner
         public int numOfTables { get; internal set; }
         public Party Party{ get; private set; }
         public bool isOccupied { get; set; }
-        public Table(){}
+        public Table()
+        {
+            numOfChairs = 6;
+            numOfTables = 1;
+        }
         public Table(int numOfTables, int numOfChairs)
         {
             this.numOfTables = numOfTables;
@@ -19,10 +24,17 @@ namespace JCsDiner
         }
         public Table SetParty(Party party)
         {
-            this.Party = party;
-            this.isOccupied = true;
+            if(party.Customers.Count <= this.numOfChairs)
+            {
+                this.Party = party;
+                this.isOccupied = true;
 
-            return this;
+                return this;
+            }
+            else
+            {
+                throw new IndexOutOfRangeException("There isn't room for this party at this table");
+            }
         }
     }
 }

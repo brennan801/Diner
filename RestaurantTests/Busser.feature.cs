@@ -76,10 +76,10 @@ namespace RestaurantTests
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("2,3, and 4 tables need to be put together")]
         [NUnit.Framework.CategoryAttribute("mytag")]
-        [NUnit.Framework.TestCaseAttribute("2", "10", "2", null)]
-        [NUnit.Framework.TestCaseAttribute("3", "13", "3", null)]
-        [NUnit.Framework.TestCaseAttribute("4", "16", "4", null)]
-        public virtual void _23And4TablesNeedToBePutTogether(string numberOfTables, string expectedNumberOfChairs, string expectedNumberOfTables, string[] exampleTags)
+        [NUnit.Framework.TestCaseAttribute("2", "8", "10", "2", "\"seated\"", null)]
+        [NUnit.Framework.TestCaseAttribute("3", "12", "13", "3", "\"seated\"", null)]
+        [NUnit.Framework.TestCaseAttribute("4", "15", "16", "4", "\"seated\"", null)]
+        public virtual void _23And4TablesNeedToBePutTogether(string numberOfTablesInRoom, string partySize, string expectedNumberOfChairs, string expectedNumberOfTables, string partyState, string[] exampleTags)
         {
             string[] @__tags = new string[] {
                     "mytag"};
@@ -89,9 +89,11 @@ namespace RestaurantTests
             }
             string[] tagsOfScenario = @__tags;
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            argumentsOfScenario.Add("numberOfTables", numberOfTables);
+            argumentsOfScenario.Add("numberOfTablesInRoom", numberOfTablesInRoom);
+            argumentsOfScenario.Add("partySize", partySize);
             argumentsOfScenario.Add("expectedNumberOfChairs", expectedNumberOfChairs);
             argumentsOfScenario.Add("expectedNumberOfTables", expectedNumberOfTables);
+            argumentsOfScenario.Add("partyState", partyState);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("2,3, and 4 tables need to be put together", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 5
 this.ScenarioInitialize(scenarioInfo);
@@ -114,19 +116,25 @@ this.ScenarioInitialize(scenarioInfo);
             {
                 this.ScenarioStart();
 #line 6
- testRunner.Given(string.Format("there are {0} tables", numberOfTables), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+ testRunner.Given(string.Format("there are {0} tables in a room", numberOfTablesInRoom), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 7
  testRunner.And("there is a busser", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 8
- testRunner.When("the busser puts them together", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.And(string.Format("there is a party of {0}", partySize), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 9
- testRunner.Then(string.Format("they should seat {0} people", expectedNumberOfChairs), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.When("the busser puts tables together for a party", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 10
- testRunner.And(string.Format("should be made up of {0} tables", expectedNumberOfTables), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.Then(string.Format("a table should be created that should seat {0} people", expectedNumberOfChairs), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+#line 11
+ testRunner.And(string.Format("the table should be made up of {0} tables", expectedNumberOfTables), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 12
+ testRunner.And(string.Format("the party should have state {0}", partyState), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -146,7 +154,7 @@ this.ScenarioInitialize(scenarioInfo);
             argumentsOfScenario.Add("numberOfExpectedTables", numberOfExpectedTables);
             argumentsOfScenario.Add("numberOfExpectedChairs", numberOfExpectedChairs);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Tables of different sizes need to be seperated", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 17
+#line 19
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -166,16 +174,16 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 18
- testRunner.Given(string.Format("there is a table made up of {0} tables and {1} chairs", numberOfTables, numberOfChairs), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line hidden
-#line 19
- testRunner.And("there is a busser", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
 #line 20
- testRunner.When("The busser seperates the tables", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.Given(string.Format("there is a table made up of {0} tables and {1} chairs in a room", numberOfTables, numberOfChairs), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 21
+ testRunner.And("there is a busser", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 22
+ testRunner.When("The busser seperates the tables", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 23
  testRunner.Then(string.Format("There should be {0} tables each with {1} chairs", numberOfExpectedTables, numberOfExpectedChairs), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }

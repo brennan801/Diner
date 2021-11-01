@@ -211,7 +211,7 @@ this.ScenarioInitialize(scenarioInfo);
  testRunner.And("the lobby is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 25
- testRunner.And("there is awailable seating in a room", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("there is available seating in a room", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 26
  testRunner.When("the host deals with the customer", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
@@ -283,12 +283,12 @@ this.ScenarioInitialize(scenarioInfo);
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("The next party in the queue is assinged a table")]
-        public virtual void TheNextPartyInTheQueueIsAssingedATable()
+        [NUnit.Framework.DescriptionAttribute("A table is open but the lobby queue is empty")]
+        public virtual void ATableIsOpenButTheLobbyQueueIsEmpty()
         {
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("The next party in the queue is assinged a table", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("A table is open but the lobby queue is empty", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 46
 this.ScenarioInitialize(scenarioInfo);
 #line hidden

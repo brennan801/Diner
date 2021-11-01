@@ -12,41 +12,38 @@ namespace JCsDiner
 
         public Table cleanTable(Table table)
         {
-            //TODO:
-            return null;
+            table.State = "clean";
+            return table;
         }
 
-        public Table CombineTables(List<Table> tables)
+        public (Party, Table) CombineTablesForParty(Party party, Room room)
         {
-            Table newTable = new Table();
-            switch (tables.Count())
+            if(party.Customers.Count() < 11)
             {
-                case 2:
-                    newTable.numOfTables = 2;
-                    newTable.numOfChairs = 10;
-                    break;
-                case 3:
-                    newTable.numOfTables = 3;
-                    newTable.numOfChairs = 13;
-                    break;
-                case 4:
-                    newTable.numOfTables = 4;
-                    newTable.numOfChairs = 16;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                Table myTable = room.CombineTables(2);
+                myTable.SetParty(party);
+                party.State = "seated";
+                return (party, myTable);
             }
-            return newTable;
+            if (party.Customers.Count() < 14)
+            {
+                Table myTable = room.CombineTables(3);
+                myTable.SetParty(party);
+                party.State = "seated";
+                return (party, myTable);
+            }
+            else
+            {
+                Table myTable = room.CombineTables(4);
+                myTable.SetParty(party);
+                party.State = "seated";
+                return (party, myTable);
+            }
         }
 
-        public List<Table> SeperateTables(Table combinedTable)
+        public List<Table> SeperateTables(Room room, Table table)
         {
-            List<Table> tables = new List<Table>();
-            for(int i = 0; i < combinedTable.numOfTables; i++)
-            {
-                tables.Add(new Table(1, 6));
-            }
-            return tables;
+            return room.SeperateTables(table);
         }
     }
 }

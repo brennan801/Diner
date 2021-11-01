@@ -22,7 +22,7 @@ Scenario: A party is assinged a table
 	Given a resturant exists
 	And a party of 3 walks in
 	And the lobby is empty
-	And there is awailable seating in a room
+	And there is available seating in a room
 	When the host deals with the customer
 	Then the party should be seated at the table
 

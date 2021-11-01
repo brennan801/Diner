@@ -28,20 +28,24 @@ namespace JCsDiner
             this.assignedRoom = assignedRoom;
         }
 
-        public Order GetOrder(Party party)
+        public Order GetAndSendOrder(Party party)
         {
-            return party.Order();
+            Order order = party.Order();
+            //send to cooks
+            order.State = "sent to cooks";
+            return order;
         }
 
-        public Order SendOrder(Order order)
+        public Order DeliverOrder(Order order)
         {
-            //TODO
-            return null;
+            order.State = "sent to customer";
+            return order;
         }
 
-        public void DeliverOrder(Order order)
+        public Table PickUpCheck(Table table)
         {
-           //TODO
+            table.State = "ready to be cleaned";
+            return table;
         }
     }
 }

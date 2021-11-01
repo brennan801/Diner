@@ -97,8 +97,8 @@ namespace RestaurantTests
             resturant.Lobby.PartyQueue.Should().Contain(actualParty);
         }
 
-        [Given(@"there is awailable seating in a room")]
-        public void GivenThereIsAwailableSeatingInARoom()
+        [Given(@"there is available seating in a room")]
+        public void GivenThereIsAvailableSeatingInARoom()
         {
             var resturant = context.Get<Resturant>("resturant");
             foreach (Room room in resturant.Rooms)

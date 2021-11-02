@@ -6,7 +6,13 @@ namespace JCsDiner
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Resturant resturant = new();
+            Lobby lobby = new(50);
+            resturant.Lobby = lobby;
+            Waiter waiter0 = new(resturant.Rooms[0]);
+            Waiter waiter1 = new(resturant.Rooms[1]);
+            Waiter waiter2 = new(resturant.Rooms[2]);
+            Busser busser = new();
         }
     }
 }

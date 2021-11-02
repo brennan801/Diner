@@ -8,12 +8,10 @@ namespace JCsDiner
 {
     public class Waiter
     {
-        static int count;
         private readonly int id;
         private Room assignedRoom;
         private Queue<string> workQueue;
 
-        public int ID { get { return id; } }
         public string State { get; set; }
         public Room AssignedRoom { get { return assignedRoom; } }
 
@@ -23,8 +21,6 @@ namespace JCsDiner
         }
         public Waiter(Room assignedRoom)
         {
-            /*count++;
-            this.id = count;*/
             this.assignedRoom = assignedRoom;
         }
 

@@ -18,14 +18,16 @@ namespace JCsDiner
             this.State = state;
         }
 
-        public bool Enter()
+        public Party Enter()
         {
-            //TODO: this should trigger the host.. somehow. 
-            return false;
+            //TODO: Send event 
+            this.State = "entered";
+            return this;
         }
 
         public Order Order()
         {
+            this.State = "ordering";
             Order order = new Order(this);
             foreach(Customer customer in Customers)
             {
@@ -33,24 +35,26 @@ namespace JCsDiner
                 order.Appetizers += appetizers;
                 order.Platers += platers;
             }
+            this.State = "ordered";
             return order;
         }
 
-        public bool Eat()
+        public Party Eat()
         {
-            //TODO: wait until all customers are done.
-            bool success = false;
+            this.State = "eating";
             foreach(Customer customer in Customers)
             {
-                success = customer.Eat() && success;
+                customer.Eat();
             }
-            return success;
+            this.State = "finished eating";
+            return this;
         }
 
-        public bool Pay()
+        public Party PayAndLeave()
         {
-            //TODO: poop
-            return false;
+            //throw paid event
+            this.State = "paid and left";
+            return this;
         }
     }
 }

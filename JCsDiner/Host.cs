@@ -11,7 +11,7 @@ namespace JCsDiner
         private readonly int id;
         public string State { get; private set; }
 
-        public (Party, Table) DealWithNewParty(Party party, Resturant resturant)
+        public (Party, Room, Table) DealWithNewParty(Party party, Resturant resturant)
         {
             Room largestCapacityRoom = null;
 
@@ -25,13 +25,13 @@ namespace JCsDiner
                 {
                     party.State = "turned away";
                     //Throw Turn Party Away Event 
-                    return (party, null);
+                    return (party, null, null);
                 }
                 else
                 {
                     resturant.Lobby.PartyQueue.Enqueue(party);
                     party.State = "waiting in lobby";
-                    return (party, null);
+                    return (party, null, null);
                 }
             }
 
@@ -42,14 +42,14 @@ namespace JCsDiner
             {
                 resturant.Lobby.PartyQueue.Enqueue(party);
                 party.State = "waiting in lobby";
-                return (party, null);
+                return (party, null, null);
             }
 
             else if (party.Customers.Count() > 6)
             {
                 //throw combine tables action
                 party.State = "waiting for table";
-                return (party, null);
+                return (party, largestCapacityRoom, null );
             }
             else
             {
@@ -59,7 +59,7 @@ namespace JCsDiner
             throw new Exception("Host doesn't know what to do with new party!");
         }
 
-        public (Party, Table) TrySeatNextCustomer(Resturant resturant, Room room)
+        public (Party, Room, Table) TrySeatNextCustomer(Resturant resturant, Room room)
         {
             if(resturant.Lobby.PartyQueue.Count() < 1)
             {
@@ -77,7 +77,7 @@ namespace JCsDiner
                 {
                     //throw combine tables action
                     nextParty.State = "waiting for table";
-                    return (nextParty, null);
+                    return (nextParty, room, null);
                 }
                 else
                 {
@@ -85,7 +85,7 @@ namespace JCsDiner
                 }
                 
             }
-            return (nextParty, null);
+            return (nextParty, room, null);
 
         }
 
@@ -110,7 +110,7 @@ namespace JCsDiner
             else return 0;
         }
 
-        private (Party, Table) seatPartyAtIndividualTable(Party waitingParty, Room room)
+        private (Party, Room, Table) seatPartyAtIndividualTable(Party waitingParty, Room room)
         {
             Table emptyTable = null;
             foreach (Table table in room.Tables)
@@ -125,7 +125,7 @@ namespace JCsDiner
                 emptyTable.SetParty(waitingParty);
                 waitingParty.State = "seated";
                 //throw party seated action
-                return (waitingParty, emptyTable);
+                return (waitingParty, room, emptyTable);
             }
             else
             {

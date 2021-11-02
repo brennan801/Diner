@@ -50,7 +50,7 @@ namespace RestaurantTests
             var host = context.Get<Host>("host");
             var party = context.Get<Party>("party");
             var resturant = context.Get<Resturant>("resturant");
-            (var actualParty, var assignedTable) = host.DealWithNewParty(party, resturant);
+            (var actualParty, _ , var assignedTable) = host.DealWithNewParty(party, resturant);
             context.Add("actualParty", actualParty);
             context.Add("assignedTable", assignedTable);
         }
@@ -194,7 +194,7 @@ namespace RestaurantTests
             JCsDiner.Table assignedTable;
             try
             {
-                (actualParty, assignedTable) = host.TrySeatNextCustomer(resturant, availableRoom);
+                (actualParty, _, assignedTable) = host.TrySeatNextCustomer(resturant, availableRoom);
             }
             catch(Exception)
             {

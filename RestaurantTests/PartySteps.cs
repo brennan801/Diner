@@ -14,26 +14,136 @@ namespace RestaurantTests
         {
             this.context = context;
         }
-        [Given(@"there is a party of (.*)")]
-        public void GivenThereIsAPartyOf(int numOfCustomers)
+
+        [Given(@"a party is in the Entered state")]
+        public void GivenAPartyIsInTheEnteredState()
         {
-            var party = new Party(numOfCustomers, "walking in");
+            var party = new Party();
             context.Add("party", party);
         }
-        
-        [When(@"the party orders food")]
-        public void WhenThePartyOrdersFood()
+
+        [When(@"the party is run")]
+        public void WhenThePartyIsRun()
         {
             var party = context.Get<Party>("party");
-            var partyOrder = party.Order();
-            context.Add("partyOrder", partyOrder);
+            party.Run1();
+            context.Set<Party>(party, "party");
         }
-        
-        [Then(@"the order should have at inbetween (.*) and (.*) platters")]
-        public void ThenTheOrderShouldHaveAtInbetween___And____Platters(int expectedLow, int expectedHigh)
+
+        [Then(@"the parties new state should be the Entered state")]
+        public void ThenThePartiesNewStateShouldBeTheEnteredState()
         {
-            var partyOrder = context.Get<Order>("partyOrder");
-            partyOrder.Platers.Should().BeGreaterOrEqualTo(expectedLow).And.BeLessOrEqualTo(expectedHigh);
+            var party = context.Get<Party>("party");
+            party.State.Should().BeOfType(typeof(Entered));
         }
+
+        [Given(@"a party is in the RecievedCheck state")]
+        public void GivenAPartyIsInTheRecievedCheckState()
+        {
+            var party = new Party();
+            party.State = new RecievedCheck(party);
+            context.Add("party", party);
+        }
+
+        [Then(@"the parties new state should be the Left state")]
+        public void ThenThePartiesNewStateShouldBeTheLeftState()
+        {
+            var party = context.Get<Party>("party");
+            party.State.Should().BeOfType(typeof(Left));
+        }
+
+        [Given(@"there is a party of size (.*)")]
+        public void GivenThereISAPartyOfSize___(int partySize)
+        {
+            var party = new Party(partySize);
+            context.Add("party", party);
+        }
+
+        [Given(@"the party is deciding what to order")]
+        public void GivenThePartyIsDecidingWhatToOrder()
+        {
+            var party = context.Get<Party>("party");
+            party.State = new DecidingOrder(party);
+            context.Set<Party>(party, "party");
+        }
+
+
+        [When(@"the party is ran (.*) times")]
+        [When(@"the party is ran (.*) more times")]
+        public void WhenThePartyIsRan___Times(int timeToRun)
+        {
+            var party = context.Get<Party>("party");
+            for(int i = 0; i < timeToRun; i++)
+            {
+                party.Run1();
+            }
+            context.Set<Party>(party, "party");
+        }
+
+        [Then(@"the parties new state should be the DecidingOrder state")]
+        public void ThenThePartiesNewStateShouldBeTheDecidingOrderState()
+        {
+            var party = context.Get<Party>("party");
+            party.State.Should().BeOfType(typeof(DecidingOrder));
+        }
+
+        [Then(@"the parties new state should be the WaitingToOrder state")]
+        public void ThenThePartiesNewStateShouldBeTheWaitingToOrderState()
+        {
+            var party = context.Get<Party>("party");
+            party.State.Should().BeOfType(typeof(WaitingToOrder));
+        }
+
+        [Then(@"the parties new state should be the Ordering state")]
+        public void ThenThePartiesNewStateShouldBeTheOrderingState()
+        {
+            var party = context.Get<Party>("party");
+            party.State.Should().BeOfType(typeof(Ordering));
+        }
+
+        [Then(@"the parties new state should be the WaitingForFood state")]
+        public void ThenThePartiesNewStateShouldBeTheWaitingForFoodState()
+        {
+            var party = context.Get<Party>("party");
+            party.State.Should().BeOfType(typeof(WaitingForFood));
+        }
+
+        [Then(@"the parties new state should be the Eating state")]
+        public void ThenThePartiesNewStateShouldBeTheEatingState()
+        {
+            var party = context.Get<Party>("party");
+            party.State.Should().BeOfType(typeof(Eating));
+        }
+
+        [Then(@"the parties new state should be WaitingForCheck")]
+        public void ThenThePartiesNewStateShouldBeWaitingForCheck()
+        {
+            var party = context.Get<Party>("party");
+            party.State.Should().BeOfType(typeof(WaitingForCheck));
+        }
+
+
+        [Given(@"the party is ordering")]
+        public void GivenThePartyIsOrdering()
+        {
+            var party = context.Get<Party>("party");
+            party.State = new Ordering(party);
+            context.Set<Party>(party, "party");
+        }
+
+        [Given(@"the party is eating an order with (.*) platters and (.*) appitizers")]
+        public void GivenThePartyIsEatingAnOrderWith___PlattersAnd____Appitizers(int numPlatters, int numAppitizers)
+        {
+            var party = context.Get<Party>("party");
+            var order = new Order(party);
+            order.Platers = numPlatters;
+            order.Appetizers = numAppitizers;
+            party.Order = order;
+            party.State = new Eating(party);
+            context.Set<Party>(party, "party");
+        }
+
+        
+
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace JCsDiner
 {
-    public class Cook
+    public class Cook : IRunable
     {
         public string State { get; private set; }
 
@@ -17,6 +17,11 @@ namespace JCsDiner
             order.State = "cooked";
             //throw order ready event
             return order;
+        }
+
+        public void Run1()
+        {
+            throw new NotImplementedException();
         }
     }
 }

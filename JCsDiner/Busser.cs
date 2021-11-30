@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace JCsDiner
 {
-    public class Busser
+    public class Busser : IRunable
     {
         public string State { get; set; }
 
@@ -22,23 +22,28 @@ namespace JCsDiner
             {
                 Table myTable = room.CombineTables(2);
                 myTable.SetParty(party);
-                party.State = "seated";
+                party.State = new WaitingToOrder(party);
                 return (party, myTable);
             }
             if (party.Customers.Count() < 14)
             {
                 Table myTable = room.CombineTables(3);
                 myTable.SetParty(party);
-                party.State = "seated";
+                party.State = new WaitingToOrder(party);
                 return (party, myTable);
             }
             else
             {
                 Table myTable = room.CombineTables(4);
                 myTable.SetParty(party);
-                party.State = "seated";
+                party.State = new WaitingToOrder(party);
                 return (party, myTable);
             }
+        }
+
+        public void Run1()
+        {
+            throw new NotImplementedException();
         }
 
         public List<Table> SeperateTables(Room room, Table table)

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace JCsDiner
 {
-    public class Waiter
+    public class Waiter : IRunable
     {
         private readonly int id;
         private Room assignedRoom;
@@ -26,7 +26,7 @@ namespace JCsDiner
 
         public Order GetAndSendOrder(Party party)
         {
-            Order order = party.Order();
+            Order order = party.CreateOrder();
             //send to cooks
             order.State = "sent to cooks";
             return order;
@@ -42,6 +42,16 @@ namespace JCsDiner
         {
             table.State = "ready to be cleaned";
             return table;
+        }
+
+        public bool Run1()
+        {
+            throw new NotImplementedException();
+        }
+
+        void IRunable.Run1()
+        {
+            throw new NotImplementedException();
         }
     }
 }

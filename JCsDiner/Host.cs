@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace JCsDiner
 {
-    public class Host
+    public class Host 
     {
         private readonly int id;
         public string State { get; private set; }
@@ -23,14 +23,14 @@ namespace JCsDiner
             {
                 if (party.Customers.Count() > resturant.Lobby.GetSpaceLeft())
                 {
-                    party.State = "turned away";
+                    party.State = new Left(party);
                     //Throw Turn Party Away Event 
                     return (party, null, null);
                 }
                 else
                 {
                     resturant.Lobby.PartyQueue.Enqueue(party);
-                    party.State = "waiting in lobby";
+                    party.State = new WaitingInLobby(party);
                     return (party, null, null);
                 }
             }
@@ -41,14 +41,13 @@ namespace JCsDiner
             if (party.Customers.Count() > largestCapacity)
             {
                 resturant.Lobby.PartyQueue.Enqueue(party);
-                party.State = "waiting in lobby";
+                party.State = new WaitingInLobby(party);
                 return (party, null, null);
             }
 
             else if (party.Customers.Count() > 6)
             {
                 //throw combine tables action
-                party.State = "waiting for table";
                 return (party, largestCapacityRoom, null );
             }
             else
@@ -76,7 +75,6 @@ namespace JCsDiner
                 if (nextParty.Customers.Count() > 6)
                 {
                     //throw combine tables action
-                    nextParty.State = "waiting for table";
                     return (nextParty, room, null);
                 }
                 else
@@ -123,7 +121,7 @@ namespace JCsDiner
             if (emptyTable is not null)
             {
                 emptyTable.SetParty(waitingParty);
-                waitingParty.State = "seated";
+                waitingParty.State = new WaitingToOrder(waitingParty);
                 //throw party seated action
                 return (waitingParty, room, emptyTable);
             }

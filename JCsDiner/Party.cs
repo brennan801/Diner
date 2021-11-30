@@ -3,24 +3,25 @@ using System.Collections.Generic;
 
 namespace JCsDiner
 {
-    public class Party
+    public class Party : IRunable
     {
         public List<Customer> Customers { get; internal set; }
-        public string State { get; set; }
+        public PartyState State { get; set; }
+        public Order Order { get; set; }
 
-        public Party(int numOfCustomers, string state)
+        public Party(int numOfCustomers)
         {
             Customers = new List<Customer>();
            for(int i = 0; i < numOfCustomers; i++)
             {
                 Customers.Add(new Customer());
             }
-            this.State = state;
+            this.State = new Entered(this);
         }
 
         public Party()
         {
-            this.State = "new";
+            this.State = new Entered(this);
             this.Customers = generateRandomCustomers();
         }
 
@@ -106,16 +107,8 @@ namespace JCsDiner
             }
         }
 
-        public Party Enter()
+        public Order CreateOrder()
         {
-            //TODO: Send event 
-            this.State = "entered";
-            return this;
-        }
-
-        public Order Order()
-        {
-            this.State = "ordering";
             Order order = new Order(this);
             foreach(Customer customer in Customers)
             {
@@ -123,26 +116,13 @@ namespace JCsDiner
                 order.Appetizers += appetizers;
                 order.Platers += platers;
             }
-            this.State = "ordered";
+            this.Order = order;
             return order;
         }
 
-        public Party Eat()
+        public void Run1()
         {
-            this.State = "eating";
-            foreach(Customer customer in Customers)
-            {
-                customer.Eat();
-            }
-            this.State = "finished eating";
-            return this;
-        }
-
-        public Party PayAndLeave()
-        {
-            //throw paid event
-            this.State = "paid and left";
-            return this;
+            State.Run1();
         }
     }
 }

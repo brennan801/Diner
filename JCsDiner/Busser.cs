@@ -8,7 +8,14 @@ namespace JCsDiner
 {
     public class Busser : IRunable
     {
-        public string State { get; set; }
+        public Table CurrentTable { get; set; }
+        public int CurrentTableTimeLeft;
+        public Queue<Table> TableQueue { get; set; }
+
+        public Busser()
+        {
+            TableQueue = new Queue<Table>();
+        }
 
         public Table cleanTable(Table table)
         {
@@ -43,7 +50,24 @@ namespace JCsDiner
 
         public void Run1()
         {
-            throw new NotImplementedException();
+            if(CurrentTable is null)
+            {
+                if (TableQueue.Count() > 0)
+                {
+                    CurrentTable = TableQueue.Dequeue();
+                    CurrentTableTimeLeft = 5;
+                    return;
+                }
+                else return;
+            }
+            else
+            {
+                CurrentTableTimeLeft--;
+                if(CurrentTableTimeLeft == 0)
+                {
+                    CurrentTable = null;
+                }
+            }
         }
 
         public List<Table> SeperateTables(Room room, Table table)

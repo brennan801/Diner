@@ -193,7 +193,7 @@ this.ScenarioInitialize(scenarioInfo);
  testRunner.Then("the parties new state should be the DecidingOrder state", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
 #line 20
- testRunner.When("the party is ran 5 times", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("the party is ran 5 more times", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 21
  testRunner.Then("the parties new state should be the WaitingToOrder state", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
@@ -242,7 +242,7 @@ this.ScenarioInitialize(scenarioInfo);
  testRunner.Then("the parties new state should be the Ordering state", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
 #line 28
- testRunner.When("the party is ran 2 times", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("the party is ran 2 more times", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 29
  testRunner.Then("the parties new state should be the WaitingForFood state", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
@@ -291,7 +291,7 @@ this.ScenarioInitialize(scenarioInfo);
  testRunner.Then("the parties new state should be the Eating state", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
 #line 36
- testRunner.When("the party is ran 3 times", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("the party is ran 3 more times", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 37
  testRunner.Then("the parties new state should be WaitingForCheck", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");

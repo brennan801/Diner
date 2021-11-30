@@ -63,6 +63,15 @@ namespace JCsDiner
                     {
                         currentParties.Remove(party);
                         customersServed++;
+                        var spaciousRoom = host.getRoomWithMostSpace(resturant);
+                        try
+                        {
+                            host.TrySeatNextCustomer(resturant, spaciousRoom);
+                        }
+                        catch(ArgumentNullException e)
+                        {
+                            Console.WriteLine(e);
+                        }
                     }
                 }
             }

@@ -7,7 +7,8 @@ namespace JCsDiner
     {
         static void Main(string[] args)
         {
-            return;
+            var sim = new Simulator(50);
+            sim.Run();
         }
     }
 }

@@ -34,12 +34,6 @@ namespace JCsDiner
                 if (customersServed + resturant.CurrentParties.Count() < Cutormers)
                 {
                     Party newParty = TryGenerateParty();
-                    if (newParty is not null)
-                    {
-                        resturant.CurrentParties.Add(newParty);
-                        Console.WriteLine("New Party Entered");
-                        host.DealWithNewParty(newParty, resturant);
-                    }
                 }
                 
                 foreach(IRunable runable in runables){
@@ -60,15 +54,6 @@ namespace JCsDiner
                     {
                         resturant.CurrentParties.Remove(party);
                         customersServed++;
-                        var spaciousRoom = host.getRoomWithMostSpace(resturant);
-                        try
-                        {
-                            host.TrySeatNextCustomer(resturant, spaciousRoom);
-                        }
-                        catch(ArgumentNullException e)
-                        {
-                            Console.WriteLine(e);
-                        }
                     }
                 }
             }

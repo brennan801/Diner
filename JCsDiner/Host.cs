@@ -6,88 +6,26 @@ using System.Threading.Tasks;
 
 namespace JCsDiner
 {
-    public class Host 
+    public class Host : IRunable
     {
         private readonly int id;
-        public string State { get; private set; }
+        public HostState State { get; set; }
+        public int FreeTimeCounter { get; set;}
 
-        public (Party, Room, Table) DealWithNewParty(Party party, Resturant resturant)
+        public Host()
         {
-            Room largestCapacityRoom = null;
-
-            try
-            {
-                largestCapacityRoom = getRoomWithMostSpace(resturant);
-            }
-            catch(ArgumentNullException)
-            {
-                if (party.Customers.Count() > resturant.Lobby.GetSpaceLeft())
-                {
-                    party.State = new Left(party);
-                    //Throw Turn Party Away Event 
-                    return (party, null, null);
-                }
-                else
-                {
-                    resturant.Lobby.PartyQueue.Enqueue(party);
-                    party.State = new WaitingInLobby(party);
-                    return (party, null, null);
-                }
-            }
-
-            int largestCapacity = getLargestCapacity(largestCapacityRoom.GetCapasity());
-
-
-            if (party.Customers.Count() > largestCapacity)
-            {
-                resturant.Lobby.PartyQueue.Enqueue(party);
-                party.State = new WaitingInLobby(party);
-                return (party, null, null);
-            }
-
-            else if (party.Customers.Count() > 6)
-            {
-                //throw combine tables action
-                return (party, largestCapacityRoom, null );
-            }
-            else
-            {
-                return seatPartyAtIndividualTable(party, largestCapacityRoom);
-
-            }
-            throw new Exception("Host doesn't know what to do with new party!");
+            State = new Free(this);
+            FreeTimeCounter = 0;
         }
 
-        public (Party, Room, Table) TrySeatNextCustomer(Resturant resturant, Room room)
+        public (Party, Table) Seat(Party party, Table table)
         {
-            if(resturant.Lobby.PartyQueue.Count() < 1)
-            {
-                throw new NullReferenceException("The party queue is empty");
-            }
-
-            var numAvailableTables = room.GetCapasity();
-            var nextParty = resturant.Lobby.PartyQueue.Peek();
-            var capacity = getLargestCapacity(numAvailableTables);
-            
-            if(nextParty.Customers.Count() <= capacity)
-            {
-                resturant.Lobby.PartyQueue.Dequeue();
-                if (nextParty.Customers.Count() > 6)
-                {
-                    //throw combine tables action
-                    return (nextParty, room, null);
-                }
-                else
-                {
-                    return seatPartyAtIndividualTable(nextParty, room);
-                }
-                
-            }
-            return (nextParty, room, null);
-
+            party.Table = table;
+            party.State = new DecidingOrder(party);
+            return (party, table);
         }
 
-        private int getLargestCapacity(int numAvailableTables)
+        public int getLargestCapacity(int numAvailableTables)
         {
             if (numAvailableTables >= 4)
             {
@@ -108,29 +46,6 @@ namespace JCsDiner
             else return 0;
         }
 
-        private (Party, Room, Table) seatPartyAtIndividualTable(Party waitingParty, Room room)
-        {
-            Table emptyTable = null;
-            foreach (Table table in room.Tables)
-            {
-                if (!table.isOccupied)
-                {
-                    emptyTable = table;
-                }
-            }
-            if (emptyTable is not null)
-            {
-                emptyTable.SetParty(waitingParty);
-                waitingParty.State = new WaitingToOrder(waitingParty);
-                //throw party seated action
-                return (waitingParty, room, emptyTable);
-            }
-            else
-            {
-                throw new Exception("Host could not find a table for the party");
-            }
-        }
-
         public Room getRoomWithMostSpace(Resturant resturant)
         {
             Room roomWithMostSpace = null;
@@ -148,6 +63,11 @@ namespace JCsDiner
                 throw new ArgumentNullException("Couldn't find a room with any space");
             }
             else return roomWithMostSpace;
+        }
+
+        public void Run1(Resturant resturant)
+        {
+            throw new NotImplementedException();
         }
     }
 }

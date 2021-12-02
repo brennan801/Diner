@@ -8,6 +8,7 @@ namespace JCsDiner
         public List<Customer> Customers { get; internal set; }
         public PartyState State { get; set; }
         public Order Order { get; set; }
+        public Table Table { get; set; }
 
         public Party(int numOfCustomers)
         {
@@ -16,12 +17,12 @@ namespace JCsDiner
             {
                 Customers.Add(new Customer());
             }
-            this.State = new Entered(this);
+            this.State = new WaitingInLobby(this);
         }
 
         public Party()
         {
-            this.State = new Entered(this);
+            this.State = new WaitingInLobby(this);
             this.Customers = generateRandomCustomers();
         }
 

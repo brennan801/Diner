@@ -23,7 +23,7 @@ namespace JCsDiner
             int openTables = 0;
             foreach (Table table in Tables)
             {
-                if (!table.isOccupied)
+                if (table.State == "clean")
                 {
                     openTables++;
                 }
@@ -36,7 +36,7 @@ namespace JCsDiner
             List<Table> freeTables = new List<Table>();
             foreach(Table table in Tables)
             {
-                if (!table.isOccupied)
+                if (table.State == "clean")
                 {
                     freeTables.Add(table);
                 }
@@ -89,7 +89,7 @@ namespace JCsDiner
             Table tableToRemove = null;
             foreach (Table table in Tables)
             {
-                if (numRemovedTables < 1 && table.numOfTables == combinedTable.numOfTables && !table.isOccupied)
+                if (numRemovedTables < 1 && table.numOfTables == combinedTable.numOfTables && table.State == "clean")
                 {
                     tableToRemove = table;
                     numRemovedTables++;

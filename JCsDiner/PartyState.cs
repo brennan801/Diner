@@ -9,20 +9,14 @@ namespace JCsDiner
     public abstract class PartyState
     {
         public Party Party { get; protected set; }
+        public int WaitCounter { get; set; }
+
         public PartyState(Party party)
         {
             this.Party = party;
+            this.WaitCounter = 0;
         }
         public abstract void Run1();
-    }
-
-    public class Entered : PartyState
-    {
-        public Entered(Party party) : base(party){}
-        public override void Run1()
-        {
-            return;
-        }
     }
     public class WaitingInLobby : PartyState
     {
@@ -30,7 +24,16 @@ namespace JCsDiner
 
         public override void Run1()
         {
-            return;
+            WaitCounter++;
+        }
+    }
+    public class BeingSeated : PartyState
+    {
+        public BeingSeated(Party party) : base(party) { }
+
+        public override void Run1()
+        {
+            WaitCounter++;
         }
     }
     public class DecidingOrder : PartyState
@@ -57,7 +60,7 @@ namespace JCsDiner
         public WaitingToOrder(Party party) : base(party) { }
         public override void Run1()
         {
-            return;
+            WaitCounter++;
         }
     }
     public class Ordering : PartyState
@@ -87,7 +90,7 @@ namespace JCsDiner
 
         public override void Run1()
         {
-            return;
+            WaitCounter++;
         }
     }
     public class Eating : PartyState
@@ -116,7 +119,7 @@ namespace JCsDiner
 
         public override void Run1()
         {
-            return;
+            WaitCounter++;
         }
     }
     public class RecievedCheck : PartyState

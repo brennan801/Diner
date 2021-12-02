@@ -48,7 +48,6 @@ namespace JCsDiner
             }
             else
             {
-                //throw event to waiter
                 Party.State = new WaitingToOrder(Party);
             }
         }
@@ -77,7 +76,7 @@ namespace JCsDiner
             }
             else
             {
-                var order = Party.CreateOrder(); //send message to waite
+                var order = Party.CreateOrder(); 
                 Party.State = new WaitingForFood(Party);
             }
         }
@@ -132,7 +131,7 @@ namespace JCsDiner
     public class Left : PartyState
     {
         public Left(Party party) : base(party) { }
-
+        
         public override void Run1()
         {
             return;

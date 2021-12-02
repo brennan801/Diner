@@ -48,7 +48,7 @@ namespace JCsDiner
             }
         }
 
-        public void Run1()
+        public void Run1(Resturant resturant)
         {
             if(CurrentTable is null)
             {

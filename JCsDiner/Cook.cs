@@ -19,7 +19,7 @@ namespace JCsDiner
             return order;
         }
 
-        public void Run1()
+        public void Run1(Resturant resturant)
         {
             throw new NotImplementedException();
         }

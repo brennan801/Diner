@@ -19,8 +19,6 @@ namespace JCsDiner
             int beatNumber = 0;
             int customersServed = 0;
             var resturant = new Resturant();
-            var lobby = new Lobby(40);
-            resturant.Lobby = lobby;
             var host = new Host();
             var runables = new List<IRunable>
             {
@@ -30,16 +28,15 @@ namespace JCsDiner
                 new Busser(),
                 new Cook()
             };
-            var currentParties = new List<Party>();
 
             while (customersServed < Cutormers)
             {
-                if (currentParties.Count() >= Cutormers)
+                if (customersServed + resturant.CurrentParties.Count() < Cutormers)
                 {
                     Party newParty = TryGenerateParty();
                     if (newParty is not null)
                     {
-                        currentParties.Add(newParty);
+                        resturant.CurrentParties.Add(newParty);
                         Console.WriteLine("New Party Entered");
                         host.DealWithNewParty(newParty, resturant);
                     }
@@ -48,7 +45,7 @@ namespace JCsDiner
                 foreach(IRunable runable in runables){
                     try
                     {
-                        runable.Run1();
+                        runable.Run1(resturant);
                     }
                     catch(Exception e)
                     {
@@ -56,12 +53,12 @@ namespace JCsDiner
                     }
                 }
 
-                foreach(Party party in currentParties)
+                foreach(Party party in resturant.CurrentParties)
                 {
-                    party.Run1();
+                    party.Run1(resturant);
                     if(party.State.GetType() == typeof(Left))
                     {
-                        currentParties.Remove(party);
+                        resturant.CurrentParties.Remove(party);
                         customersServed++;
                         var spaciousRoom = host.getRoomWithMostSpace(resturant);
                         try

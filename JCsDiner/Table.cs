@@ -5,12 +5,10 @@ namespace JCsDiner
 {
     public class Table
     {
-        private readonly bool isBooth;
-        public string State { get; set; }
+        public string State { get; set; } // "clean", "occupied", "dirty"
         public int numOfChairs { get; set; }
         public int numOfTables { get; internal set; }
         public Party Party{ get; private set; }
-        public bool isOccupied { get; set; }
         public Table()
         {
             numOfChairs = 6;
@@ -20,14 +18,14 @@ namespace JCsDiner
         {
             this.numOfTables = numOfTables;
             this.numOfChairs = numOfChairs;
-            isOccupied = false;
+            State = "clean";
         }
         public Table SetParty(Party party)
         {
             if(party.Customers.Count <= this.numOfChairs)
             {
                 this.Party = party;
-                this.isOccupied = true;
+                this.State = "occupied";
 
                 return this;
             }

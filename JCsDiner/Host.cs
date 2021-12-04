@@ -21,7 +21,7 @@ namespace JCsDiner
         public (Party, Table) Seat(Party party, Table table)
         {
             party.Table = table;
-            party.State = new DecidingOrder(party);
+            party.State = new PartyDecidingOrder(party);
             return (party, table);
         }
 
@@ -46,7 +46,7 @@ namespace JCsDiner
             else return 0;
         }
 
-        public Room getRoomWithMostSpace(Resturant resturant)
+        public Room getRoomWithMostSpace(Restaurant resturant)
         {
             Room roomWithMostSpace = null;
             int maxNumTables = 0;
@@ -65,7 +65,7 @@ namespace JCsDiner
             else return roomWithMostSpace;
         }
 
-        public void Run1(Resturant resturant)
+        public void Run1(Restaurant resturant)
         {
             State.Run1(resturant);
         }

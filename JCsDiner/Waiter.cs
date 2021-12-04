@@ -8,45 +8,28 @@ namespace JCsDiner
 {
     public class Waiter : IRunable
     {
-        private readonly int id;
-        private Room assignedRoom;
-        private Queue<string> workQueue;
+        public Room AssignedRoom { get; set; }
+        public string Name { get; set; }
+        public int FreeCounter { get; set; }
 
-        public string State { get; set; }
-        public Room AssignedRoom { get { return assignedRoom; } }
+        public WaiterState State { get; set; }
 
         public Waiter()
         {
-
+            State = new WaiterFree(this);
+            FreeCounter = 0;
         }
-        public Waiter(Room assignedRoom)
+        public Waiter(Room assignedRoom, string name)
         {
-            this.assignedRoom = assignedRoom;
-        }
-
-        public Order GetAndSendOrder(Party party)
-        {
-            Order order = party.CreateOrder();
-            //send to cooks
-            order.State = "sent to cooks";
-            return order;
+            this.AssignedRoom = assignedRoom;
+            this.Name = name;
+            State = new WaiterFree(this);
+            FreeCounter = 0;
         }
 
-        public Order DeliverOrder(Order order)
+        public void Run1(Restaurant resturant)
         {
-            order.State = "sent to customer";
-            return order;
-        }
-
-        public Table PickUpCheck(Table table)
-        {
-            table.State = "ready to be cleaned";
-            return table;
-        }
-
-        public void Run1(Resturant resturant)
-        {
-            throw new NotImplementedException();
+            State.Run1(resturant);
         }
     }
 }

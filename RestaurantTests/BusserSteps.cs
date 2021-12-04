@@ -35,7 +35,7 @@ namespace RestaurantTests
         [When(@"the busser is ran (.*) more times")]
         public void WhenTheBusserIsRan___Times(int timeRun)
         {
-            var restaurant = context.Get<Resturant>("restaurant");
+            var restaurant = context.Get<Restaurant>("restaurant");
             var busser = context.Get<Busser>("busser");
             for (int i = 0; i < timeRun; i++)
             {

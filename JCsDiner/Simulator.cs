@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JCsDiner.Host;
+using JCsDiner.Party;
+using JCsDiner.Waiter;
 
 namespace JCsDiner
 {
@@ -18,13 +21,13 @@ namespace JCsDiner
         {
             int beatNumber = 0;
             int customersServed = 0;
-            var resturant = new Resturant();
-            var host = new Host();
+            var resturant = new Restaurant();
+            var host = new Host.Host();
             var runables = new List<IRunable>
             {
-                new Waiter(resturant.Rooms[0]),
-                new Waiter(resturant.Rooms[1]),
-                new Waiter(resturant.Rooms[2]),
+                new Waiter.Waiter(resturant.Rooms[0], "Jim"),
+                new Waiter.Waiter(resturant.Rooms[1], "Sal"),
+                new Waiter.Waiter(resturant.Rooms[2], "Bob"),
                 new Busser(),
                 new Cook()
             };
@@ -33,7 +36,7 @@ namespace JCsDiner
             {
                 if (customersServed + resturant.CurrentParties.Count() < Cutormers)
                 {
-                    Party newParty = TryGenerateParty();
+                    Party.Party newParty = TryGenerateParty();
                 }
                 
                 foreach(IRunable runable in runables){
@@ -47,10 +50,10 @@ namespace JCsDiner
                     }
                 }
 
-                foreach(Party party in resturant.CurrentParties)
+                foreach(Party.Party party in resturant.CurrentParties)
                 {
                     party.Run1(resturant);
-                    if(party.State.GetType() == typeof(Left))
+                    if(party.State.GetType() == typeof(PartyLeft))
                     {
                         resturant.CurrentParties.Remove(party);
                         customersServed++;

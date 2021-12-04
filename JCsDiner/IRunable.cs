@@ -8,6 +8,6 @@ namespace JCsDiner
 {
     public interface IRunable
     {
-        public void Run1(Resturant resturant);
+        public void Run1(Restaurant resturant);
     }
 }

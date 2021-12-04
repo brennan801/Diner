@@ -18,28 +18,28 @@ namespace JCsDiner
         }
         public abstract void Run1();
     }
-    public class WaitingInLobby : PartyState
+    public class PartyWaitingInLobby : PartyState
     {
-        public WaitingInLobby(Party party) : base(party) { }
+        public PartyWaitingInLobby(Party party) : base(party) { }
 
         public override void Run1()
         {
             WaitCounter++;
         }
     }
-    public class BeingSeated : PartyState
+    public class PartyBeingSeated : PartyState
     {
-        public BeingSeated(Party party) : base(party) { }
+        public PartyBeingSeated(Party party) : base(party) { }
 
         public override void Run1()
         {
             WaitCounter++;
         }
     }
-    public class DecidingOrder : PartyState
+    public class PartyDecidingOrder : PartyState
     {
         private int decidingTime;
-        public DecidingOrder(Party party) : base(party) 
+        public PartyDecidingOrder(Party party) : base(party) 
         {
             decidingTime = 2 * party.Customers.Count();
         }
@@ -51,52 +51,40 @@ namespace JCsDiner
             }
             else
             {
-                Party.State = new WaitingToOrder(Party);
+                Party.State = new PartyWaitingToOrder(Party);
             }
         }
     }
-    public class WaitingToOrder : PartyState
+    public class PartyWaitingToOrder : PartyState
     {
-        public WaitingToOrder(Party party) : base(party) { }
+        public PartyWaitingToOrder(Party party) : base(party) { }
         public override void Run1()
         {
             WaitCounter++;
         }
     }
-    public class Ordering : PartyState
+    public class PartyOrdering : PartyState
     {
-        private int orderTime;
-        public Ordering(Party party) : base(party)
-        {
-            orderTime = party.Customers.Count();
-        }
+        public PartyOrdering(Party party) : base(party){ }
 
         public override void Run1()
         {
-            if (orderTime > 0)
-            {
-                orderTime--;
-            }
-            else
-            {
-                var order = Party.CreateOrder(); 
-                Party.State = new WaitingForFood(Party);
-            }
+            return;
         }
     }
-    public class WaitingForFood : PartyState
+    public class PartyWaitingForFood : PartyState
     {
-        public WaitingForFood(Party party) : base(party) { }
+        public PartyWaitingForFood(Party party) : base(party) { }
 
         public override void Run1()
         {
             WaitCounter++;
         }
     }
-    public class Eating : PartyState
+    public class PartyEating : PartyState
     {
         private int eatingTime;
-        public Eating(Party party) : base(party) {
+        public PartyEating(Party party) : base(party) {
             eatingTime = 2 * Party.Order.Appetizers + 5 * Party.Order.Platers;
         }
 
@@ -108,32 +96,31 @@ namespace JCsDiner
             }
             else
             {
-                // send waiter event
-                Party.State = new WaitingForCheck(Party);
+                Party.State = new PartyWaitingForCheck(Party);
             }
         }
     }
-    public class WaitingForCheck : PartyState
+    public class PartyWaitingForCheck : PartyState
     {
-        public WaitingForCheck(Party party) : base(party) { }
+        public PartyWaitingForCheck(Party party) : base(party) { }
 
         public override void Run1()
         {
             WaitCounter++;
         }
     }
-    public class RecievedCheck : PartyState
+    public class PartyRecievedCheck : PartyState
     {
-        public RecievedCheck(Party party) : base(party) { }
+        public PartyRecievedCheck(Party party) : base(party) { }
 
         public override void Run1()
         {
-            Party.State = new Left(Party);
+            Party.State = new PartyLeft(Party);
         }
     }
-    public class Left : PartyState
+    public class PartyLeft : PartyState
     {
-        public Left(Party party) : base(party) { }
+        public PartyLeft(Party party) : base(party) { }
         
         public override void Run1()
         {

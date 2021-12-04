@@ -29,26 +29,26 @@ namespace JCsDiner
             {
                 Table myTable = room.CombineTables(2);
                 myTable.SetParty(party);
-                party.State = new WaitingToOrder(party);
+                party.State = new PartyWaitingToOrder(party);
                 return (party, myTable);
             }
             if (party.Customers.Count() < 14)
             {
                 Table myTable = room.CombineTables(3);
                 myTable.SetParty(party);
-                party.State = new WaitingToOrder(party);
+                party.State = new PartyWaitingToOrder(party);
                 return (party, myTable);
             }
             else
             {
                 Table myTable = room.CombineTables(4);
                 myTable.SetParty(party);
-                party.State = new WaitingToOrder(party);
+                party.State = new PartyWaitingToOrder(party);
                 return (party, myTable);
             }
         }
 
-        public void Run1(Resturant resturant)
+        public void Run1(Restaurant resturant)
         {
             if(CurrentTable is null)
             {

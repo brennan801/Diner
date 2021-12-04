@@ -13,13 +13,13 @@ namespace JCsDiner
         {
             this.Host = host;
         }
-        public abstract void Run1(Resturant resturant);
+        public abstract void Run1(Restaurant resturant);
     }
-    public class Free : HostState
+    public class HostFree : HostState
     {
-        public Free(Host host) : base(host) { }
+        public HostFree(Host host) : base(host) { }
 
-        public override void Run1(Resturant resturant)
+        public override void Run1(Restaurant resturant)
         {
             Party nextParty;
             Room largestCapacityRoom;
@@ -39,8 +39,8 @@ namespace JCsDiner
             if(nextParty.Customers.Count() <= capacity)
             {
                 var table = getTableForParty(nextParty.Customers.Count(), largestCapacityRoom);
-                nextParty.State = new BeingSeated(nextParty);
-                Host.State = new SeatingParty(Host, nextParty, table);
+                nextParty.State = new PartyBeingSeated(nextParty);
+                Host.State = new HostSeatingParty(Host, nextParty, table);
             }
         }
 
@@ -58,13 +58,13 @@ namespace JCsDiner
             return perfectTable;
         }
 
-        public Party getNextParty(Resturant resturant)
+        public Party getNextParty(Restaurant resturant)
         {
             if (resturant.CurrentParties.Count() > 0)
             {
                 var partyQuery =
                                 from party in resturant.CurrentParties
-                                where party.State.GetType() == typeof(WaitingInLobby)
+                                where party.State.GetType() == typeof(PartyWaitingInLobby)
                                 orderby party.State.WaitCounter
                                 select party;
                 return partyQuery.First();
@@ -75,27 +75,27 @@ namespace JCsDiner
             }
         }
     }
-    public class SeatingParty : HostState
+    public class HostSeatingParty : HostState
     {
         public Party Party { get; private set; }
         public Table Table { get; private set; }
         public int TimeSpent { get; private set; }
-        public SeatingParty(Host host, Party party, Table table) : base(host)
+        public HostSeatingParty(Host host, Party party, Table table) : base(host)
         {
             this.Party = party;
             this.Table = table;
             this.TimeSpent = 0;
-            Party.State = new BeingSeated(party);
+            Party.State = new PartyBeingSeated(party);
             Table.State = "occupied";
         }
-        public override void Run1(Resturant resturant)
+        public override void Run1(Restaurant resturant)
         {
             TimeSpent++;
             if(TimeSpent >= 2)
             {
                 Host.Seat(Party, Table);
                 Host.State = new Free(Host);
-                Party.State = new DecidingOrder(Party);
+                Party.State = new PartyDecidingOrder(Party);
             }
         }
     }

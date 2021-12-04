@@ -25,7 +25,7 @@ namespace RestaurantTests
         [Given(@"There are (.*) orders that are ready to be cooked with (.*) platers and (.*) appitizers")]
         public void GivenThereAre___OrdersThatAreReadyToBeCooked(int numOfOrders, int numPlaters, int numAppitizers)
         {
-            var restaurant = context.Get<Resturant>("restaurant");
+            var restaurant = context.Get<Restaurant>("restaurant");
             for (int i = 0; i < numOfOrders; i++)
             {
                 var order = new Order();
@@ -34,7 +34,7 @@ namespace RestaurantTests
                 order.Appetizers = numAppitizers;
                 restaurant.CurrentOrders.Add(order);
             }
-            context.Set<Resturant>(restaurant, "restaurant");
+            context.Set<Restaurant>(restaurant, "restaurant");
         }
         
         [When(@"the cook is run (.*) times")]
@@ -42,7 +42,7 @@ namespace RestaurantTests
         public void WhenTheCookIsRun___Times(int runTime)
         {
             var cook = context.Get<Cook>("cook");
-            var restaurant = context.Get<Resturant>("restaurant");
+            var restaurant = context.Get<Restaurant>("restaurant");
 
             for (int i = 0; i < runTime; i++)
             {
@@ -53,7 +53,7 @@ namespace RestaurantTests
         [Then(@"there should be (.*) orders in the ready to be cooked state")]
         public void ThenThereShouldBe___OrdersInTheReadyToBeCookedState(int numOrders)
         {
-            var restaurant = context.Get<Resturant>("restaurant");
+            var restaurant = context.Get<Restaurant>("restaurant");
             var orderQuery =
                 from order in restaurant.CurrentOrders
                 where order.State == "ToBeCooked"
@@ -65,7 +65,7 @@ namespace RestaurantTests
         [Then(@"there should be (.*) orders in the being cooked state")]
         public void ThenThereShouldBe___OrdersInTheBeingCookedState(int numOrders)
         {
-            var restaurant = context.Get<Resturant>("restaurant");
+            var restaurant = context.Get<Restaurant>("restaurant");
             var orderQuery =
                 from order in restaurant.CurrentOrders
                 where order.State == "BeingCooked"

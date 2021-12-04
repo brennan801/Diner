@@ -17,12 +17,12 @@ namespace JCsDiner
             {
                 Customers.Add(new Customer());
             }
-            this.State = new WaitingInLobby(this);
+            this.State = new PartyWaitingInLobby(this);
         }
 
         public Party()
         {
-            this.State = new WaitingInLobby(this);
+            this.State = new PartyWaitingInLobby(this);
             this.Customers = generateRandomCustomers();
         }
 
@@ -121,7 +121,7 @@ namespace JCsDiner
             return order;
         }
 
-        public void Run1(Resturant resturant)
+        public void Run1(Restaurant resturant)
         {
             State.Run1();
         }

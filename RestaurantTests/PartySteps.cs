@@ -25,7 +25,7 @@ namespace RestaurantTests
         [When(@"the party is run")]
         public void WhenThePartyIsRun()
         {
-            var restaurant = context.Get<Resturant>("restaurant");
+            var restaurant = context.Get<Restaurant>("restaurant");
             var party = context.Get<Party>("party");
             party.Run1(restaurant);
             context.Set<Party>(party, "party");
@@ -35,14 +35,14 @@ namespace RestaurantTests
         public void ThenThePartiesNewStateShouldBeTheEnteredState()
         {
             var party = context.Get<Party>("party");
-            party.State.Should().BeOfType(typeof(WaitingInLobby));
+            party.State.Should().BeOfType(typeof(PartyWaitingInLobby));
         }
 
         [Given(@"a party is in the RecievedCheck state")]
         public void GivenAPartyIsInTheRecievedCheckState()
         {
             var party = new Party();
-            party.State = new RecievedCheck(party);
+            party.State = new PartyRecievedCheck(party);
             context.Add("party", party);
         }
 
@@ -50,7 +50,7 @@ namespace RestaurantTests
         public void ThenThePartiesNewStateShouldBeTheLeftState()
         {
             var party = context.Get<Party>("party");
-            party.State.Should().BeOfType(typeof(Left));
+            party.State.Should().BeOfType(typeof(PartyLeft));
         }
 
         [Given(@"there is a party of size (.*)")]
@@ -64,7 +64,7 @@ namespace RestaurantTests
         public void GivenThePartyIsDecidingWhatToOrder()
         {
             var party = context.Get<Party>("party");
-            party.State = new DecidingOrder(party);
+            party.State = new PartyDecidingOrder(party);
             context.Set<Party>(party, "party");
         }
 
@@ -73,7 +73,7 @@ namespace RestaurantTests
         [When(@"the party is ran (.*) more times")]
         public void WhenThePartyIsRan___Times(int timeToRun)
         {
-            var restaurant = context.Get<Resturant>("restaurant");
+            var restaurant = context.Get<Restaurant>("restaurant");
             var party = context.Get<Party>("party");
             for(int i = 0; i < timeToRun; i++)
             {
@@ -86,42 +86,42 @@ namespace RestaurantTests
         public void ThenThePartiesNewStateShouldBeTheDecidingOrderState()
         {
             var party = context.Get<Party>("party");
-            party.State.Should().BeOfType(typeof(DecidingOrder));
+            party.State.Should().BeOfType(typeof(PartyDecidingOrder));
         }
 
         [Then(@"the parties new state should be the WaitingToOrder state")]
         public void ThenThePartiesNewStateShouldBeTheWaitingToOrderState()
         {
             var party = context.Get<Party>("party");
-            party.State.Should().BeOfType(typeof(WaitingToOrder));
+            party.State.Should().BeOfType(typeof(PartyWaitingToOrder));
         }
 
         [Then(@"the parties new state should be the Ordering state")]
         public void ThenThePartiesNewStateShouldBeTheOrderingState()
         {
             var party = context.Get<Party>("party");
-            party.State.Should().BeOfType(typeof(Ordering));
+            party.State.Should().BeOfType(typeof(PartyOrdering));
         }
 
         [Then(@"the parties new state should be the WaitingForFood state")]
         public void ThenThePartiesNewStateShouldBeTheWaitingForFoodState()
         {
             var party = context.Get<Party>("party");
-            party.State.Should().BeOfType(typeof(WaitingForFood));
+            party.State.Should().BeOfType(typeof(PartyWaitingForFood));
         }
 
         [Then(@"the parties new state should be the Eating state")]
         public void ThenThePartiesNewStateShouldBeTheEatingState()
         {
             var party = context.Get<Party>("party");
-            party.State.Should().BeOfType(typeof(Eating));
+            party.State.Should().BeOfType(typeof(PartyEating));
         }
 
         [Then(@"the parties new state should be WaitingForCheck")]
         public void ThenThePartiesNewStateShouldBeWaitingForCheck()
         {
             var party = context.Get<Party>("party");
-            party.State.Should().BeOfType(typeof(WaitingForCheck));
+            party.State.Should().BeOfType(typeof(PartyWaitingForCheck));
         }
 
 
@@ -129,7 +129,7 @@ namespace RestaurantTests
         public void GivenThePartyIsOrdering()
         {
             var party = context.Get<Party>("party");
-            party.State = new Ordering(party);
+            party.State = new PartyOrdering(party);
             context.Set<Party>(party, "party");
         }
 
@@ -141,7 +141,7 @@ namespace RestaurantTests
             order.Platers = numPlatters;
             order.Appetizers = numAppitizers;
             party.Order = order;
-            party.State = new Eating(party);
+            party.State = new PartyEating(party);
             context.Set<Party>(party, "party");
         }
 

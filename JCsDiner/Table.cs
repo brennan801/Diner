@@ -13,6 +13,7 @@ namespace JCsDiner
         {
             numOfChairs = 6;
             numOfTables = 1;
+            State = "clean";
         }
         public Table(int numOfTables, int numOfChairs)
         {

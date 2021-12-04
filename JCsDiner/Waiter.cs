@@ -44,12 +44,7 @@ namespace JCsDiner
             return table;
         }
 
-        public bool Run1()
-        {
-            throw new NotImplementedException();
-        }
-
-        void IRunable.Run1()
+        public void Run1(Resturant resturant)
         {
             throw new NotImplementedException();
         }

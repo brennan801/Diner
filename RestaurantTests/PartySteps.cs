@@ -25,8 +25,9 @@ namespace RestaurantTests
         [When(@"the party is run")]
         public void WhenThePartyIsRun()
         {
+            var restaurant = context.Get<Resturant>("restaurant");
             var party = context.Get<Party>("party");
-            party.Run1();
+            party.Run1(restaurant);
             context.Set<Party>(party, "party");
         }
 
@@ -34,7 +35,7 @@ namespace RestaurantTests
         public void ThenThePartiesNewStateShouldBeTheEnteredState()
         {
             var party = context.Get<Party>("party");
-            party.State.Should().BeOfType(typeof(Entered));
+            party.State.Should().BeOfType(typeof(WaitingInLobby));
         }
 
         [Given(@"a party is in the RecievedCheck state")]
@@ -72,10 +73,11 @@ namespace RestaurantTests
         [When(@"the party is ran (.*) more times")]
         public void WhenThePartyIsRan___Times(int timeToRun)
         {
+            var restaurant = context.Get<Resturant>("restaurant");
             var party = context.Get<Party>("party");
             for(int i = 0; i < timeToRun; i++)
             {
-                party.Run1();
+                party.Run1(restaurant);
             }
             context.Set<Party>(party, "party");
         }

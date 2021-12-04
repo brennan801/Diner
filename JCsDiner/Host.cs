@@ -67,7 +67,7 @@ namespace JCsDiner
 
         public void Run1(Resturant resturant)
         {
-            throw new NotImplementedException();
+            State.Run1(resturant);
         }
     }
 }

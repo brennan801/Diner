@@ -95,6 +95,7 @@ namespace JCsDiner
             {
                 Host.Seat(Party, Table);
                 Host.State = new Free(Host);
+                Party.State = new DecidingOrder(Party);
             }
         }
     }

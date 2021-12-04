@@ -137,7 +137,7 @@ namespace RestaurantTests
         public void GivenThePartyIsEatingAnOrderWith___PlattersAnd____Appitizers(int numPlatters, int numAppitizers)
         {
             var party = context.Get<Party>("party");
-            var order = new Order(party);
+            var order = new Order();
             order.Platers = numPlatters;
             order.Appetizers = numAppitizers;
             party.Order = order;

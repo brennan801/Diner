@@ -5,12 +5,18 @@
         private readonly int id;
         public int Appetizers { get; set; }
         public int Platers { get; set; }
-        public Party Party { get; private set; }
+        public Table Table { get; set; }
         public string State { get; set; }
+        public int WaitCounter { get; set; }
 
-        public Order(Party party)
+        public Order(Table table)
         {
-            this.Party = party;
+            this.Table = table;
+            WaitCounter = 0;
+        }
+        public Order()
+        {
+            WaitCounter = 0;
         }
     }
 }

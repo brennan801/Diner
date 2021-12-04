@@ -8,20 +8,44 @@ namespace JCsDiner
 {
     public class Cook : IRunable
     {
-        public string State { get; private set; }
-
-        public Order CookOrder(Order order)
+        public Order Order { get; set; }
+        public int FreeTimeCount { get; private set; }
+        public int TimeLeftToCook { get; private set; }
+        public void Run1(Resturant restaurant)
         {
-            order.State = "cooking";
-            //random cook time
-            order.State = "cooked";
-            //throw order ready event
-            return order;
+            var orderquery =
+                    from order in restaurant.CurrentOrders
+                    where order.State == "ToBeCooked"
+                    orderby order.WaitCounter
+                    select order;
+            foreach(Order order in orderquery)
+            {
+                order.WaitCounter++;
+            }
+            if (Order == null || Order.State != "BeingCooked")
+            {
+                if (orderquery.Count() > 0)
+                {
+                    Order = orderquery.First();
+                    Order.State = "BeingCooked";
+                    TimeLeftToCook = getTimeToCook(Order);
+                    return;
+                }
+                else FreeTimeCount++;
+            }
+            else
+            {
+                if(TimeLeftToCook > 0)
+                {
+                    TimeLeftToCook--;
+                }
+                else Order.State = "ToBeReturned";
+            }
         }
 
-        public void Run1(Resturant resturant)
+        private int getTimeToCook(Order order)
         {
-            throw new NotImplementedException();
+            return 2 * order.Appetizers + 3 * order.Platers;
         }
     }
 }

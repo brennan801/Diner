@@ -110,7 +110,7 @@ namespace JCsDiner
 
         public Order CreateOrder()
         {
-            Order order = new Order(this);
+            Order order = new Order(Table);
             foreach(Customer customer in Customers)
             {
                 (int appetizers, int platers) = customer.Order();

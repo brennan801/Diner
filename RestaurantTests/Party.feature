@@ -23,15 +23,6 @@ Scenario: A party decides what to order
 	When the party is ran 5 more times
 	Then the parties new state should be the WaitingToOrder state
 
-Scenario: A party orders
-	Given there is a restaurant
-	And there is a party of size 3
-	And the party is ordering
-	When the party is ran 2 times
-	Then the parties new state should be the Ordering state
-	When the party is ran 2 more times
-	Then the parties new state should be the WaitingForFood state
-
 Scenario: A party eats
 	Given there is a restaurant
 	And there is a party of size 1

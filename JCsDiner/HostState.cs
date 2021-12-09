@@ -41,6 +41,7 @@ namespace JCsDiner
                 var table = getTableForParty(nextParty.Customers.Count(), largestCapacityRoom);
                 nextParty.State = new PartyBeingSeated(nextParty);
                 Host.State = new HostSeatingParty(Host, nextParty, table);
+                Console.WriteLine($"Host started seating a party with {nextParty.Customers.Count()} customers");
             }
         }
 
@@ -67,7 +68,15 @@ namespace JCsDiner
                                 where party.State.GetType() == typeof(PartyWaitingInLobby)
                                 orderby party.State.WaitCounter
                                 select party;
-                return partyQuery.First();
+                if(partyQuery.Count() > 0)
+                {
+                    return partyQuery.First();
+                }
+                else
+                {
+                    throw new ArgumentNullException("No parties waiting in lobby");
+                }
+
             }
             else
             {
@@ -94,8 +103,9 @@ namespace JCsDiner
             if(TimeSpent >= 2)
             {
                 Host.Seat(Party, Table);
-                Host.State = new Free(Host);
+                Host.State = new HostFree(Host);
                 Party.State = new PartyDecidingOrder(Party);
+                Console.WriteLine("Host seated a party");
             }
         }
     }

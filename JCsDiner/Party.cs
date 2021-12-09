@@ -9,9 +9,11 @@ namespace JCsDiner
         public PartyState State { get; set; }
         public Order Order { get; set; }
         public Table Table { get; set; }
+        public int ID { get; set; }
 
-        public Party(int numOfCustomers)
+        public Party(int numOfCustomers, int id)
         {
+            this.ID = id;
             Customers = new List<Customer>();
            for(int i = 0; i < numOfCustomers; i++)
             {
@@ -20,8 +22,9 @@ namespace JCsDiner
             this.State = new PartyWaitingInLobby(this);
         }
 
-        public Party()
+        public Party(int id)
         {
+            this.ID = id;
             this.State = new PartyWaitingInLobby(this);
             this.Customers = generateRandomCustomers();
         }

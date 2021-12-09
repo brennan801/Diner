@@ -52,6 +52,7 @@ namespace JCsDiner
             else
             {
                 Party.State = new PartyWaitingToOrder(Party);
+                Console.WriteLine("\t A party is ready to order");
             }
         }
     }
@@ -97,6 +98,7 @@ namespace JCsDiner
             else
             {
                 Party.State = new PartyWaitingForCheck(Party);
+                Console.WriteLine("\t a party is waiting for the check");
             }
         }
     }
@@ -115,7 +117,9 @@ namespace JCsDiner
 
         public override void Run1()
         {
+            Party.Table.State = "dirty";
             Party.State = new PartyLeft(Party);
+            Console.WriteLine("\t A party is ready to leave");
         }
     }
     public class PartyLeft : PartyState

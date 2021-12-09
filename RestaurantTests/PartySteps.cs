@@ -18,7 +18,7 @@ namespace RestaurantTests
         [Given(@"a party is in the Entered state")]
         public void GivenAPartyIsInTheEnteredState()
         {
-            var party = new Party();
+            var party = new Party(0);
             context.Add("party", party);
         }
 
@@ -41,7 +41,7 @@ namespace RestaurantTests
         [Given(@"a party is in the RecievedCheck state")]
         public void GivenAPartyIsInTheRecievedCheckState()
         {
-            var party = new Party();
+            var party = new Party(0);
             party.State = new PartyRecievedCheck(party);
             context.Add("party", party);
         }
@@ -56,7 +56,7 @@ namespace RestaurantTests
         [Given(@"there is a party of size (.*)")]
         public void GivenThereISAPartyOfSize___(int partySize)
         {
-            var party = new Party(partySize);
+            var party = new Party(partySize, 0);
             context.Add("party", party);
         }
 

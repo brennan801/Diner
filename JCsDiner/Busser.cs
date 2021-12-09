@@ -10,11 +10,9 @@ namespace JCsDiner
     {
         public Table CurrentTable { get; set; }
         public int CurrentTableTimeLeft;
-        public Queue<Table> TableQueue { get; set; }
 
         public Busser()
         {
-            TableQueue = new Queue<Table>();
         }
 
         public Table cleanTable(Table table)
@@ -48,13 +46,26 @@ namespace JCsDiner
             }
         }
 
-        public void Run1(Restaurant resturant)
+        public void Run1(Restaurant restaurant)
         {
             if(CurrentTable is null)
             {
-                if (TableQueue.Count() > 0)
+                var dirtyTables = new List<Table>();
+                foreach(Room room in restaurant.Rooms)
                 {
-                    CurrentTable = TableQueue.Dequeue();
+                    foreach(Table table in room.Tables)
+                    {
+                        if (table.State == "dirty")
+                        {
+                            dirtyTables.Add(table);
+                        }
+                    }
+                }
+
+                if (dirtyTables.Count() > 0)
+                {
+                    CurrentTable = dirtyTables.First();
+                    Console.WriteLine("\t\t\t\tBusser started cleaning a table");
                     CurrentTableTimeLeft = 5;
                     return;
                 }
@@ -65,6 +76,8 @@ namespace JCsDiner
                 CurrentTableTimeLeft--;
                 if(CurrentTableTimeLeft == 0)
                 {
+                    CurrentTable.State = "clean";
+                    Console.WriteLine($"\t\t\t\tbusser cleaned table");
                     CurrentTable = null;
                 }
             }

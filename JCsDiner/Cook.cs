@@ -29,17 +29,22 @@ namespace JCsDiner
                     Order = orderquery.First();
                     Order.State = "BeingCooked";
                     TimeLeftToCook = getTimeToCook(Order);
+                    Console.WriteLine($"\t\t\tCook started cooking new order with {Order.Platers} platers and {Order.Appetizers} appetizers");
                     return;
                 }
                 else FreeTimeCount++;
             }
             else
             {
-                if(TimeLeftToCook > 0)
+                if (TimeLeftToCook > 0)
                 {
                     TimeLeftToCook--;
                 }
-                else Order.State = "ToBeReturned";
+                else
+                {
+                    Order.State = "ToBeReturned";
+                    Console.WriteLine("\t\t\tcook finished an order");
+                }
             }
         }
 

@@ -14,7 +14,7 @@ namespace JCsDiner
 
         public Host()
         {
-            State = new Free(this);
+            State = new HostFree(this);
             FreeTimeCounter = 0;
         }
 

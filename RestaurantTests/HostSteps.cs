@@ -47,7 +47,7 @@ namespace RestaurantTests
         public void ThenTheHostShouldBeInTheFreeState()
         {
             var host = context.Get<Host>("host");
-            host.State.Should().BeOfType(typeof(Free));
+            host.State.Should().BeOfType(typeof(HostFree));
         }
 
         [Given(@"there are (.*) parties waiting in the lobby")]
@@ -57,7 +57,7 @@ namespace RestaurantTests
             var restaurant = context.Get<Restaurant>("restaurant");
             for (int i = 0; i < numOfParties; i++)
             {
-                restaurant.CurrentParties.Add(new Party());
+                restaurant.CurrentParties.Add(new Party(0));
             }
             context.Set<Restaurant>(restaurant, "restaurant");
         }

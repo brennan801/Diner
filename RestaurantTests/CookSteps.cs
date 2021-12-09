@@ -46,7 +46,7 @@ namespace RestaurantTests
 
             for (int i = 0; i < runTime; i++)
             {
-                cook.Run1(restaurant);
+                cook.Run1(restaurant, i);
             }
         }
         

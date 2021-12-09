@@ -3,12 +3,14 @@ using System.Collections.Generic;
 
 namespace JCsDiner
 {
-    public class Party : IRunable
+    public class Party
     {
         public List<Customer> Customers { get; internal set; }
         public PartyState State { get; set; }
         public Order Order { get; set; }
         public Table Table { get; set; }
+        public int EnterLobbyTime { get; set; }
+        public int ExitLobbyTime { get; set; }
         public int ID { get; set; }
 
         public Party(int numOfCustomers, int id)

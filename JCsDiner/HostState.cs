@@ -13,13 +13,13 @@ namespace JCsDiner
         {
             this.Host = host;
         }
-        public abstract void Run1(Restaurant resturant);
+        public abstract void Run1(Restaurant resturant, int beatNumber);
     }
     public class HostFree : HostState
     {
         public HostFree(Host host) : base(host) { }
 
-        public override void Run1(Restaurant resturant)
+        public override void Run1(Restaurant resturant, int beatNumber)
         {
             Party nextParty;
             Room largestCapacityRoom;
@@ -40,6 +40,7 @@ namespace JCsDiner
             {
                 var table = getTableForParty(nextParty.Customers.Count(), largestCapacityRoom);
                 nextParty.State = new PartyBeingSeated(nextParty);
+                nextParty.ExitLobbyTime = beatNumber;
                 Host.State = new HostSeatingParty(Host, nextParty, table);
                 Console.WriteLine($"Host started seating a party with {nextParty.Customers.Count()} customers");
             }
@@ -53,9 +54,21 @@ namespace JCsDiner
                     where table.State == "clean"
                     select table;
             if (partySize <= 6) perfectTable = tableQuery.First();
-            else if (partySize <= 10) perfectTable = largestCapacityRoom.CombineTables(2);
-            else if (partySize <= 13) perfectTable = largestCapacityRoom.CombineTables(3);
-            else perfectTable = largestCapacityRoom.CombineTables(4);
+            else if (partySize <= 10)
+            {
+                perfectTable = largestCapacityRoom.CombineTables(2);
+                Console.WriteLine("Host combined 2 tables");
+            }
+            else if (partySize <= 13)
+            {
+                perfectTable = largestCapacityRoom.CombineTables(3);
+                Console.WriteLine("Host combined 3 tables");
+            }
+            else
+            {
+                perfectTable = largestCapacityRoom.CombineTables(4);
+                Console.WriteLine("Host combined 4 tables");
+            }
             return perfectTable;
         }
 
@@ -97,7 +110,7 @@ namespace JCsDiner
             Party.State = new PartyBeingSeated(party);
             Table.State = "occupied";
         }
-        public override void Run1(Restaurant resturant)
+        public override void Run1(Restaurant resturant, int beatNumber)
         {
             TimeSpent++;
             if(TimeSpent >= 2)
@@ -105,6 +118,7 @@ namespace JCsDiner
                 Host.Seat(Party, Table);
                 Host.State = new HostFree(Host);
                 Party.State = new PartyDecidingOrder(Party);
+                Host.PartyLobbyTimes.Add(Party.ExitLobbyTime - Party.EnterLobbyTime);
                 Console.WriteLine("Host seated a party");
             }
         }

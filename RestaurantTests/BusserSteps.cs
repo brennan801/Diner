@@ -26,9 +26,8 @@ namespace RestaurantTests
         public void GivenATableIsAddedToTheQueue()
         {
             var busser = context.Get<Busser>("busser");
-            var table = new JCsDiner.Table();
-            busser.TableQueue.Enqueue(table);
-            context.Set<Busser>(busser, "busser");
+            var restaurant = context.Get<Restaurant>("restaurant");
+            restaurant.Rooms[0].Tables[0].State = "dirty";
         }
 
         [When(@"the busser is ran (.*) times")]
@@ -39,7 +38,7 @@ namespace RestaurantTests
             var busser = context.Get<Busser>("busser");
             for (int i = 0; i < timeRun; i++)
             {
-                busser.Run1(restaurant);
+                busser.Run1(restaurant, i);
             }
         }
 

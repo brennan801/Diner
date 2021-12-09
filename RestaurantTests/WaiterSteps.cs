@@ -75,7 +75,7 @@ namespace RestaurantTests
 
             for (int i = 0; i < runTime; i++)
             {
-                waiter.Run1(restaurant);
+                waiter.Run1(restaurant, i);
             }
         }
         [Then(@"the waiter should be in the returning order state")]

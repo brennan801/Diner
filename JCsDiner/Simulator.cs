@@ -34,13 +34,17 @@ namespace JCsDiner
                 if (customersServed + restaurant.CurrentParties.Count() < Customers)
                 {
                     Party newParty = TryGenerateParty(restaurant.CurrentOrders.Count() + 1);
-                    if (newParty is not null) restaurant.CurrentParties.Add(newParty);
+                    if (newParty is not null)
+                    {
+                        restaurant.CurrentParties.Add(newParty);
+                        newParty.EnterLobbyTime = beatNumber;
+                    }
                 }
-                    host.Run1(restaurant);
+                    host.Run1(restaurant, beatNumber);
 
 
                 foreach (IRunable runable in runables){
-                    runable.Run1(restaurant);
+                    runable.Run1(restaurant, beatNumber);
                 }
                 var partiesToRemove = new List<Party>();
                 foreach(Party party in restaurant.CurrentParties)
@@ -58,9 +62,16 @@ namespace JCsDiner
                 {
                     restaurant.CurrentParties.Remove(party);
                 }
+                beatNumber++;
                 Console.WriteLine();
             }
-            Console.WriteLine("done.");
+            Console.WriteLine($"All parties have been served. Total Run Time: {beatNumber}");
+
+            host.PrintStats();
+            foreach(IRunable employee in runables)
+            {
+                employee.PrintStats();
+            }
             return beatNumber;
         }
 

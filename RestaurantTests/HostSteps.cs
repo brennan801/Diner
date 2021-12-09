@@ -39,7 +39,7 @@ namespace RestaurantTests
             var host = context.Get<Host>("host");
             for (int i = 0; i < runTime; i++)
             {
-                host.Run1(restaurant);
+                host.Run1(restaurant, i);
             }
         }
 

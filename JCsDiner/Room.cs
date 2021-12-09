@@ -83,29 +83,13 @@ namespace JCsDiner
             return newTable;
         }
 
-        internal List<Table> SeperateTables(Table combinedTable)
+        internal void SeperateTables(Table combinedTable)
         {
-            int numRemovedTables = 0;
-            Table tableToRemove = null;
-            foreach (Table table in Tables)
-            {
-                if (numRemovedTables < 1 && table.numOfTables == combinedTable.numOfTables && table.State == "clean")
-                {
-                    tableToRemove = table;
-                    numRemovedTables++;
-                }
-            }
-            if( numRemovedTables == 0)
-            {
-                throw new NullReferenceException("There is no table to seperate of requested size");
-            }
-
-            Tables.Remove(tableToRemove);
+            Tables.Remove(combinedTable);
             for (int i = 0; i < combinedTable.numOfTables; i++)
             {
-                Tables.Add(new Table(1, 6));
+                Tables.Add(new Table { State = "dirty" }); 
             }
-            return Tables;
         }
     }
 }

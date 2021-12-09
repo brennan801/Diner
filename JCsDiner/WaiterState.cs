@@ -27,6 +27,7 @@ namespace JCsDiner
             {
                 var order = toBeReturnedOrders.First();
                 var party = findPartyForOrder(restaurant, order);
+                Waiter.WaitingForFoodTimes.Add(party.State.WaitCounter);
                 order.State = "BeingReturned";
                 Waiter.State = new WaiterReturningOrder(Waiter, party);
                 Console.WriteLine($"\t\t {Waiter.Name} is returning an order");
@@ -35,6 +36,7 @@ namespace JCsDiner
             else if (waitingToOrderParties.Count() > 0)
             {
                 var party = waitingToOrderParties.First();
+                Waiter.WaitingToOrderTimes.Add(party.State.WaitCounter);
                 party.State = new PartyOrdering(party);
                 Waiter.State = new WaiterGettingOrder(Waiter, party);
                 Console.WriteLine($"\t\t{Waiter.Name} is getting an order");
@@ -43,6 +45,7 @@ namespace JCsDiner
             else if (waitingForCheckParties.Count() > 0)
             {
                 var party = waitingForCheckParties.First();
+                Waiter.WaitingCheckTimes.Add(party.State.WaitCounter);
                 Waiter.State = new WaiterProvidingCheck(Waiter, party);
                 Console.WriteLine($"\t\t{Waiter.Name} is Providing the check");
                 return;
@@ -152,6 +155,7 @@ namespace JCsDiner
         public override void Run1(Restaurant restaurant)
         {
             Party.State = new PartyRecievedCheck(Party);
+            Waiter.CustomersServed++;
             Waiter.State = new WaiterFree(Waiter);
             Console.WriteLine($"\t\t{Waiter.Name} provided a check");
         }

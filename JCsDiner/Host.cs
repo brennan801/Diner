@@ -10,18 +10,21 @@ namespace JCsDiner
     {
         private readonly int id;
         public HostState State { get; set; }
-        public int FreeTimeCounter { get; set;}
+        public int FreeTimeCounter { get; set;} 
+        public List<int> PartyLobbyTimes { get; set; }   
 
         public Host()
         {
             State = new HostFree(this);
             FreeTimeCounter = 0;
+            PartyLobbyTimes = new List<int>();
         }
 
         public (Party, Table) Seat(Party party, Table table)
         {
             party.Table = table;
             party.State = new PartyDecidingOrder(party);
+            PartyLobbyTimes = new List<int>();
             return (party, table);
         }
 
@@ -65,9 +68,18 @@ namespace JCsDiner
             else return roomWithMostSpace;
         }
 
-        public void Run1(Restaurant resturant)
+        public void Run1(Restaurant resturant, int beatNumber)
         {
-            State.Run1(resturant);
+            State.Run1(resturant, beatNumber);
+        }
+
+        public void PrintStats()
+        {
+            Console.WriteLine(
+                $"Host" +
+                $"\n\tAverage Party Waiting in Lobby Time: {PartyLobbyTimes.Average()}" +
+                $"\n\tWastedTime: {FreeTimeCounter}"
+                );
         }
     }
 }

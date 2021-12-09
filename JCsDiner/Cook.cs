@@ -11,7 +11,16 @@ namespace JCsDiner
         public Order Order { get; set; }
         public int FreeTimeCount { get; private set; }
         public int TimeLeftToCook { get; private set; }
-        public void Run1(Restaurant restaurant)
+
+        public void PrintStats()
+        {
+            Console.WriteLine(
+                $"Cook:" +
+                $"\n\tWastedTime: {FreeTimeCount}"
+                );
+        }
+
+        public void Run1(Restaurant restaurant, int beatNumber)
         {
             var orderquery =
                     from order in restaurant.CurrentOrders

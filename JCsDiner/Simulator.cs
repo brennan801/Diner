@@ -14,6 +14,10 @@ namespace JCsDiner
         {
             this.Customers = customers;
         }
+        public Simulator()
+        {
+
+        }
         public int Run()
         {
             int beatNumber = 0;

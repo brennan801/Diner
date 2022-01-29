@@ -16,7 +16,7 @@ namespace JCsDiner
         }
         public Simulator()
         {
-
+            this.Customers = 10;
         }
         public int Run()
         {

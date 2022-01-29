@@ -24,5 +24,10 @@ namespace DinerWebApp.Pages
         {
 
         }
+
+        public void OnPost()
+        {
+            Simulator.Run();
+        }
     }
 }

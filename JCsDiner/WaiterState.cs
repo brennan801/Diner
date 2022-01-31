@@ -30,7 +30,7 @@ namespace JCsDiner
                 Waiter.WaitingForFoodTimes.Add(party.State.WaitCounter);
                 order.State = "BeingReturned";
                 Waiter.State = new WaiterReturningOrder(Waiter, party);
-                Console.WriteLine($"\t\t {Waiter.Name} is returning an order");
+                Console.WriteLine($"\t\t {Waiter.ID} is returning an order");
                 return;
             }
             else if (waitingToOrderParties.Count() > 0)
@@ -39,7 +39,7 @@ namespace JCsDiner
                 Waiter.WaitingToOrderTimes.Add(party.State.WaitCounter);
                 party.State = new PartyOrdering(party);
                 Waiter.State = new WaiterGettingOrder(Waiter, party);
-                Console.WriteLine($"\t\t{Waiter.Name} is getting an order");
+                Console.WriteLine($"\t\t{Waiter.ID} is getting an order");
                 return;
             }
             else if (waitingForCheckParties.Count() > 0)
@@ -47,7 +47,7 @@ namespace JCsDiner
                 var party = waitingForCheckParties.First();
                 Waiter.WaitingCheckTimes.Add(party.State.WaitCounter);
                 Waiter.State = new WaiterProvidingCheck(Waiter, party);
-                Console.WriteLine($"\t\t{Waiter.Name} is Providing the check");
+                Console.WriteLine($"\t\t{Waiter.ID} is Providing the check");
                 return;
             }
             else { Waiter.FreeCounter++; }
@@ -56,7 +56,7 @@ namespace JCsDiner
         {
             var orderQuery =
                 from order in restaurant.CurrentOrders
-                where order.State == state && waiter.AssignedRoom.Tables.Contains(order.Table)
+                where order.State == state && waiter.AssignedTables.Contains(order.Table)
                 orderby order.WaitCounter descending
                 select order;
             return orderQuery;
@@ -73,7 +73,7 @@ namespace JCsDiner
         {
             var partyQuery =
                 from party in restaurant.CurrentParties
-                where party.State.GetType() == typeof(PartyWaitingToOrder) && waiter.AssignedRoom.Tables.Contains(party.Table)
+                where party.State.GetType() == typeof(PartyWaitingToOrder) && waiter.AssignedTables.Contains(party.Table)
                 orderby party.State.WaitCounter descending
                 select party;
             return partyQuery;
@@ -82,7 +82,7 @@ namespace JCsDiner
         {
             var partyQuery =
                 from party in restaurant.CurrentParties
-                where party.State.GetType() == typeof(PartyWaitingForCheck) && waiter.AssignedRoom.Tables.Contains(party.Table)
+                where party.State.GetType() == typeof(PartyWaitingForCheck) && waiter.AssignedTables.Contains(party.Table)
                 orderby party.State.WaitCounter descending
                 select party;
             return partyQuery;
@@ -111,7 +111,7 @@ namespace JCsDiner
                 order.State = "BeingSent";
                 Party.State = new PartyWaitingForFood(Party);
                 Waiter.State = new WaiterSendingOrder(Waiter, order);
-                Console.WriteLine($"\t\t{Waiter.Name} is sending an order to the cook");
+                Console.WriteLine($"\t\t{Waiter.ID} is sending an order to the cook");
             }
         }
     }
@@ -126,7 +126,7 @@ namespace JCsDiner
         {
             Order.State = "ToBeCooked";
             Waiter.State = new WaiterFree(Waiter);
-            Console.WriteLine($"\t\t{Waiter.Name} sent an order to the cooks");
+            Console.WriteLine($"\t\t{Waiter.ID} sent an order to the cooks");
         }
     }
     public class WaiterReturningOrder : WaiterState
@@ -140,7 +140,7 @@ namespace JCsDiner
         {
             Party.State = new PartyEating(Party);
             Waiter.State = new WaiterFree(Waiter);
-            Console.WriteLine($"\t\t{Waiter.Name} returned an order");
+            Console.WriteLine($"\t\t{Waiter.ID} returned an order");
         }
     }
     public class WaiterProvidingCheck : WaiterState
@@ -157,7 +157,8 @@ namespace JCsDiner
             Party.State = new PartyRecievedCheck(Party);
             Waiter.CustomersServed++;
             Waiter.State = new WaiterFree(Waiter);
-            Console.WriteLine($"\t\t{Waiter.Name} provided a check");
+            Waiter.AssignedTables.Remove(Party.Table);
+            Console.WriteLine($"\t\t{Waiter.ID} provided a check");
         }
     }
 }

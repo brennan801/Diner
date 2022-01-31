@@ -9,7 +9,6 @@ namespace JCsDiner
     public class Busser : IRunable
     {
         public Table CurrentTable { get; set; }
-        public Room CurrentRoom { get; set; }
         public int CurrentTableTimeLeft;
         public int FreeCounter { get; set; }
 
@@ -23,51 +22,23 @@ namespace JCsDiner
             return table;
         }
 
-        public (Party, Table) CombineTablesForParty(Party party, Room room)
-        {
-            Console.WriteLine($"\t\t\t\tbusser combined tables");
-            if (party.Customers.Count() < 11)
-            {
-                Table myTable = room.CombineTables(2);
-                myTable.SetParty(party);
-                party.State = new PartyWaitingToOrder(party);
-                return (party, myTable);
-            }
-            if (party.Customers.Count() < 14)
-            {
-                Table myTable = room.CombineTables(3);
-                myTable.SetParty(party);
-                party.State = new PartyWaitingToOrder(party);
-                return (party, myTable);
-            }
-            else
-            {
-                Table myTable = room.CombineTables(4);
-                myTable.SetParty(party);
-                party.State = new PartyWaitingToOrder(party);
-                return (party, myTable);
-            }
-        }
-
         public void Run1(Restaurant restaurant, int beatNumber)
         {
             if(CurrentTable is null)
             {
-                var dirtyTables = new List<(Table, Room)>();
-                foreach(Room room in restaurant.Rooms)
+                var dirtyTables = new List<Table>();
+                foreach(Table table in restaurant.Tables)
                 {
-                    foreach(Table table in room.Tables)
+                    if (table.State == "dirty")
                     {
-                        if (table.State == "dirty")
-                        {
-                            dirtyTables.Add((table, room));
-                        }
+                        dirtyTables.Add(table);
                     }
                 }
+                
 
                 if (dirtyTables.Count() > 0)
                 {
-                    (CurrentTable, CurrentRoom) = dirtyTables.First();
+                    CurrentTable = dirtyTables.First();
                     Console.WriteLine("\t\t\t\tBusser started cleaning a table");
                     CurrentTableTimeLeft = 5;
                     return;
@@ -85,7 +56,7 @@ namespace JCsDiner
                 {
                     if(CurrentTable.numOfTables > 1)
                     {
-                        SeperateTables(CurrentRoom, CurrentTable);
+                        SeperateTables(CurrentTable, restaurant);
                     }
                     CurrentTable.State = "clean";
                     Console.WriteLine($"\t\t\t\tbusser cleaned table with {CurrentTable.numOfTables} tables");
@@ -94,10 +65,10 @@ namespace JCsDiner
             }
         }
 
-        public void SeperateTables(Room room, Table table)
+        public void SeperateTables(Table table, Restaurant restaurant)
         {
             Console.WriteLine($"\t\t\t\tbusser seperated tables");
-            room.SeperateTables(table);
+            restaurant.SeperateTables(table);
         }
 
         public void PrintStats()

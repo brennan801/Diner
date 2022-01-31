@@ -8,8 +8,8 @@ namespace JCsDiner
 {
     public class Waiter : IRunable
     {
-        public Room AssignedRoom { get; set; }
-        public string Name { get; set; }
+        public int ID { get; set; }
+        public List<Table> AssignedTables { get; set; }
         public int CustomersServed { get; set; }
         public int FreeCounter { get; set; }
         public List<int> WaitingToOrderTimes = new();
@@ -24,14 +24,15 @@ namespace JCsDiner
             State = new WaiterFree(this);
             FreeCounter = 0;
             CustomersServed = 0;
+            AssignedTables = new();
         }
-        public Waiter(Room assignedRoom, string name)
+        public Waiter(int id)
         {
-            this.AssignedRoom = assignedRoom;
-            this.Name = name;
+            this.ID = id;
             State = new WaiterFree(this);
             FreeCounter = 0;
             CustomersServed = 0;
+            AssignedTables = new();
         }
 
         public void Run1(Restaurant resturant, int beatNumber)
@@ -42,7 +43,7 @@ namespace JCsDiner
         public void PrintStats()
         {
             Console.WriteLine(
-                $"Waiter: {Name}" +
+                $"Waiter: {ID}" +
                 $"\n\tPartysServed: {CustomersServed}" +
                 $"\n\tWastedTime: {FreeCounter}" +
                 $"\n\tAverage Party Waiting To Order Time: {WaitingToOrderTimes.Average()}" +

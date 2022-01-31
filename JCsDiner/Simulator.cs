@@ -9,14 +9,17 @@ namespace JCsDiner
 {
     public class Simulator
     {
+        public int NumberOfWaiters { get; set; }
         public int Customers { get; private set; }
-        public Simulator(int customers)
+        public Simulator(int customers, int nuberOfWaiters)
         {
             this.Customers = customers;
+            this.NumberOfWaiters = nuberOfWaiters;
         }
         public Simulator()
         {
             this.Customers = 10;
+            this.NumberOfWaiters = 3;
         }
         public int Run()
         {
@@ -24,14 +27,16 @@ namespace JCsDiner
             int customersServed = 0;
             var restaurant = new Restaurant();
             var host = new Host();
-            var runables = new List<IRunable>
+            var waiters = new List<Waiter>();
+            for (int i = 0; i < NumberOfWaiters; i++)
             {
-                new Waiter(restaurant.Rooms[0], "Jim"),
-                new Waiter(restaurant.Rooms[1], "Sal"),
-                new Waiter(restaurant.Rooms[2], "Bob"),
-                new Busser(),
-                new Cook()
-            };
+                waiters.Add(new Waiter(i));
+            }
+            restaurant.Waiters = waiters;
+            var runables = new List<IRunable>();
+            runables.AddRange(waiters);
+            runables.Add(new Cook());
+            runables.Add(new Busser());
 
             while (customersServed < Customers)
             {

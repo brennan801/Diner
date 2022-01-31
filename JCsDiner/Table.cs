@@ -5,6 +5,7 @@ namespace JCsDiner
 {
     public class Table
     {
+        public int ID { get; set; }
         public string State { get; set; } // "clean", "occupied", "dirty"
         public int numOfChairs { get; set; }
         public int numOfTables { get; internal set; }
@@ -14,6 +15,13 @@ namespace JCsDiner
             numOfChairs = 6;
             numOfTables = 1;
             State = "clean";
+        }
+        public Table(int id)
+        {
+            numOfChairs = 6;
+            numOfTables = 1;
+            State = "clean";
+            ID = id;
         }
         public Table(int numOfTables, int numOfChairs)
         {

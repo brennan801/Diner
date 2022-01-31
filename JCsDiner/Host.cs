@@ -49,25 +49,6 @@ namespace JCsDiner
             else return 0;
         }
 
-        public Room getRoomWithMostSpace(Restaurant resturant)
-        {
-            Room roomWithMostSpace = null;
-            int maxNumTables = 0;
-            foreach(Room room in resturant.Rooms)
-            {
-                if(room.GetCapasity() > maxNumTables)
-                {
-                    maxNumTables = room.GetCapasity();
-                    roomWithMostSpace = room;
-                }
-            }
-            if (roomWithMostSpace is null)
-            {
-                throw new ArgumentNullException("Couldn't find a room with any space");
-            }
-            else return roomWithMostSpace;
-        }
-
         public void Run1(Restaurant resturant, int beatNumber)
         {
             State.Run1(resturant, beatNumber);

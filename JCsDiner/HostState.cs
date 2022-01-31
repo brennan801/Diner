@@ -22,51 +22,62 @@ namespace JCsDiner
         public override void Run1(Restaurant resturant, int beatNumber)
         {
             Party nextParty;
-            Room largestCapacityRoom;
             int capacity;
-            
+            Table table;
+
             try
             {
                 nextParty = getNextParty(resturant);
-                largestCapacityRoom = Host.getRoomWithMostSpace(resturant);
-                capacity = Host.getLargestCapacity(largestCapacityRoom.GetCapasity());
+                capacity = Host.getLargestCapacity(resturant.GetCapasity());
+                if (nextParty.Customers.Count > capacity)
+                {
+                    throw new ArgumentNullException();
+                }
+                table = getTableForParty(nextParty.Customers.Count(), resturant);
+
             }
-            catch(ArgumentNullException e)
+            catch (ArgumentNullException e)
             {
                 Host.FreeTimeCounter++;
                 return;
             }
-            if(nextParty.Customers.Count() <= capacity)
+            catch (IndexOutOfRangeException e)
             {
-                var table = getTableForParty(nextParty.Customers.Count(), largestCapacityRoom);
+                Console.WriteLine(e);
+                Host.FreeTimeCounter++;
+                return;
+            }
+            if(nextParty.Customers.Count() <= capacity)
+            {   
+                var waiter = resturant.GetMostAvailableWaiter();
                 nextParty.State = new PartyBeingSeated(nextParty);
                 nextParty.ExitLobbyTime = beatNumber;
-                Host.State = new HostSeatingParty(Host, nextParty, table);
+                Host.State = new HostSeatingParty(Host, nextParty, table, waiter);
                 Console.WriteLine($"Host started seating a party with {nextParty.Customers.Count()} customers");
             }
         }
 
-        private Table getTableForParty(int partySize, Room largestCapacityRoom)
+        private Table getTableForParty(int partySize, Restaurant restaurant)
         {
             Table perfectTable;
             var tableQuery =
-                    from table in largestCapacityRoom.Tables
+                    from table in restaurant.Tables
                     where table.State == "clean"
                     select table;
             if (partySize <= 6) perfectTable = tableQuery.First();
             else if (partySize <= 10)
             {
-                perfectTable = largestCapacityRoom.CombineTables(2);
+                perfectTable = restaurant.CombineTables(2);
                 Console.WriteLine("Host combined 2 tables");
             }
             else if (partySize <= 13)
             {
-                perfectTable = largestCapacityRoom.CombineTables(3);
+                perfectTable = restaurant.CombineTables(3);
                 Console.WriteLine("Host combined 3 tables");
             }
             else
             {
-                perfectTable = largestCapacityRoom.CombineTables(4);
+                perfectTable = restaurant.CombineTables(4);
                 Console.WriteLine("Host combined 4 tables");
             }
             return perfectTable;
@@ -101,11 +112,13 @@ namespace JCsDiner
     {
         public Party Party { get; private set; }
         public Table Table { get; private set; }
+        public Waiter Waiter { get; private set; }
         public int TimeSpent { get; private set; }
-        public HostSeatingParty(Host host, Party party, Table table) : base(host)
+        public HostSeatingParty(Host host, Party party, Table table, Waiter waiter) : base(host)
         {
             this.Party = party;
             this.Table = table;
+            this.Waiter = waiter;
             this.TimeSpent = 0;
             Party.State = new PartyBeingSeated(party);
             Table.State = "occupied";
@@ -115,6 +128,7 @@ namespace JCsDiner
             TimeSpent++;
             if(TimeSpent >= 2)
             {
+                Waiter.AssignedTables.Add(Table);
                 Host.Seat(Party, Table);
                 Host.State = new HostFree(Host);
                 Party.State = new PartyDecidingOrder(Party);

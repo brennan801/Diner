@@ -8,14 +8,19 @@ namespace JCsDiner
 {
     public class Cook : IRunable
     {
+        public int ID { get; set; }
         public Order Order { get; set; }
         public int FreeTimeCount { get; private set; }
         public int TimeLeftToCook { get; private set; }
+        public Cook(int id)
+        {
+            ID = id;
+        }
 
         public void PrintStats()
         {
             Console.WriteLine(
-                $"Cook:" +
+                $"Cook {ID}:" +
                 $"\n\tWastedTime: {FreeTimeCount}"
                 );
         }
@@ -38,7 +43,7 @@ namespace JCsDiner
                     Order = orderquery.First();
                     Order.State = "BeingCooked";
                     TimeLeftToCook = getTimeToCook(Order);
-                    Console.WriteLine($"\t\t\tCook started cooking new order with {Order.Platers} platers and {Order.Appetizers} appetizers");
+                    Console.WriteLine($"\t\t\tCook {ID}: started cooking new order with {Order.Platers} platers and {Order.Appetizers} appetizers");
                     return;
                 }
                 else FreeTimeCount++;
@@ -52,7 +57,7 @@ namespace JCsDiner
                 else
                 {
                     Order.State = "ToBeReturned";
-                    Console.WriteLine("\t\t\tcook finished an order");
+                    Console.WriteLine($"\t\t\tCook {ID}: finished an order");
                 }
             }
         }

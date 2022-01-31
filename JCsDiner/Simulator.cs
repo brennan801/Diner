@@ -10,11 +10,13 @@ namespace JCsDiner
     public class Simulator
     {
         public int NumberOfWaiters { get; set; }
+        public int NumberOfCooks { get; set; }
         public int Customers { get; private set; }
-        public Simulator(int customers, int nuberOfWaiters)
+        public Simulator(int customers, int nuberOfWaiters, int numberOfCooks)
         {
             this.Customers = customers;
             this.NumberOfWaiters = nuberOfWaiters;
+            NumberOfCooks = numberOfCooks;
         }
         public Simulator()
         {
@@ -35,7 +37,10 @@ namespace JCsDiner
             restaurant.Waiters = waiters;
             var runables = new List<IRunable>();
             runables.AddRange(waiters);
-            runables.Add(new Cook());
+            for (int i = 0; i < NumberOfCooks; i++)
+            {
+                runables.Add(new Cook(i));
+            }
             runables.Add(new Busser());
 
             while (customersServed < Customers)

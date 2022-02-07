@@ -18,11 +18,6 @@ namespace JCsDiner
             this.NumberOfWaiters = nuberOfWaiters;
             NumberOfCooks = numberOfCooks;
         }
-        public Simulator()
-        {
-            this.Customers = 10;
-            this.NumberOfWaiters = 3;
-        }
         public int Run()
         {
             int beatNumber = 0;

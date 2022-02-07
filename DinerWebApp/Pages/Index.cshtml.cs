@@ -17,7 +17,7 @@ namespace DinerWebApp.Pages
         public IndexModel(ILogger<IndexModel> logger)
         {
             _logger = logger;
-            Simulator = new Simulator();
+            Simulator = new Simulator(20,2,2);
         }
 
         public void OnGet()

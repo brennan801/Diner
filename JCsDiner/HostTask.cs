@@ -21,7 +21,7 @@ namespace JCsDiner
         }
         public void StartTask()
         {
-            System.Console.WriteLine($"Host is seating party {Party.ID}");
+            System.Console.WriteLine($"Host is seating party {Party.ID} with size {Party.Customers.Count}");
             Table = getNumTablesNeeded();
             Table.SetParty(Party);
             Party.Table = Table;

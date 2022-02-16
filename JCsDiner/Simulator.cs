@@ -28,6 +28,7 @@ namespace JCsDiner
             var waiterPCQ = new WaiterPCQ(NumberOfWaiters);
             var busserPCQ = new BusserPCQ();
             var cookPCQ = new CookPCQ(NumberOfCooks);
+            int partiesEntered = 0;
 
             using (hostPCQ)
             using (waiterPCQ)
@@ -38,12 +39,13 @@ namespace JCsDiner
                 {
                     if (customersServed + restaurant.CurrentParties.Count() < Customers)
                     {
-                        Party newParty = TryGenerateParty(restaurant.CurrentOrders.Count() + 1);
+                        Party newParty = TryGenerateParty(partiesEntered);
                         if (newParty is not null)
                         {
+                            partiesEntered++;
                             restaurant.CurrentParties.Add(newParty);
                             newParty.EnterLobbyTime = beatNumber;
-                            hostPCQ.EnqueueTask(new HostTask(newParty));
+                            hostPCQ.EnqueueTask(new HostTask(newParty, restaurant));
                         }
                     }
 
@@ -52,7 +54,7 @@ namespace JCsDiner
                     {
                         if (party.State.GetType() == typeof(PartyWaitingToOrder))
                         {
-                            waiterPCQ.EnqueueTask(new GetOrderTask(party));
+                            waiterPCQ.EnqueueTask(new GetOrderTask(party, cookPCQ));
                         }
                         else if(party.State.GetType() == typeof(PartyWaitingForCheck))
                         {
@@ -68,7 +70,7 @@ namespace JCsDiner
                     }
                     foreach(Order order in restaurant.CurrentOrders)
                     {
-                        if (order.State == "WaitingToBeReturned")
+                        if (order.State == "waiting to be returned")
                         {
                             waiterPCQ.EnqueueTask(new ReturnOrderTask(order));
                         }

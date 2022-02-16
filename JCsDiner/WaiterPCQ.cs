@@ -14,6 +14,7 @@ namespace JCsDiner
 		readonly object lockForWaiterTasks = new object();
 		Queue<WaiterTask> getCheckTasks = new();
 		Queue<WaiterTask> getOrderTasks = new();
+		Queue<WaiterTask> returnOrderTasks = new();
 		bool producerIsSendingTasks;
 
 		public WaiterPCQ(int numOfWaiters)
@@ -36,6 +37,10 @@ namespace JCsDiner
 			{
 				lock (lockForWaiterTasks) { getCheckTasks.Enqueue(task); }
 			}
+			else if (task.GetType() == typeof(ReturnOrderTask))
+            {
+				lock (lockForWaiterTasks) { returnOrderTasks.Enqueue(task); }
+            }
 			else lock (lockForWaiterTasks) { getOrderTasks.Enqueue(task); }
 				
 		}
@@ -63,6 +68,10 @@ namespace JCsDiner
 					{
 						task = getCheckTasks.Dequeue();
 					}
+					else if(returnOrderTasks.Count > 0)
+                    {
+						task = returnOrderTasks.Dequeue();
+                    }
 					else if (getOrderTasks.Count > 0)
 					{
 						task = getOrderTasks.Dequeue();
@@ -81,7 +90,7 @@ namespace JCsDiner
         private bool QueuesNotEmpty()
         {
             lock (lockForWaiterTasks) {
-				if (getCheckTasks.Count() > 0 || getOrderTasks.Count() > 0)
+				if (getCheckTasks.Count > 0 || getOrderTasks.Count > 0 || returnOrderTasks.Count > 0)
 				{
 					return true;
 				}

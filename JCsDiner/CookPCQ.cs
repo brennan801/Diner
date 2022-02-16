@@ -17,6 +17,7 @@ namespace JCsDiner
 		bool producerIsSendingTasks;
 		public CookPCQ(int numOfCooks)
 		{
+			cooks = new List<Thread>();
 			producerIsSendingTasks = true;
 			for (int i = 0; i < numOfCooks; i++)
 			{

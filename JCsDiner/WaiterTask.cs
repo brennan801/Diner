@@ -16,20 +16,27 @@ namespace JCsDiner
     public class GetOrderTask : WaiterTask
     {
         public Party Party { get; set; }
-        public GetOrderTask(Party party)
+        public CookPCQ CookPCQ;
+        public GetOrderTask(Party party, CookPCQ cookPCQ)
         {
+            CookPCQ = cookPCQ;
             Party = party;
             Time = Party.Customers.Count * 1000;
         }
 
         public override void DoTask(int id)
         {
+
+            var order = Party.CreateOrder();
+            order.State = "waiting to be cooked";
+            CookPCQ.EnqueueTask(new CookTask(order));
             Console.WriteLine($"Waiter {id} got the order of table {Party.ID}");
         }
 
         public override void StartTask(int id)
         {
             Console.WriteLine($"Waiter {id} is getting the order of table {Party.ID}");
+            Party.State = new PartyOrdering(Party);
         }
     }
 
@@ -61,12 +68,14 @@ namespace JCsDiner
         }
         public override void DoTask(int id)
         {
+            Order.State = "beingEaten";
+            Order.Table.Party.State = new PartyEating(Order.Table.Party);
             Console.WriteLine($"Waiter {id} returned the the order to the party {Order.Table.Party}");
         }
-
         public override void StartTask(int id)
         {
             Console.WriteLine($"Waiter {id} is returning the order to the party {Order.Table.Party}");
+            Order.State = "being returned";
         }
     }
 }

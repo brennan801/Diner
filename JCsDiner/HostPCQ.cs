@@ -13,7 +13,7 @@ namespace JCsDiner
 		readonly object lockForHostTasks = new object();
 		Queue<HostTask> hostTasks = new();
 
-		bool producerIsSendingTasks;
+        bool producerIsSendingTasks;
 		public HostPCQ()
 		{
 			producerIsSendingTasks = true;
@@ -41,7 +41,12 @@ namespace JCsDiner
 				{
 					if (hostTasks.Count > 0)
 					{
-						task = hostTasks.Dequeue();
+						task = hostTasks.Peek();
+						if (task.Restaurant.GetCapasity() >= task.Party.Customers.Count)
+						{
+							task = hostTasks.Dequeue();
+						}
+						else task = null;
 					}
 				}
 				if (task != null)

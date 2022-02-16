@@ -30,12 +30,12 @@ namespace JCsDiner
             var order = Party.CreateOrder();
             order.State = "waiting to be cooked";
             CookPCQ.EnqueueTask(new CookTask(order));
-            Console.WriteLine($"Waiter {id} got the order of table {Party.ID}");
+            Console.WriteLine($"\t\t Waiter {id} got the order of party {Party.ID}");
         }
 
         public override void StartTask(int id)
         {
-            Console.WriteLine($"Waiter {id} is getting the order of table {Party.ID}");
+            Console.WriteLine($"\t\t Waiter {id} is getting the order of party {Party.ID}");
             Party.State = new PartyOrdering(Party);
         }
     }
@@ -51,12 +51,12 @@ namespace JCsDiner
 
         public override void DoTask(int id)
         {
-            Console.WriteLine($"Waiter {id} got the check of table {Party.ID}");
+            Console.WriteLine($"\t\t Waiter {id} got the check of party {Party.ID}");
         }
 
         public override void StartTask(int id)
         {
-            Console.WriteLine($"Waiter {id} is getting the check of party {Party.ID}");
+            Console.WriteLine($"\t\t Waiter {id} is getting the check of party {Party.ID}");
         }
     }
     public class ReturnOrderTask : WaiterTask
@@ -70,11 +70,11 @@ namespace JCsDiner
         {
             Order.State = "beingEaten";
             Order.Table.Party.State = new PartyEating(Order.Table.Party);
-            Console.WriteLine($"Waiter {id} returned the the order to the party {Order.Table.Party}");
+            Console.WriteLine($"\t\t Waiter {id} returned the the order to the party {Order.Table.Party}");
         }
         public override void StartTask(int id)
         {
-            Console.WriteLine($"Waiter {id} is returning the order to the party {Order.Table.Party}");
+            Console.WriteLine($"\t\t Waiter {id} is returning the order to the party {Order.Table.Party}");
             Order.State = "being returned";
         }
     }

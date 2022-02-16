@@ -11,11 +11,11 @@
         public void DoTask(int id)
         {
             Order.State = "waiting to be returned";
-            System.Console.WriteLine($"Cook {id} is finished cooking order for table {Order.Table}");
+            System.Console.WriteLine($"\t\t\t Cook {id} is finished cooking order for party {Order.Table.Party.ID}");
         }
         public void StartTask(int id)
         {
-            System.Console.WriteLine($"Cook {id} is finished cooking order for table {Order.Table}");
+            System.Console.WriteLine($"\t\t\t Cook {id} started cooking order for party {Order.Table.Party.ID}");
             Order.State = "being cooked";
         }
     }

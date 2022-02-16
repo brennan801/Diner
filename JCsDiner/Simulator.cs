@@ -98,6 +98,7 @@ namespace JCsDiner
                 }
             }
             Console.WriteLine($"All parties have been served. Total Run Time: {beatNumber}");
+            Console.WriteLine($"Restaurant ended with {restaurant.Tables.Count} tables");
             return beatNumber;
         }
 

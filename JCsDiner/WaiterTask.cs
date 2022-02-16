@@ -24,7 +24,7 @@ namespace JCsDiner
             CookPCQ = cookPCQ;
             Restaurant = restaurant;
             Party = party;
-            Time = Party.Customers.Count * 1000;
+            Time = Party.Customers * 1000;
         }
 
         public override void DoTask(int id)
@@ -68,6 +68,7 @@ namespace JCsDiner
         public Order Order { get; set; }
         public ReturnOrderTask(Order order)
         {
+            Time = 1000;
             Order = order;
             Party = order.Table.Party;
         }

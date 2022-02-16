@@ -16,11 +16,11 @@ namespace JCsDiner
         public void DoTask()
         {
             Table.State = "clean";
-            Console.WriteLine($"Busser has cleaned {Table.ID}");
+            Console.WriteLine($"\t\t\t\t Busser has cleaned table {Table.ID}");
         }
         public void StartTask()
         {
-            Console.WriteLine($"Busser is cleaning table {Table.ID}");
+            Console.WriteLine($"\t\t\t\t Busser is cleaning table {Table.ID}");
         }
     }
 }

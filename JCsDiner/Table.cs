@@ -31,7 +31,7 @@ namespace JCsDiner
         }
         public Table SetParty(Party party)
         {
-            if(party.Customers.Count <= this.numOfChairs)
+            if(party.Customers <= this.numOfChairs)
             {
                 this.Party = party;
                 this.State = "occupied";

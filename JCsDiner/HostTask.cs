@@ -17,11 +17,11 @@ namespace JCsDiner
         public void DoTask()
         {
             Party.State = new PartyDecidingOrder(Party);
-            System.Console.WriteLine($"Host seated party {Party.ID}");
+            System.Console.WriteLine($"Host seated party {Party.ID} to table {Table.ID}");
         }
         public void StartTask()
         {
-            System.Console.WriteLine($"Host is seating party {Party.ID} with size {Party.Customers.Count}");
+            System.Console.WriteLine($"Host is seating party {Party.ID} with size {Party.Customers}");
             Table = getNumTablesNeeded();
             Table.SetParty(Party);
             Party.Table = Table;
@@ -29,7 +29,7 @@ namespace JCsDiner
 
         public Table getNumTablesNeeded()
         {
-            var customersInParty = Party.Customers.Count;
+            var customersInParty = Party.Customers;
             if(customersInParty < 7)
             {
                 return Restaurant.GetFreeTables()[0];

@@ -42,7 +42,7 @@ namespace JCsDiner
 					if (hostTasks.Count > 0)
 					{
 						task = hostTasks.Peek();
-						if (task.Restaurant.GetCapasity() >= task.Party.Customers.Count)
+						if (task.Restaurant.GetCapasity() >= task.Party.Customers)
 						{
 							task = hostTasks.Dequeue();
 						}

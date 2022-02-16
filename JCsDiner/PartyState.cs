@@ -41,7 +41,7 @@ namespace JCsDiner
         private int decidingTime;
         public PartyDecidingOrder(Party party) : base(party) 
         {
-            decidingTime = 2 * party.Customers.Count();
+            decidingTime = (int)((2/3) * party.Customers);
         }
         public override void Run1()
         {
@@ -86,7 +86,7 @@ namespace JCsDiner
     {
         private int eatingTime;
         public PartyEating(Party party) : base(party) {
-            eatingTime = 2 * Party.Order.Appetizers + 5 * Party.Order.Platers;
+            eatingTime = (int)((2/3) * Party.Order.Appetizers + (3/4) * Party.Order.Platers);
         }
 
         public override void Run1()

@@ -5,7 +5,7 @@ namespace JCsDiner
 {
     public class Party
     {
-        public List<Customer> Customers { get; internal set; }
+        public int Customers { get; internal set; }
         public PartyState State { get; set; }
         public Order Order { get; set; }
         public Table Table { get; set; }
@@ -16,11 +16,7 @@ namespace JCsDiner
         public Party(int numOfCustomers, int id)
         {
             this.ID = id;
-            Customers = new List<Customer>();
-           for(int i = 0; i < numOfCustomers; i++)
-            {
-                Customers.Add(new Customer());
-            }
+            Customers = numOfCustomers;
             this.State = new PartyWaitingInLobby(this);
         }
 
@@ -31,99 +27,80 @@ namespace JCsDiner
             this.Customers = generateRandomCustomers();
         }
 
-        private List<Customer> generateRandomCustomers()
+        private int generateRandomCustomers()
         {
             var rand = new Random();
             var customerRandNumber = rand.Next(100);
             if(customerRandNumber < 10)
             {
-                return new List<Customer>() { new Customer() };
+                return 1;
             }
             if(customerRandNumber < 40)
             {
-                List<Customer> customers = new();
-                for (int i = 0; i < 2; i++)
-                {
-                    customers.Add(new Customer());
-                }
-                return customers;
+                return 2;
             }
             if(customerRandNumber < 60)
             {
-                List<Customer> customers = new();
-                for (int i = 0; i < 3; i++)
-                {
-                    customers.Add(new Customer());
-                }
-                return customers;
+                return 3;
             }
             if (customerRandNumber < 80)
             {
-                List<Customer> customers = new();
-                for (int i = 0; i < 4; i++)
-                {
-                    customers.Add(new Customer());
-                }
-                return customers;
+                return 4;
             }
             if (customerRandNumber < 85)
             {
-                List<Customer> customers = new();
-                for (int i = 0; i < 5; i++)
-                {
-                    customers.Add(new Customer());
-                }
-                return customers;
+                return 5;
             }
             if (customerRandNumber < 90)
             {
-                List<Customer> customers = new();
-                for (int i = 0; i < 6; i++)
-                {
-                    customers.Add(new Customer());
-                }
-                return customers;
+                return 6;
             }
             if (customerRandNumber < 95)
             {
-                List<Customer> customers = new();
-                for (int i = 0; i < 10; i++)
-                {
-                    customers.Add(new Customer());
-                }
-                return customers;
+                return 10;
             }
             if (customerRandNumber < 99)
             {
-                List<Customer> customers = new();
-                for (int i = 0; i < 13; i++)
-                {
-                    customers.Add(new Customer());
-                }
-                return customers;
+                return 13;
             }
             else
             {
-                List<Customer> customers = new();
-                for (int i = 0; i < 15; i++)
-                {
-                    customers.Add(new Customer());
-                }
-                return customers;
+                return 15;
             }
         }
 
         public Order CreateOrder()
         {
             Order order = new Order(Table);
-            foreach(Customer customer in Customers)
+            for(int i = 0; i < Customers; i++)
             {
-                (int appetizers, int platers) = customer.Order();
+                (int appetizers, int platers) = CustomerOrder();
                 order.Appetizers += appetizers;
                 order.Platers += platers;
             }
             this.Order = order;
             return order;
+        }
+        public (int appetizers, int platers) CustomerOrder()
+        {
+            int appetizers;
+            int platers;
+            var rand = new Random();
+            var appitizerRandomNumber = rand.Next(100);
+            var platerRandomNumber = rand.Next(100);
+            if (appitizerRandomNumber < 60)
+            {
+                appetizers = 0;
+            }
+            else if (appitizerRandomNumber < 90)
+            {
+                appetizers = 1;
+            }
+            else appetizers = 2;
+
+            platers = platerRandomNumber < 90 ? 1 : 2;
+
+            return (appetizers, platers);
         }
 
         public void Run1(Restaurant resturant)

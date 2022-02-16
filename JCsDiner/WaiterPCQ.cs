@@ -18,6 +18,7 @@ namespace JCsDiner
 
 		public WaiterPCQ(int numOfWaiters)
 		{
+			waiters = new List<Thread>();
 			producerIsSendingTasks = true;
 			for (int i = 0; i < numOfWaiters; i++)
 			{

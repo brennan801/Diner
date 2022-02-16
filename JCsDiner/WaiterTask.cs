@@ -8,6 +8,7 @@ namespace JCsDiner
 {
     public abstract class WaiterTask
     {
+        public Party Party { get; set; }
         public int Time { get; set; }
         public abstract void DoTask(int id);
         public abstract void StartTask(int id);
@@ -15,11 +16,13 @@ namespace JCsDiner
 
     public class GetOrderTask : WaiterTask
     {
-        public Party Party { get; set; }
+        public Restaurant Restaurant { get; }
+
         public CookPCQ CookPCQ;
-        public GetOrderTask(Party party, CookPCQ cookPCQ)
+        public GetOrderTask(Party party, CookPCQ cookPCQ, Restaurant restaurant)
         {
             CookPCQ = cookPCQ;
+            Restaurant = restaurant;
             Party = party;
             Time = Party.Customers.Count * 1000;
         }
@@ -29,6 +32,7 @@ namespace JCsDiner
 
             var order = Party.CreateOrder();
             order.State = "waiting to be cooked";
+            Restaurant.CurrentOrders.Add(order);
             CookPCQ.EnqueueTask(new CookTask(order));
             Console.WriteLine($"\t\t Waiter {id} got the order of party {Party.ID}");
         }
@@ -42,7 +46,6 @@ namespace JCsDiner
 
     public class GetCheckTask : WaiterTask
     {
-        public Party Party { get; set; }
         public GetCheckTask(Party party)
         {
             Time = 1000;
@@ -51,6 +54,7 @@ namespace JCsDiner
 
         public override void DoTask(int id)
         {
+            Party.State = new PartyRecievedCheck(Party);
             Console.WriteLine($"\t\t Waiter {id} got the check of party {Party.ID}");
         }
 
@@ -65,16 +69,17 @@ namespace JCsDiner
         public ReturnOrderTask(Order order)
         {
             Order = order;
+            Party = order.Table.Party;
         }
         public override void DoTask(int id)
         {
             Order.State = "beingEaten";
-            Order.Table.Party.State = new PartyEating(Order.Table.Party);
-            Console.WriteLine($"\t\t Waiter {id} returned the the order to the party {Order.Table.Party}");
+            Order.Table.Party.State = new PartyEating(Party);
+            Console.WriteLine($"\t\t Waiter {id} returned the the order to the party {Party.ID}");
         }
         public override void StartTask(int id)
         {
-            Console.WriteLine($"\t\t Waiter {id} is returning the order to the party {Order.Table.Party}");
+            Console.WriteLine($"\t\t Waiter {id} is returning the order to the party {Party.ID}");
             Order.State = "being returned";
         }
     }

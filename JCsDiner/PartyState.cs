@@ -131,4 +131,13 @@ namespace JCsDiner
             return;
         }
     }
+    public class PartyQueued : PartyState
+    {
+        public PartyQueued(Party party) : base(party) { }
+
+        public override void Run1()
+        {
+            return;
+        }
+    }
 }

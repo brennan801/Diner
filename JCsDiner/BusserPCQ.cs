@@ -23,7 +23,11 @@ namespace JCsDiner
 
 		public void EnqueueTask(BusserTask task)
 		{
-			lock (_locker) ClearTableTasks.Enqueue(task);
+			lock (_locker)
+			{
+				task.Table.State = "queued";
+				ClearTableTasks.Enqueue(task);
+			}
 		}
 
 		public void Dispose()
@@ -44,7 +48,7 @@ namespace JCsDiner
 					}
 				if (task != null)
 				{
-					Console.WriteLine("BusBoy will now ClearTable number {0}", task.Table.ID);
+					task.StartTask();
 					Thread.Sleep(2000); // takes 2 seconds to 'clear' the table
 					task.DoTask();
 				}

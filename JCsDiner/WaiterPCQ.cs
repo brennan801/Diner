@@ -35,13 +35,28 @@ namespace JCsDiner
 		{
 			if (task.GetType() == typeof(GetCheckTask))
 			{
-				lock (lockForWaiterTasks) { getCheckTasks.Enqueue(task); }
+				lock (lockForWaiterTasks) 
+				{
+					task.Party.State = new PartyQueued(task.Party);
+					getCheckTasks.Enqueue(task); 
+				}
 			}
 			else if (task.GetType() == typeof(ReturnOrderTask))
-            {
-				lock (lockForWaiterTasks) { returnOrderTasks.Enqueue(task); }
-            }
-			else lock (lockForWaiterTasks) { getOrderTasks.Enqueue(task); }
+			{
+				lock (lockForWaiterTasks) 
+				{
+					task.Party.State = new PartyQueued(task.Party);
+					returnOrderTasks.Enqueue(task);
+				}
+			}
+			else if (task.GetType() == typeof(GetOrderTask))
+			{
+				lock (lockForWaiterTasks)
+				{
+					task.Party.State = new PartyQueued(task.Party);
+					getOrderTasks.Enqueue(task);
+				}
+			}
 				
 		}
 

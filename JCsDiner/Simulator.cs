@@ -54,7 +54,7 @@ namespace JCsDiner
                     {
                         if (party.State.GetType() == typeof(PartyWaitingToOrder))
                         {
-                            waiterPCQ.EnqueueTask(new GetOrderTask(party, cookPCQ));
+                            waiterPCQ.EnqueueTask(new GetOrderTask(party, cookPCQ, restaurant));
                         }
                         else if(party.State.GetType() == typeof(PartyWaitingForCheck))
                         {
@@ -83,6 +83,14 @@ namespace JCsDiner
                     foreach (Party party in partiesToRemove)
                     {
                         restaurant.CurrentParties.Remove(party);
+                    }
+
+                    foreach (Table table in restaurant.Tables)
+                    {
+                        if (table.State == "dirty")
+                        {
+                            busserPCQ.EnqueueTask(new BusserTask(table));
+                        }
                     }
                     Thread.Sleep(1000);
                     beatNumber++;

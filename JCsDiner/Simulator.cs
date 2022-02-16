@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace JCsDiner
@@ -23,64 +24,70 @@ namespace JCsDiner
             int beatNumber = 0;
             int customersServed = 0;
             var restaurant = new Restaurant();
-            var host = new Host();
-            var waiters = new List<Waiter>();
-            for (int i = 0; i < NumberOfWaiters; i++)
-            {
-                waiters.Add(new Waiter(i));
-            }
-            restaurant.Waiters = waiters;
-            var runables = new List<IRunable>();
-            runables.AddRange(waiters);
-            for (int i = 0; i < NumberOfCooks; i++)
-            {
-                runables.Add(new Cook(i));
-            }
-            runables.Add(new Busser());
+            var hostPCQ = new HostPCQ();
+            var waiterPCQ = new WaiterPCQ(NumberOfWaiters);
+            var busserPCQ = new BusserPCQ();
+            var cookPCQ = new CookPCQ(NumberOfCooks);
 
-            while (customersServed < Customers)
+            using (hostPCQ)
+            using (waiterPCQ)
+            using (busserPCQ)
+            using (cookPCQ)
             {
-                if (customersServed + restaurant.CurrentParties.Count() < Customers)
+                while (customersServed < Customers)
                 {
-                    Party newParty = TryGenerateParty(restaurant.CurrentOrders.Count() + 1);
-                    if (newParty is not null)
+                    if (customersServed + restaurant.CurrentParties.Count() < Customers)
                     {
-                        restaurant.CurrentParties.Add(newParty);
-                        newParty.EnterLobbyTime = beatNumber;
+                        Party newParty = TryGenerateParty(restaurant.CurrentOrders.Count() + 1);
+                        if (newParty is not null)
+                        {
+                            restaurant.CurrentParties.Add(newParty);
+                            newParty.EnterLobbyTime = beatNumber;
+                            hostPCQ.EnqueueTask(new HostTask(newParty));
+                        }
                     }
-                }
-                    host.Run1(restaurant, beatNumber);
 
-
-                foreach (IRunable runable in runables){
-                    runable.Run1(restaurant, beatNumber);
-                }
-                var partiesToRemove = new List<Party>();
-                foreach(Party party in restaurant.CurrentParties)
-                {
-                    party.Run1(restaurant);
-                    if(party.State.GetType() == typeof(PartyLeft))
+                    var partiesToRemove = new List<Party>();
+                    foreach (Party party in restaurant.CurrentParties)
                     {
-                        partiesToRemove.Add(party);
-                        restaurant.CurrentOrders.Remove(party.Order);
-                        customersServed++;
-                        Console.WriteLine($"The restraurant has served {customersServed} parties");
+                        if (party.State.GetType() == typeof(PartyWaitingToOrder))
+                        {
+                            waiterPCQ.EnqueueTask(new GetOrderTask(party));
+                        }
+                        else if(party.State.GetType() == typeof(PartyWaitingForCheck))
+                        {
+                            waiterPCQ.EnqueueTask(new GetCheckTask(party));
+                        }
+                        else if(party.State.GetType() == typeof(PartyLeft))
+                        {
+                            partiesToRemove.Add(party);
+                            restaurant.CurrentOrders.Remove(party.Order);
+                            customersServed++;
+                            Console.WriteLine($"The restraurant has served {customersServed} parties");
+                        }
                     }
+                    foreach(Order order in restaurant.CurrentOrders)
+                    {
+                        if (order.State == "WaitingToBeReturned")
+                        {
+                            waiterPCQ.EnqueueTask(new ReturnOrderTask(order));
+                        }
+
+                    }
+                    foreach (Party party in restaurant.CurrentParties)
+                    {
+                        party.Run1(restaurant);
+                    }
+                    foreach (Party party in partiesToRemove)
+                    {
+                        restaurant.CurrentParties.Remove(party);
+                    }
+                    Thread.Sleep(1000);
+                    beatNumber++;
+                    Console.WriteLine();
                 }
-                foreach(Party party in partiesToRemove)
-                {
-                    restaurant.CurrentParties.Remove(party);
-                }
-                beatNumber++;
-                Console.WriteLine();
             }
             Console.WriteLine($"All parties have been served. Total Run Time: {beatNumber}");
-
-            host.PrintStats();
-            foreach(IRunable employee in runables)
-            {
-                employee.PrintStats();
-            }
             return beatNumber;
         }
 

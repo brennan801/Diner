@@ -8,7 +8,6 @@ namespace JCsDiner
         public List<Table> Tables { get; set; }
         public List<Order> CurrentOrders;
         public List<Party> CurrentParties;
-        public List<Waiter> Waiters { get; set; }
 
         public Restaurant()
         {
@@ -43,20 +42,6 @@ namespace JCsDiner
             }
             return capasity;
         }
-
-        public Waiter GetMostAvailableWaiter()
-        {
-            var mostAvailableWaiter = Waiters[0];
-            foreach(Waiter waiter in Waiters)
-            {
-                if(waiter.AssignedTables.Count < mostAvailableWaiter.AssignedTables.Count)
-                {
-                    mostAvailableWaiter = waiter;
-                }
-            }
-            return mostAvailableWaiter;
-        }
-
         public List<Table> GetFreeTables()
         {
             List<Table> freeTables = new List<Table>();

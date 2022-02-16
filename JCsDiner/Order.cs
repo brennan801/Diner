@@ -2,11 +2,10 @@
 {
     public class Order
     {
-        private readonly int id;
         public int Appetizers { get; set; }
         public int Platers { get; set; }
         public Table Table { get; set; }
-        public string State { get; set; }
+        public string State { get; set; } //waitingToBeSent, beingSent, waitingToBeCooked, beingCooked, waitingoBeReturned, beingReturned, beingEaten
         public int WaitCounter { get; set; }
 
         public Order(Table table)

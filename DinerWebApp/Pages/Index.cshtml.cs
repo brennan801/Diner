@@ -12,12 +12,11 @@ namespace DinerWebApp.Pages
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
-        public Simulator Simulator { get; set; }
+        public Simulator WebSimulator { get; set; }
 
         public IndexModel(ILogger<IndexModel> logger)
         {
             _logger = logger;
-            Simulator = new Simulator(20,2,2);
         }
 
         public void OnGet()
@@ -27,7 +26,11 @@ namespace DinerWebApp.Pages
 
         public void OnPost()
         {
-            Simulator.Run();
+            int customers = int.Parse(Request.Form["customers"].ToString());
+            int waiters = int.Parse(Request.Form["waiters"].ToString());
+            int cooks = int.Parse(Request.Form["cooks"].ToString());
+            WebSimulator = new Simulator(customers, waiters, cooks);
+            WebSimulator.Run();
         }
     }
 }

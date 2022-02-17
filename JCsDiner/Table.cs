@@ -10,6 +10,7 @@ namespace JCsDiner
         public int numOfChairs { get; set; }
         public int numOfTables { get; internal set; }
         public Party Party{ get; private set; }
+        public List<int> InsideTables { get; set; }
         public Table()
         {
             numOfChairs = 6;

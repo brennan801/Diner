@@ -69,12 +69,16 @@ namespace JCsDiner
                 case 2:
                     newTable.numOfTables = 2;
                     newTable.numOfChairs = 10;
+                    newTable.InsideTables = new() { freeTables[0].ID, freeTables[1].ID };
+                    newTable.ID = freeTables[0].ID * 13;
                     Tables.Remove(freeTables[0]);
                     Tables.Remove(freeTables[1]);
                     break;
                 case 3:
                     newTable.numOfTables = 3;
                     newTable.numOfChairs = 13;
+                    newTable.InsideTables = new() { freeTables[0].ID, freeTables[1].ID , freeTables[2].ID};
+                    newTable.ID = freeTables[0].ID * 13;
                     Tables.Remove(freeTables[0]);
                     Tables.Remove(freeTables[1]);
                     Tables.Remove(freeTables[2]);
@@ -82,6 +86,8 @@ namespace JCsDiner
                 case 4:
                     newTable.numOfTables = 4;
                     newTable.numOfChairs = 16;
+                    newTable.InsideTables = new() { freeTables[0].ID, freeTables[1].ID, freeTables[2].ID, freeTables[3].ID };
+                    newTable.ID = freeTables[0].ID * 13;
                     Tables.Remove(freeTables[0]);
                     Tables.Remove(freeTables[1]);
                     Tables.Remove(freeTables[2]);
@@ -96,11 +102,15 @@ namespace JCsDiner
 
         public void SeperateTables(Table combinedTable)
         {
-            Tables.Remove(combinedTable);
-            for (int i = 0; i < combinedTable.numOfTables; i++)
+            if (combinedTable.InsideTables is not null)
             {
-                Tables.Add(new Table { State = "dirty" });
+                Tables.Remove(combinedTable);
+                foreach (int tableID in combinedTable.InsideTables)
+                {
+                    Tables.Add(new Table(tableID) { State = "dirty" });
+                }
             }
+            
         }
     }
 }

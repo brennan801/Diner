@@ -89,7 +89,7 @@ namespace JCsDiner
                     {
                         if (table.State == "dirty")
                         {
-                            busserPCQ.EnqueueTask(new BusserTask(table));
+                            busserPCQ.EnqueueTask(new BusserTask(table, restaurant));
                         }
                     }
                     Thread.Sleep(1000);
@@ -99,6 +99,10 @@ namespace JCsDiner
             }
             Console.WriteLine($"All parties have been served. Total Run Time: {beatNumber}");
             Console.WriteLine($"Restaurant ended with {restaurant.Tables.Count} tables");
+            foreach(Table table in restaurant.Tables)
+            {
+                Console.Write($"{table.ID} ");
+            }
             return beatNumber;
         }
 

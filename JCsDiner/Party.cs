@@ -13,60 +13,57 @@ namespace JCsDiner
         public int ExitLobbyTime { get; set; }
         public int ID { get; set; }
 
-        public Party(int numOfCustomers, int id)
-        {
-            this.ID = id;
-            Customers = numOfCustomers;
-            this.State = new PartyWaitingInLobby(this);
-        }
-
-        public Party(int id)
+        public Party(int id, int averagePartySize)
         {
             this.ID = id;
             this.State = new PartyWaitingInLobby(this);
-            this.Customers = generateRandomCustomers();
+            this.Customers = generateRandomCustomers(averagePartySize);
         }
 
-        private int generateRandomCustomers()
+        private int generateRandomCustomers(int average)
         {
             var rand = new Random();
             var customerRandNumber = rand.Next(100);
+            if(customerRandNumber < 5)
+            {
+                var partySize =  Math.Abs(average - 3);
+                if(partySize == 0)
+                {
+                    partySize++;
+                }
+                return partySize;
+            }
             if(customerRandNumber < 10)
             {
-                return 1;
+                var partySize = Math.Abs(average - 2);
+                if (partySize == 0)
+                {
+                    partySize++;
+                }
+                return partySize;
             }
-            if(customerRandNumber < 40)
+            if(customerRandNumber < 30)
             {
-                return 2;
+                var partySize = Math.Abs(average - 1);
+                if (partySize == 0)
+                {
+                    partySize++;
+                }
+                return partySize;
             }
-            if(customerRandNumber < 60)
+            if (customerRandNumber < 70)
             {
-                return 3;
-            }
-            if (customerRandNumber < 80)
-            {
-                return 4;
-            }
-            if (customerRandNumber < 85)
-            {
-                return 5;
+                return average;
             }
             if (customerRandNumber < 90)
             {
-                return 6;
+                return average + 1;
             }
             if (customerRandNumber < 95)
             {
-                return 10;
+                return average + 2;
             }
-            if (customerRandNumber < 99)
-            {
-                return 13;
-            }
-            else
-            {
-                return 15;
-            }
+            else return average + 3;
         }
 
         public Order CreateOrder()

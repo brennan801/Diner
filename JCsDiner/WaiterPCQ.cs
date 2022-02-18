@@ -46,6 +46,7 @@ namespace JCsDiner
 				lock (lockForWaiterTasks) 
 				{
 					task.Party.State = new PartyQueued(task.Party);
+					task.Party.Order.State = "Queued";
 					returnOrderTasks.Enqueue(task);
 				}
 			}

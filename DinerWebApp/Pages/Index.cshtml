@@ -6,19 +6,23 @@
 
 <form method="post">
     <label for="name">Simulation Name:</label>
-    <input name="name" type="text" />
+    <input name="name" type="text" min="1" required/>
     <br />
 
     <label for="customers">Number of Customers:</label>
-    <input name="customers" type="number" />
+    <input name="customers" type="number" min="1" required/>
     <br />
 
     <label for="waiters">Number of Waiters:</label>
-    <input name="waiters" type="number" />
+    <input name="waiters" type="number" min="1" required/>
     <br />
 
     <label for="cooks">Number of Cooks:</label>
-    <input name="cooks" type="number" />
+    <input name="cooks" type="number" min="1" required/>
+    <br />
+
+    <label for="partySize">Average Party Size:</label>
+    <input name="partySize" type="number" min="1" required/>
     <br />
 
     <button>Simulate</button>

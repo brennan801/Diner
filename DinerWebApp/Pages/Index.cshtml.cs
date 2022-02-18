@@ -17,6 +17,7 @@ namespace DinerWebApp.Pages
         public IndexModel(ILogger<IndexModel> logger)
         {
             _logger = logger;
+            WebSimulator = new Simulator();
         }
 
         public void OnGet()
@@ -29,8 +30,15 @@ namespace DinerWebApp.Pages
             int customers = int.Parse(Request.Form["customers"].ToString());
             int waiters = int.Parse(Request.Form["waiters"].ToString());
             int cooks = int.Parse(Request.Form["cooks"].ToString());
-            WebSimulator = new Simulator(customers, waiters, cooks);
-            WebSimulator.Run();
+            int averagePartySize = int.Parse(Request.Form["partySize"].ToString());
+            var simArgs = new SimulatorArguments()
+            {
+                Customers = customers,
+                NumberOfWaiters = waiters,
+                NumberOfCooks = cooks,
+                AveragePartySize = averagePartySize
+            };
+            WebSimulator.Run(simArgs);
         }
     }
 }

@@ -8,19 +8,25 @@ using System.Threading.Tasks;
 
 namespace JCsDiner
 {
+    public class SimulatorArguments
+    {
+        public int NumberOfWaiters { get; set; }
+        public int NumberOfCooks { get; set; }
+        public int Customers { get; set; }
+        public int AveragePartySize { get; set; }
+    }
     public class Simulator
     {
         public int NumberOfWaiters { get; set; }
         public int NumberOfCooks { get; set; }
         public int Customers { get; private set; }
-        public Simulator(int customers, int nuberOfWaiters, int numberOfCooks)
+        public int AveragePartySize { get; set; }
+        public int Run(SimulatorArguments simArgs)
         {
-            this.Customers = customers;
-            this.NumberOfWaiters = nuberOfWaiters;
-            NumberOfCooks = numberOfCooks;
-        }
-        public int Run()
-        {
+            AveragePartySize = simArgs.AveragePartySize;
+            this.Customers = simArgs.Customers;
+            this.NumberOfWaiters = simArgs.NumberOfWaiters;
+            NumberOfCooks = simArgs.NumberOfCooks;
             int beatNumber = 0;
             int customersServed = 0;
             var restaurant = new Restaurant();
@@ -29,6 +35,7 @@ namespace JCsDiner
             var busserPCQ = new BusserPCQ();
             var cookPCQ = new CookPCQ(NumberOfCooks);
             int partiesEntered = 0;
+            int customersEntered = 0;
 
             using (hostPCQ)
             using (waiterPCQ)
@@ -43,6 +50,7 @@ namespace JCsDiner
                         if (newParty is not null)
                         {
                             partiesEntered++;
+                            customersEntered += newParty.Customers;
                             restaurant.CurrentParties.Add(newParty);
                             newParty.EnterLobbyTime = beatNumber;
                             hostPCQ.EnqueueTask(new HostTask(newParty, restaurant));
@@ -98,6 +106,7 @@ namespace JCsDiner
                 }
             }
             Console.WriteLine($"All parties have been served. Total Run Time: {beatNumber}");
+            Console.WriteLine($"Average Party Size: {customersEntered / partiesEntered}");
             Console.WriteLine($"Restaurant ended with {restaurant.Tables.Count} tables");
             foreach(Table table in restaurant.Tables)
             {
@@ -110,7 +119,7 @@ namespace JCsDiner
         {
             var rand = new Random();
             var randNum = rand.Next(100);
-            return randNum < 20 ? new Party(id) : null; 
+            return randNum < 20 ? new Party(id, AveragePartySize) : null; 
         }
     }
 }

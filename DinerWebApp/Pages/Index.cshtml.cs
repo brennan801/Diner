@@ -27,16 +27,20 @@ namespace DinerWebApp.Pages
 
         public void OnPost()
         {
-            int customers = int.Parse(Request.Form["customers"].ToString());
-            int waiters = int.Parse(Request.Form["waiters"].ToString());
-            int cooks = int.Parse(Request.Form["cooks"].ToString());
-            int averagePartySize = int.Parse(Request.Form["partySize"].ToString());
+            int customers = int.Parse(Request.Form["customers"]);
+            int waiters = int.Parse(Request.Form["waiters"]);
+            int cooks = int.Parse(Request.Form["cooks"]);
+            int tables = int.Parse(Request.Form["tables"]);
+            int averagePartySize = int.Parse(Request.Form["partySize"]);
+            int entryTime = int.Parse(Request.Form["entryTime"]);
             var simArgs = new SimulatorArguments()
             {
                 Customers = customers,
                 NumberOfWaiters = waiters,
                 NumberOfCooks = cooks,
-                AveragePartySize = averagePartySize
+                NumberOfTables = tables,
+                AveragePartySize = averagePartySize,
+                AveragePartyEntryTime = entryTime
             };
             WebSimulator.Run(simArgs);
         }

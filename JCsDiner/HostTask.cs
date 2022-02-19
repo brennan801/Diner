@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace JCsDiner
 {
@@ -22,7 +23,14 @@ namespace JCsDiner
         public void StartTask()
         {
             System.Console.WriteLine($"Host is seating party {Party.ID} with size {Party.Customers}");
-            Table = getNumTablesNeeded();
+            try
+            {
+                Table = getNumTablesNeeded();
+            }
+            catch(IndexOutOfRangeException e)
+            {
+                throw new IndexOutOfRangeException(e.Message);
+            }
             Table.SetParty(Party);
             Party.Table = Table;
         }
@@ -30,19 +38,27 @@ namespace JCsDiner
         public Table getNumTablesNeeded()
         {
             var customersInParty = Party.Customers;
-            if(customersInParty < 7)
+
+            try
             {
-                return Restaurant.GetFreeTables()[0];
+                if (customersInParty < 7)
+                {
+                    return Restaurant.GetFreeTables()[0];
+                }
+                if (customersInParty < 11)
+                {
+                    return Restaurant.CombineTables(2);
+                }
+                if (customersInParty < 14)
+                {
+                    return Restaurant.CombineTables(3);
+                }
+                else return Restaurant.CombineTables(4);
             }
-            if(customersInParty < 11)
+            catch(IndexOutOfRangeException e)
             {
-                return Restaurant.CombineTables(2);
+                throw new IndexOutOfRangeException(e.Message);
             }
-            if (customersInParty < 14)
-            {
-                return Restaurant.CombineTables(3);
-            }
-            else return Restaurant.CombineTables(4);
         }
     }
 }

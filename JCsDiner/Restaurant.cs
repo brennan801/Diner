@@ -23,6 +23,8 @@ namespace JCsDiner
 
         public Restaurant(int numberOfTables)
         {
+            CurrentOrders = new List<Order>();
+            CurrentParties = new List<Party>();
             Tables = new List<Table>();
             for (int i = 0; i < numberOfTables; i++)
             {
@@ -107,7 +109,7 @@ namespace JCsDiner
                 Tables.Remove(combinedTable);
                 foreach (int tableID in combinedTable.InsideTables)
                 {
-                    Tables.Add(new Table(tableID) { State = "dirty" });
+                    Tables.Add(new Table(tableID) { State = "clean" });
                 }
             }
             

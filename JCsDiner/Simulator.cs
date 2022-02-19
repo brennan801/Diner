@@ -14,6 +14,8 @@ namespace JCsDiner
         public int NumberOfCooks { get; set; }
         public int Customers { get; set; }
         public int AveragePartySize { get; set; }
+        public int AveragePartyEntryTime { get; set; }
+        public int NumberOfTables { get; set; }
     }
     public class Simulator
     {
@@ -21,21 +23,26 @@ namespace JCsDiner
         public int NumberOfCooks { get; set; }
         public int Customers { get; private set; }
         public int AveragePartySize { get; set; }
+        public int AveragePartyEntryTime { get; set; }
+        public int NumberOfTables { get; set; }
         public int Run(SimulatorArguments simArgs)
         {
             AveragePartySize = simArgs.AveragePartySize;
             this.Customers = simArgs.Customers;
             this.NumberOfWaiters = simArgs.NumberOfWaiters;
             NumberOfCooks = simArgs.NumberOfCooks;
+            AveragePartyEntryTime = simArgs.AveragePartyEntryTime;
+            NumberOfTables = simArgs.NumberOfTables;
             int beatNumber = 0;
             int customersServed = 0;
-            var restaurant = new Restaurant();
+            var restaurant = new Restaurant(NumberOfTables);
             var hostPCQ = new HostPCQ();
             var waiterPCQ = new WaiterPCQ(NumberOfWaiters);
             var busserPCQ = new BusserPCQ();
             var cookPCQ = new CookPCQ(NumberOfCooks);
             int partiesEntered = 0;
             int customersEntered = 0;
+            int timeSinceLastEnteredParty = 0;
 
             using (hostPCQ)
             using (waiterPCQ)
@@ -46,10 +53,11 @@ namespace JCsDiner
                 {
                     if (customersServed + restaurant.CurrentParties.Count() < Customers)
                     {
-                        Party newParty = TryGenerateParty(partiesEntered);
+                        Party newParty = TryGenerateParty(partiesEntered, timeSinceLastEnteredParty);
                         if (newParty is not null)
                         {
                             partiesEntered++;
+                            timeSinceLastEnteredParty = 0;
                             customersEntered += newParty.Customers;
                             restaurant.CurrentParties.Add(newParty);
                             newParty.EnterLobbyTime = beatNumber;
@@ -102,6 +110,7 @@ namespace JCsDiner
                     }
                     Thread.Sleep(1000);
                     beatNumber++;
+                    timeSinceLastEnteredParty++;
                     Console.WriteLine();
                 }
             }
@@ -115,11 +124,20 @@ namespace JCsDiner
             return beatNumber;
         }
 
-        public Party TryGenerateParty(int id)
+        public Party TryGenerateParty(int id, int timeSinceLastEnteredParty)
         {
             var rand = new Random();
             var randNum = rand.Next(100);
-            return randNum < 20 ? new Party(id, AveragePartySize) : null; 
+            var range = AveragePartyEntryTime * .3;
+            if(timeSinceLastEnteredParty < AveragePartyEntryTime - range)
+            {
+                return randNum < 5 ? new Party(id, AveragePartySize) : null;
+            }
+            else if (timeSinceLastEnteredParty <= AveragePartyEntryTime + range)
+            {
+                return randNum < 50 ? new Party(id, AveragePartySize) : null;
+            }
+            else return new Party(id, AveragePartySize); 
         }
     }
 }

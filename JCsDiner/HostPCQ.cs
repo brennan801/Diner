@@ -51,7 +51,17 @@ namespace JCsDiner
 				}
 				if (task != null)
 				{
-					task.StartTask();
+					try
+					{
+						task.StartTask();
+					}
+					catch(IndexOutOfRangeException e)
+                    {
+                        Console.WriteLine(e.Message);
+                        Console.WriteLine("putting task back in the queue");
+						EnqueueTask(task);
+						continue;
+                    }
 					Thread.Sleep(task.Time);
 					task.DoTask();
 				}

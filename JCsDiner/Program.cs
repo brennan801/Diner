@@ -13,7 +13,9 @@ namespace JCsDiner
                 Customers = 10,
                 NumberOfWaiters = 2,
                 NumberOfCooks = 1,
-                AveragePartySize = 3
+                AveragePartySize = 3,
+                AveragePartyEntryTime = 3,
+                NumberOfTables = 12
             };
             sim.Run(simArgs);
         }

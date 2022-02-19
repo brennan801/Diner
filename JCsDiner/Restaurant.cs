@@ -72,7 +72,7 @@ namespace JCsDiner
                     newTable.numOfTables = 2;
                     newTable.numOfChairs = 10;
                     newTable.InsideTables = new() { freeTables[0].ID, freeTables[1].ID };
-                    newTable.ID = freeTables[0].ID * 13;
+                    newTable.ID = freeTables[0].ID + Tables.Count;
                     Tables.Remove(freeTables[0]);
                     Tables.Remove(freeTables[1]);
                     break;
@@ -80,7 +80,7 @@ namespace JCsDiner
                     newTable.numOfTables = 3;
                     newTable.numOfChairs = 13;
                     newTable.InsideTables = new() { freeTables[0].ID, freeTables[1].ID , freeTables[2].ID};
-                    newTable.ID = freeTables[0].ID * 13;
+                    newTable.ID = freeTables[0].ID + Tables.Count;
                     Tables.Remove(freeTables[0]);
                     Tables.Remove(freeTables[1]);
                     Tables.Remove(freeTables[2]);
@@ -89,7 +89,7 @@ namespace JCsDiner
                     newTable.numOfTables = 4;
                     newTable.numOfChairs = 16;
                     newTable.InsideTables = new() { freeTables[0].ID, freeTables[1].ID, freeTables[2].ID, freeTables[3].ID };
-                    newTable.ID = freeTables[0].ID * 13;
+                    newTable.ID = freeTables[0].ID + Tables.Count;
                     Tables.Remove(freeTables[0]);
                     Tables.Remove(freeTables[1]);
                     Tables.Remove(freeTables[2]);

@@ -1,0 +1,24 @@
+version: "3.7"
+
+services:
+    api_db:
+        image: postgres
+        container_name: pgsql_db
+        environment:
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=password
+            - POSTGRES_DB=DinerWebDb
+        restart: always
+        volumes:
+            - database-data:/var/lib/postgresql/data/
+
+    web_app:
+        build:
+            context: .
+            dockerfile: DinerWebApp/Dockerfile
+        ports: 
+            - "5000:80"
+        restart: always
+
+volumes:
+    database-data:

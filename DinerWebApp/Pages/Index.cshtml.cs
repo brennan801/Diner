@@ -1,4 +1,5 @@
-﻿using JCsDiner;
+﻿using DinerWebApp.Services;
+using JCsDiner;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
@@ -12,11 +13,15 @@ namespace DinerWebApp.Pages
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
-        public Simulator WebSimulator { get; set; }
+        private readonly IDbService dbService;
 
-        public IndexModel(ILogger<IndexModel> logger)
+        public Simulator WebSimulator { get; set; }
+        public SimulatorResults Results { get; set; }
+
+        public IndexModel(ILogger<IndexModel> logger, IDbService dbService)
         {
             _logger = logger;
+            this.dbService = dbService;
             WebSimulator = new Simulator();
         }
 
@@ -27,6 +32,7 @@ namespace DinerWebApp.Pages
 
         public void OnPost()
         {
+            string name = Request.Form["name"];
             int customers = int.Parse(Request.Form["customers"]);
             int waiters = int.Parse(Request.Form["waiters"]);
             int cooks = int.Parse(Request.Form["cooks"]);
@@ -42,7 +48,12 @@ namespace DinerWebApp.Pages
                 AveragePartySize = averagePartySize,
                 AveragePartyEntryTime = entryTime
             };
-            WebSimulator.Run(simArgs);
+            SimulatorResults results = WebSimulator.Run(simArgs);
+            Results = results;
+            results.Name = name;
+            dbService.addRun(results);
+
+
         }
     }
 }

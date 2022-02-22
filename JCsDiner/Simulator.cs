@@ -17,6 +17,18 @@ namespace JCsDiner
         public int AveragePartyEntryTime { get; set; }
         public int NumberOfTables { get; set; }
     }
+    public class SimulatorResults
+    {
+        public string Name { get; set; }
+        public int Runtime { get; set; }
+        public int NumberOfCustomers { get; set; }
+        public int NumberOfWaiters { get; set; }
+        public int NumberOfCooks { get; set; }
+        public int NumberOfTables { get; set; }
+        public int AverageEntryTime { get; set; }
+        public int SetAveragePartySize { get; set; }
+        public int ActualAveragePartySize { get; set; }
+    }
     public class Simulator
     {
         public int NumberOfWaiters { get; set; }
@@ -25,7 +37,7 @@ namespace JCsDiner
         public int AveragePartySize { get; set; }
         public int AveragePartyEntryTime { get; set; }
         public int NumberOfTables { get; set; }
-        public int Run(SimulatorArguments simArgs)
+        public SimulatorResults Run(SimulatorArguments simArgs)
         {
             AveragePartySize = simArgs.AveragePartySize;
             this.Customers = simArgs.Customers;
@@ -121,7 +133,18 @@ namespace JCsDiner
             {
                 Console.Write($"{table.ID} ");
             }
-            return beatNumber;
+            SimulatorResults results = new()
+            {
+                Runtime = beatNumber,
+                NumberOfCustomers = Customers,
+                NumberOfWaiters = NumberOfWaiters,
+                NumberOfCooks = NumberOfCooks,
+                NumberOfTables = NumberOfTables,
+                AverageEntryTime = AveragePartyEntryTime,
+                SetAveragePartySize = AveragePartySize,
+                ActualAveragePartySize = customersEntered / partiesEntered
+            };
+            return results;
         }
 
         public Party TryGenerateParty(int id, int timeSinceLastEnteredParty)

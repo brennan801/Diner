@@ -1,13 +1,18 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31402.337
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JCsDiner", "JCsDiner\JCsDiner.csproj", "{F6B037A9-4B1E-427E-9D09-5D20A30368FF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RestaurantTests", "RestaurantTests\RestaurantTests.csproj", "{251E76FF-43E0-4766-980E-C6FE81D000E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DinerWebApp", "DinerWebApp\DinerWebApp.csproj", "{3F500D2D-728D-4DC4-B1DD-8B81BA6F8B52}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DinerWebApp", "DinerWebApp\DinerWebApp.csproj", "{3F500D2D-728D-4DC4-B1DD-8B81BA6F8B52}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{42B2472A-E0C9-4849-B138-992DB13C9BE2}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

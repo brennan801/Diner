@@ -1,0 +1,20 @@
+﻿@page "/"
+
+<PageTitle>Index</PageTitle>
+
+<h1>My Diner</h1>
+
+My Diner Sim
+
+<SurveyPrompt Title="How is Blazor working for you?" />
+<input @bind=numGuests/>
+<button @onclick="doTheThing">Do the thing!</button>
+<p>@result</p>
+@code{
+    int numGuests;
+    string result;
+    void doTheThing()
+    {
+        result = $"there are {numGuests} guests!";
+    }
+}

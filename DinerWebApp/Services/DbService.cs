@@ -21,6 +21,7 @@ namespace DinerWebApp.Services
                     "numberOfWaiters INTEGER," +
                     "numberOfCooks INTEGER," +
                     "numberOfTables INTEGER," +
+                    "averagePartyEntryTime INTEGER," +
                     "setAveragePartySize INTEGER," +
                     "actualAveragePartySize INTEGER);"
                     );
@@ -33,9 +34,9 @@ namespace DinerWebApp.Services
             {
                 connection.Execute(
                     "INSERT INTO SimulationRuns (" +
-                    "name, runtime, numberOfCustomers, numberOfWaiters, numberOfCooks, numberOfTables, setAveragePartySize, actualAveragePartySize)" +
+                    "name, runtime, numberOfCustomers, numberOfWaiters, numberOfCooks, numberOfTables, averagePartyEntryTime, setAveragePartySize, actualAveragePartySize)" +
                     "VALUES(" +
-                    "@Name, @Runtime, @NumberOfCustomers, @NumberOfWaiters, @NumberOfCooks, @NumberOfTables, @SetAveragePartySize, @ActualAveragePartySize);",
+                    "@Name, @Runtime, @NumberOfCustomers, @NumberOfWaiters, @NumberOfCooks, @NumberOfTables, @AveragePartyEntryTime, @SetAveragePartySize, @ActualAveragePartySize);",
                     results);
             }
         }

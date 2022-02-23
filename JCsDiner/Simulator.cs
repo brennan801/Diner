@@ -16,6 +16,7 @@ namespace JCsDiner
         public int AveragePartySize { get; set; }
         public int AveragePartyEntryTime { get; set; }
         public int NumberOfTables { get; set; }
+        public int AverageEatingTime { get; set; }
     }
     public class SimulatorResults
     {
@@ -37,6 +38,7 @@ namespace JCsDiner
         public int AveragePartySize { get; set; }
         public int AveragePartyEntryTime { get; set; }
         public int NumberOfTables { get; set; }
+        public int AverageEatingTime { get; set; }
         public SimulatorResults Run(SimulatorArguments simArgs)
         {
             AveragePartySize = simArgs.AveragePartySize;
@@ -45,6 +47,7 @@ namespace JCsDiner
             NumberOfCooks = simArgs.NumberOfCooks;
             AveragePartyEntryTime = simArgs.AveragePartyEntryTime;
             NumberOfTables = simArgs.NumberOfTables;
+            AverageEatingTime = simArgs.AverageEatingTime;
             int beatNumber = 0;
             int customersServed = 0;
             var restaurant = new Restaurant(NumberOfTables);
@@ -100,7 +103,7 @@ namespace JCsDiner
                     {
                         if (order.State == "waiting to be returned")
                         {
-                            waiterPCQ.EnqueueTask(new ReturnOrderTask(order));
+                            waiterPCQ.EnqueueTask(new ReturnOrderTask(order, AverageEatingTime));
                         }
 
                     }

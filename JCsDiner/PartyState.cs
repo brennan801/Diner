@@ -85,8 +85,11 @@ namespace JCsDiner
     public class PartyEating : PartyState
     {
         private int eatingTime;
-        public PartyEating(Party party) : base(party) {
-            eatingTime = (int)((2/3) * Party.Order.Appetizers + (3/4) * Party.Order.Platers);
+
+        public PartyEating(Party party, int averageEatingTime) : base(party) {
+            var rand = new Random();
+            var randNum = rand.Next(averageEatingTime - 3, averageEatingTime + 3);
+            eatingTime = randNum;
         }
 
         public override void Run1()

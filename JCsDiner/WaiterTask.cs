@@ -66,16 +66,19 @@ namespace JCsDiner
     public class ReturnOrderTask : WaiterTask
     {
         public Order Order { get; set; }
-        public ReturnOrderTask(Order order)
+        public int AverageEatingTime { get; }
+
+        public ReturnOrderTask(Order order, int averageEatingTime)
         {
             Time = 1000;
             Order = order;
+            AverageEatingTime = averageEatingTime;
             Party = order.Table.Party;
         }
         public override void DoTask(int id)
         {
             Order.State = "beingEaten";
-            Order.Table.Party.State = new PartyEating(Party);
+            Order.Table.Party.State = new PartyEating(Party, AverageEatingTime);
             Console.WriteLine($"\t\t Waiter {id} returned the the order to the party {Party.ID}");
         }
         public override void StartTask(int id)

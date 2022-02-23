@@ -39,6 +39,7 @@ namespace DinerWebApp.Pages
             int tables = int.Parse(Request.Form["tables"]);
             int averagePartySize = int.Parse(Request.Form["partySize"]);
             int entryTime = int.Parse(Request.Form["entryTime"]);
+            int eatingTime = int.Parse(Request.Form["eatingTime"]);
             var simArgs = new SimulatorArguments()
             {
                 Customers = customers,
@@ -46,7 +47,8 @@ namespace DinerWebApp.Pages
                 NumberOfCooks = cooks,
                 NumberOfTables = tables,
                 AveragePartySize = averagePartySize,
-                AveragePartyEntryTime = entryTime
+                AveragePartyEntryTime = entryTime,
+                AverageEatingTime = eatingTime
             };
             SimulatorResults results = WebSimulator.Run(simArgs);
             Results = results;

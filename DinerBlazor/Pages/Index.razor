@@ -5,14 +5,59 @@
 <h1>My Diner</h1>
 
 My Diner Sim
+<div class="row">
+
+    <div class="col-6">
+        <form method="post">
+            <label for="name">Simulation Name:</label>
+            <input @bind=simName  type="text" min="1" placeholder="Simulation Name" required />
+            <br />
+
+            <label for="parties">Number of Parties:</label>
+            <input @bind=parties name="parties" type="number" min="1" max="999" required />
+            <br />
+
+            <label for="waiters">Number of Waiters:</label>
+            <input @bind=waiters name="waiters" type="number" min="1" max="99" required />
+            <br />
+
+            <label for="cooks">Number of Cooks:</label>
+            <input @bind=cooks name="cooks" type="number" min="1" max="99" required/>
+            <br />
+
+            <label for="tables">Number of Tables:</label>
+            <input @bind=tables name="tables" type="number" min="3" max="99" required />
+            <br />
+
+            <label for="partySize">Average Party Size:</label>
+            <input name="partySize" type="number" min="1" max="13" value="3" required />
+            <br />
+
+            <label for="entryTime">Average Party Entry Time:</label>
+            <input name="entryTime" type="range" min="1" max="10" value="4"/>
+            <br />
+
+            <label for="eatingTime">Average Party Eat Time:</label>
+            <input name="eatingTime" type="range" min="4" max="14" value="6"/>
+            <br />
+
+            <button>Simulate</button>
+        </form>
+    </div>
+</div>
 
 <SurveyPrompt Title="How is Blazor working for you?" />
 <input @bind=numGuests/>
 <button @onclick="doTheThing">Do the thing!</button>
 <p>@result</p>
 @code{
+    string simName = "Simulation Name";
+    int parties;
     int numGuests;
-    string result;
+    int waiters;
+    int cooks;
+    int tables;
+    string result = "";
     void doTheThing()
     {
         result = $"there are {numGuests} guests!";

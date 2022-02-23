@@ -41,7 +41,9 @@ namespace RestaurantTests
         [Given(@"a party is in the RecievedCheck state")]
         public void GivenAPartyIsInTheRecievedCheckState()
         {
+            var restaurant = context.Get<Restaurant>("restaurant");
             var party = new Party(0);
+            party.Table = restaurant.Rooms[0].GetFreeTables()[0];
             party.State = new PartyRecievedCheck(party);
             context.Add("party", party);
         }

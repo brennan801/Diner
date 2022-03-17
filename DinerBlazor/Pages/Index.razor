@@ -1,4 +1,6 @@
-﻿@page "/"
+﻿
+@page "/"
+@using JCsDiner
 
 <PageTitle>Index</PageTitle>
 
@@ -30,15 +32,15 @@ My Diner Sim
             <br />
 
             <label for="partySize">Average Party Size:</label>
-            <input name="partySize" type="number" min="1" max="13" value="3" required />
+            <input @bind=partySize name="partySize" type="number" min="1" max="13" required />
             <br />
 
             <label for="entryTime">Average Party Entry Time:</label>
-            <input name="entryTime" type="range" min="1" max="10" value="4"/>
+            <input @bind=entryTime name="entryTime" type="range" min="1" max="10"/>
             <br />
 
             <label for="eatingTime">Average Party Eat Time:</label>
-            <input name="eatingTime" type="range" min="4" max="14" value="6"/>
+            <input @bind=eatingTime name="eatingTime" type="range" min="4" max="14"/>
             <br />
 
             <button>Simulate</button>
@@ -51,13 +53,19 @@ My Diner Sim
 <button @onclick="doTheThing">Do the thing!</button>
 <p>@result</p>
 @code{
+
     string simName = "Simulation Name";
-    int parties;
-    int numGuests;
-    int waiters;
-    int cooks;
-    int tables;
+    int parties = 10;
+    int numGuests = 5;
+    int waiters = 2;
+    int cooks = 2;
+    int tables = 6;
+    int partySize = 4;
+    int entryTime = 4;
+    int eatingTime = 6;
     string result = "";
+    
+
     void doTheThing()
     {
         result = $"there are {numGuests} guests!";

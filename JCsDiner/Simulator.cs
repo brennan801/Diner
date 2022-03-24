@@ -40,6 +40,7 @@ namespace JCsDiner
         public int NumberOfTables { get; set; }
         public int AverageEatingTime { get; set; }
         public Restaurant Restaurant { get; set; }
+        public CookPCQ CookPCQ { get; set; }
         //public List<Party> CurrentParties { get; set; }
 
         public event EventHandler StateChanged;
@@ -47,6 +48,7 @@ namespace JCsDiner
         public Simulator()
         {
             Restaurant = new Restaurant();
+            this.CookPCQ = new CookPCQ();
         }
 
         public void RaiseStateChanged()
@@ -69,7 +71,7 @@ namespace JCsDiner
             var hostPCQ = new HostPCQ();
             var waiterPCQ = new WaiterPCQ(NumberOfWaiters);
             var busserPCQ = new BusserPCQ();
-            var cookPCQ = new CookPCQ(NumberOfCooks);
+            this.CookPCQ = new CookPCQ(NumberOfCooks);
             int partiesEntered = 0;
             int customersEntered = 0;
             int timeSinceLastEnteredParty = 0;
@@ -78,7 +80,7 @@ namespace JCsDiner
             using (hostPCQ)
             using (waiterPCQ)
             using (busserPCQ)
-            using (cookPCQ)
+            using (CookPCQ)
             {
                 while (customersServed < Customers)
                 {
@@ -103,7 +105,7 @@ namespace JCsDiner
                     {
                         if (party.State.GetType() == typeof(PartyWaitingToOrder))
                         {
-                            waiterPCQ.EnqueueTask(new GetOrderTask(party, cookPCQ, Restaurant));
+                            waiterPCQ.EnqueueTask(new GetOrderTask(party, CookPCQ, Restaurant));
                         }
                         else if(party.State.GetType() == typeof(PartyWaitingForCheck))
                         {

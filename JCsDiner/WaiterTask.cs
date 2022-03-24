@@ -32,6 +32,7 @@ namespace JCsDiner
 
             var order = Party.CreateOrder();
             order.State = "waiting to be cooked";
+            Party.State = new PartyWaitingForFood(Party);
             Restaurant.CurrentOrders.Add(order);
             CookPCQ.EnqueueTask(new CookTask(order));
             Console.WriteLine($"\t\t Waiter {id} got the order of party {Party.ID}");

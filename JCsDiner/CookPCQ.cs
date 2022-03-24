@@ -7,23 +7,38 @@ using System.Threading.Tasks;
 
 namespace JCsDiner
 {
+	public class CookModel
+    {
+        public int ID { get; set; }
+		public enum States { Free, Cooking}
+		public States State { get; set; }
+    }
     public class CookPCQ : IDisposable
     {
 		int count = 0;
-		List<Thread> cooks;
+        public List<Thread> CookThreads { get; private set; }
+		public List<CookModel> Cooks { get; private set; }
 		readonly object lockForWaiterTasks = new object();
 		Queue<CookTask> cookTasks = new();
 
 		bool producerIsSendingTasks;
+
+        public CookPCQ()
+        {
+			CookThreads = new List<Thread>();
+			Cooks = new List<CookModel>();
+        }
 		public CookPCQ(int numOfCooks)
 		{
-			cooks = new List<Thread>();
+			CookThreads = new List<Thread>();
+			Cooks = new List<CookModel>();
 			producerIsSendingTasks = true;
 			for (int i = 0; i < numOfCooks; i++)
 			{
-				cooks.Add(new Thread(Cook));
+				CookThreads.Add(new Thread(Cook));
+				Cooks.Add(new CookModel { ID = i, State = CookModel.States.Free});
 			}
-			foreach (Thread cook in cooks)
+			foreach (Thread cook in CookThreads)
 			{
 				cook.Start();
 			}
@@ -37,9 +52,9 @@ namespace JCsDiner
 		public void Dispose()
 		{
 			producerIsSendingTasks = false;
-			foreach (Thread waiter in cooks)
+			foreach (Thread cook in CookThreads)
 			{
-				waiter.Join();
+				cook.Join();
 			}
 		}
 
@@ -61,8 +76,15 @@ namespace JCsDiner
 				if (task != null)
 				{
 					task.StartTask(id);
+					IEnumerable<CookModel> cookQuery =
+						from cook in Cooks
+						where cook.ID == id
+						select cook;
+					CookModel selectedCook = cookQuery.FirstOrDefault();
+					selectedCook.State = CookModel.States.Cooking;
 					Thread.Sleep(task.Time);
 					task.DoTask(id);
+					selectedCook.State = CookModel.States.Free;
 				}
 				else Thread.Sleep(1000);
 			}

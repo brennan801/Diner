@@ -48,6 +48,12 @@
             <p>Party @party.ID: @party.State.Value</p>
         }
     </div>
+    <div class="col-3">
+        @foreach(CookModel cook in sim.CookPCQ.Cooks)
+        {
+            <p>Cook @cook.ID: @cook.State</p>
+        }
+    </div>
 </div>
 
 

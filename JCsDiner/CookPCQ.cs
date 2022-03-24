@@ -12,6 +12,7 @@ namespace JCsDiner
         public int ID { get; set; }
 		public enum States { Free, Cooking}
 		public States State { get; set; }
+		public int OrderID { get; set; }
     }
     public class CookPCQ : IDisposable
     {
@@ -82,6 +83,7 @@ namespace JCsDiner
 						select cook;
 					CookModel selectedCook = cookQuery.FirstOrDefault();
 					selectedCook.State = CookModel.States.Cooking;
+					selectedCook.OrderID = task.Order.Table.Party.ID;
 					Thread.Sleep(task.Time);
 					task.DoTask(id);
 					selectedCook.State = CookModel.States.Free;

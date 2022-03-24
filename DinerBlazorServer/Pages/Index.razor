@@ -51,7 +51,7 @@
     <div class="col-3">
         @foreach(CookModel cook in sim.CookPCQ.Cooks)
         {
-            <p>Cook @cook.ID: @cook.State</p>
+            <p>Cook @cook.ID: @cook.State @if (cook.State == CookModel.States.Cooking) { <p>Order: @cook.OrderID</p> }</p>
         }
     </div>
 </div>

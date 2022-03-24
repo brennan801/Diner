@@ -10,6 +10,8 @@ namespace JCsDiner
     {
         public Party Party { get; protected set; }
         public int WaitCounter { get; set; }
+        public enum States {WaitingInLobby, BeingSeated, DecidingOrder, WaitingToOrder, Ordering, WaitingForFood, Eating, WaitingForCheck, RecievedCheck, Left, QueuedByWaiter}
+        public States Value { get; protected set; }
 
         public PartyState(Party party)
         {
@@ -20,7 +22,10 @@ namespace JCsDiner
     }
     public class PartyWaitingInLobby : PartyState
     {
-        public PartyWaitingInLobby(Party party) : base(party) { }
+        public PartyWaitingInLobby(Party party) : base(party) 
+        {
+            Value = States.WaitingInLobby;
+        }
 
         public override void Run1()
         {
@@ -29,7 +34,10 @@ namespace JCsDiner
     }
     public class PartyBeingSeated : PartyState
     {
-        public PartyBeingSeated(Party party) : base(party) { }
+        public PartyBeingSeated(Party party) : base(party)
+        { 
+            Value = States.BeingSeated;
+        }
 
         public override void Run1()
         {
@@ -41,6 +49,7 @@ namespace JCsDiner
         private int decidingTime;
         public PartyDecidingOrder(Party party) : base(party) 
         {
+            Value = States.DecidingOrder;
             decidingTime = (int)((2/3) * party.Customers);
         }
         public override void Run1()
@@ -58,7 +67,10 @@ namespace JCsDiner
     }
     public class PartyWaitingToOrder : PartyState
     {
-        public PartyWaitingToOrder(Party party) : base(party) { }
+        public PartyWaitingToOrder(Party party) : base(party) 
+        {
+            Value = States.WaitingToOrder;
+        }
         public override void Run1()
         {
             WaitCounter++;
@@ -66,7 +78,10 @@ namespace JCsDiner
     }
     public class PartyOrdering : PartyState
     {
-        public PartyOrdering(Party party) : base(party){ }
+        public PartyOrdering(Party party) : base(party)
+        {
+            Value = States.Ordering;
+        }
 
         public override void Run1()
         {
@@ -75,7 +90,10 @@ namespace JCsDiner
     }
     public class PartyWaitingForFood : PartyState
     {
-        public PartyWaitingForFood(Party party) : base(party) { }
+        public PartyWaitingForFood(Party party) : base(party) 
+        {
+            Value = States.WaitingForFood;
+        }
 
         public override void Run1()
         {
@@ -87,6 +105,7 @@ namespace JCsDiner
         private int eatingTime;
 
         public PartyEating(Party party, int averageEatingTime) : base(party) {
+            Value = States.Eating;
             var rand = new Random();
             var randNum = rand.Next(averageEatingTime - 3, averageEatingTime + 3);
             eatingTime = randNum;
@@ -107,7 +126,10 @@ namespace JCsDiner
     }
     public class PartyWaitingForCheck : PartyState
     {
-        public PartyWaitingForCheck(Party party) : base(party) { }
+        public PartyWaitingForCheck(Party party) : base(party) 
+        {
+            Value = States.WaitingForCheck;
+        }
 
         public override void Run1()
         {
@@ -116,7 +138,10 @@ namespace JCsDiner
     }
     public class PartyRecievedCheck : PartyState
     {
-        public PartyRecievedCheck(Party party) : base(party) { }
+        public PartyRecievedCheck(Party party) : base(party) 
+        {
+            Value = States.RecievedCheck;
+        }
 
         public override void Run1()
         {
@@ -127,7 +152,10 @@ namespace JCsDiner
     }
     public class PartyLeft : PartyState
     {
-        public PartyLeft(Party party) : base(party) { }
+        public PartyLeft(Party party) : base(party) 
+        {
+            Value = States.Left;
+        }
         
         public override void Run1()
         {
@@ -136,7 +164,11 @@ namespace JCsDiner
     }
     public class PartyQueued : PartyState
     {
-        public PartyQueued(Party party) : base(party) { }
+        public PartyQueued(Party party) : base(party) 
+        {
+            Value = States.QueuedByWaiter;
+        }
+
 
         public override void Run1()
         {

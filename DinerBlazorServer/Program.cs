@@ -1,4 +1,5 @@
 using DinerBlazorServer.Data;
+using DinerBlazorServer.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 
@@ -8,6 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
+builder.Services.AddSingleton<SimulationHostedService>();
+//builder.Services.AddHostedService(sp => sp.GetRequiredService<SimulationHostedService>());
 
 var app = builder.Build();
 

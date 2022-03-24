@@ -1,54 +1,56 @@
 ﻿@page "/"
 @using JCsDiner
+@using Services
+@inject SimulationHostedService SimService
 
 <PageTitle>Index</PageTitle>
-
-<h1>Hello, world!</h1>
 
 <div class="row">
 
     <div class="col-6">
-        <form method="post">
-            <label for="name">Simulation Name:</label>
-            <input @bind=simName  type="text" min="1" placeholder="Simulation Name" required />
-            <br />
+        <label for="name">Simulation Name:</label>
+        <input @bind=simName  type="text" min="1" placeholder="Simulation Name" required />
+        <br />
 
-            <label for="parties">Number of Parties:</label>
-            <input @bind=parties name="parties" type="number" min="1" max="999" required />
-            <br />
+        <label for="parties">Number of Parties:</label>
+        <input @bind=parties name="parties" type="number" min="1" max="999" required />
+        <br />
 
-            <label for="waiters">Number of Waiters:</label>
-            <input @bind=waiters name="waiters" type="number" min="1" max="99" required />
-            <br />
+        <label for="waiters">Number of Waiters:</label>
+        <input @bind=waiters name="waiters" type="number" min="1" max="99" required />
+        <br />
 
-            <label for="cooks">Number of Cooks:</label>
-            <input @bind=cooks name="cooks" type="number" min="1" max="99" required/>
-            <br />
+        <label for="cooks">Number of Cooks:</label>
+        <input @bind=cooks name="cooks" type="number" min="1" max="99" required/>
+        <br />
 
-            <label for="tables">Number of Tables:</label>
-            <input @bind=tables name="tables" type="number" min="3" max="99" required />
-            <br />
+        <label for="tables">Number of Tables:</label>
+        <input @bind=tables name="tables" type="number" min="3" max="99" required />
+        <br />
 
-            <label for="partySize">Average Party Size:</label>
-            <input @bind=partySize name="partySize" type="number" min="1" max="13" required />
-            <br />
+        <label for="partySize">Average Party Size:</label>
+        <input @bind=partySize name="partySize" type="number" min="1" max="13" required />
+        <br />
 
-            <label for="entryTime">Average Party Entry Time:</label>
-            <input @bind=entryTime name="entryTime" type="range" min="1" max="10"/>
-            <br />
+        <label for="entryTime">Average Party Entry Time:</label>
+        <input @bind=entryTime name="entryTime" type="range" min="1" max="10"/>
+        <br />
 
-            <label for="eatingTime">Average Party Eat Time:</label>
-            <input @bind=eatingTime name="eatingTime" type="range" min="4" max="14"/>
-            <br />
+        <label for="eatingTime">Average Party Eat Time:</label>
+        <input @bind=eatingTime name="eatingTime" type="range" min="4" max="14"/>
+        <br />
 
-            <button @onclick="simulate">Simulate</button>
-        </form>
+        <button @onclick="simulate">Simulate</button>
+    </div>
+    <div class="col-3">
+        @foreach(Party party in sim.Restaurant.CurrentParties)
+        {
+            <p>Party @party.ID: @party.State.Value</p>
+        }
     </div>
 </div>
 
-<input @bind=numGuests/>
-<button @onclick="doTheThing">Do the thing!</button>
-<p>@result</p>
+
 
 <h3>Results:</h3>
 <p>Simulation: @simResults.Name</p>
@@ -64,7 +66,6 @@
     Simulator sim = new();
     string simName = "Simulation Name";
     int parties = 10;
-    int numGuests = 5;
     int waiters = 2;
     int cooks = 2;
     int tables = 6;
@@ -72,10 +73,18 @@
     int entryTime = 4;
     int eatingTime = 6;
     string result = "";
-    SimulatorResults simResults = new SimulatorResults();
+    SimulatorResults simResults = new();
+    System.Threading.CancellationToken cancellationToken = new();
 
-    void simulate()
+    private void Simulator_StateChanged(object? sender, EventArgs e)
     {
+        InvokeAsync(() => StateHasChanged());
+    }
+
+    async Task simulate()
+    {
+        sim = SimService.Simulator;
+        SimService.StateChanged += Simulator_StateChanged;
         SimulatorArguments simArgs = new()
         {
             Customers = parties,
@@ -86,10 +95,22 @@
             AveragePartyEntryTime = entryTime,
             AverageEatingTime = eatingTime
         };
-        SimulatorResults results =  sim.Run(simArgs);
-    }
-    void doTheThing()
-    {
-        result = $"there are {numGuests} guests!";
+        SimService.Arguments = simArgs;
+        SimService.CanStart = true;
+        try
+        {
+            System.Console.WriteLine("about to start");
+            await SimService.StartAsync(cancellationToken);
+            System.Console.WriteLine("passed await");
+        }
+        catch(Exception e)
+        {
+            throw;
+        }
+        finally
+        {
+            System.Console.WriteLine("Finally");
+        }
+        System.Console.WriteLine("we got here!");
     }
 }

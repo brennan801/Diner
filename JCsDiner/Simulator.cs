@@ -39,6 +39,21 @@ namespace JCsDiner
         public int AveragePartyEntryTime { get; set; }
         public int NumberOfTables { get; set; }
         public int AverageEatingTime { get; set; }
+        public Restaurant Restaurant { get; set; }
+        //public List<Party> CurrentParties { get; set; }
+
+        public event EventHandler StateChanged;
+
+        public Simulator()
+        {
+            Restaurant = new Restaurant();
+        }
+
+        public void RaiseStateChanged()
+        {
+            StateChanged?.Invoke(this, EventArgs.Empty);
+        }
+
         public SimulatorResults Run(SimulatorArguments simArgs)
         {
             AveragePartySize = simArgs.AveragePartySize;
@@ -50,7 +65,7 @@ namespace JCsDiner
             AverageEatingTime = simArgs.AverageEatingTime;
             int beatNumber = 0;
             int customersServed = 0;
-            var restaurant = new Restaurant(NumberOfTables);
+            this.Restaurant = new Restaurant(NumberOfTables);
             var hostPCQ = new HostPCQ();
             var waiterPCQ = new WaiterPCQ(NumberOfWaiters);
             var busserPCQ = new BusserPCQ();
@@ -58,6 +73,7 @@ namespace JCsDiner
             int partiesEntered = 0;
             int customersEntered = 0;
             int timeSinceLastEnteredParty = 0;
+            //CurrentParties = new List<Party>();
 
             using (hostPCQ)
             using (waiterPCQ)
@@ -66,7 +82,7 @@ namespace JCsDiner
             {
                 while (customersServed < Customers)
                 {
-                    if (customersServed + restaurant.CurrentParties.Count() < Customers)
+                    if (customersServed + Restaurant.CurrentParties.Count() < Customers)
                     {
                         Party newParty = TryGenerateParty(partiesEntered, timeSinceLastEnteredParty);
                         if (newParty is not null)
@@ -74,18 +90,20 @@ namespace JCsDiner
                             partiesEntered++;
                             timeSinceLastEnteredParty = 0;
                             customersEntered += newParty.Customers;
-                            restaurant.CurrentParties.Add(newParty);
+                            //CurrentParties.Add(newParty);
+                            //RaiseStateChanged();
+                            Restaurant.CurrentParties.Add(newParty);
                             newParty.EnterLobbyTime = beatNumber;
-                            hostPCQ.EnqueueTask(new HostTask(newParty, restaurant));
+                            hostPCQ.EnqueueTask(new HostTask(newParty, Restaurant));
                         }
                     }
 
                     var partiesToRemove = new List<Party>();
-                    foreach (Party party in restaurant.CurrentParties)
+                    foreach (Party party in Restaurant.CurrentParties)
                     {
                         if (party.State.GetType() == typeof(PartyWaitingToOrder))
                         {
-                            waiterPCQ.EnqueueTask(new GetOrderTask(party, cookPCQ, restaurant));
+                            waiterPCQ.EnqueueTask(new GetOrderTask(party, cookPCQ, Restaurant));
                         }
                         else if(party.State.GetType() == typeof(PartyWaitingForCheck))
                         {
@@ -94,12 +112,12 @@ namespace JCsDiner
                         else if(party.State.GetType() == typeof(PartyLeft))
                         {
                             partiesToRemove.Add(party);
-                            restaurant.CurrentOrders.Remove(party.Order);
+                            Restaurant.CurrentOrders.Remove(party.Order);
                             customersServed++;
                             Console.WriteLine($"The restraurant has served {customersServed} parties");
                         }
                     }
-                    foreach(Order order in restaurant.CurrentOrders)
+                    foreach(Order order in Restaurant.CurrentOrders)
                     {
                         if (order.State == "waiting to be returned")
                         {
@@ -107,32 +125,33 @@ namespace JCsDiner
                         }
 
                     }
-                    foreach (Party party in restaurant.CurrentParties)
+                    foreach (Party party in Restaurant.CurrentParties)
                     {
-                        party.Run1(restaurant);
+                        party.Run1(Restaurant);
                     }
                     foreach (Party party in partiesToRemove)
                     {
-                        restaurant.CurrentParties.Remove(party);
+                        Restaurant.CurrentParties.Remove(party);
                     }
 
-                    foreach (Table table in restaurant.Tables)
+                    foreach (Table table in Restaurant.Tables)
                     {
                         if (table.State == "dirty")
                         {
-                            busserPCQ.EnqueueTask(new BusserTask(table, restaurant));
+                            busserPCQ.EnqueueTask(new BusserTask(table, Restaurant));
                         }
                     }
                     Thread.Sleep(1000);
                     beatNumber++;
                     timeSinceLastEnteredParty++;
                     Console.WriteLine();
+                    RaiseStateChanged();
                 }
             }
             Console.WriteLine($"All parties have been served. Total Run Time: {beatNumber}");
             Console.WriteLine($"Average Party Size: {customersEntered / partiesEntered}");
-            Console.WriteLine($"Restaurant ended with {restaurant.Tables.Count} tables");
-            foreach(Table table in restaurant.Tables)
+            Console.WriteLine($"Restaurant ended with {Restaurant.Tables.Count} tables");
+            foreach(Table table in Restaurant.Tables)
             {
                 Console.Write($"{table.ID} ");
             }

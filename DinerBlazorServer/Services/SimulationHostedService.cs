@@ -22,11 +22,16 @@ namespace DinerBlazorServer.Services
             if (CanStart)
             {
                 this.Simulator.StateChanged += Simulator_StateChanged;
-                await Task.Run(() => Simulator.Run(Arguments));
+                Results = await Task.Run(() => Simulator.Run(Arguments));
             }
+            RaiseStateChanged();
         }
 
         private void Simulator_StateChanged(object? sender, EventArgs e)
+        {
+            StateChanged?.Invoke(this, EventArgs.Empty);
+        }
+        public void RaiseStateChanged()
         {
             StateChanged?.Invoke(this, EventArgs.Empty);
         }

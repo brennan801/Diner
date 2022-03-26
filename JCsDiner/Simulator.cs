@@ -79,7 +79,6 @@ namespace JCsDiner
             int partiesEntered = 0;
             int customersEntered = 0;
             int timeSinceLastEnteredParty = 0;
-            //CurrentParties = new List<Party>();
 
             using (HostPCQ)
             using (WaiterPCQ)
@@ -96,8 +95,6 @@ namespace JCsDiner
                             partiesEntered++;
                             timeSinceLastEnteredParty = 0;
                             customersEntered += newParty.Customers;
-                            //CurrentParties.Add(newParty);
-                            //RaiseStateChanged();
                             Restaurant.CurrentParties.Add(newParty);
                             newParty.EnterLobbyTime = beatNumber;
                             HostPCQ.EnqueueTask(new HostTask(newParty, Restaurant));

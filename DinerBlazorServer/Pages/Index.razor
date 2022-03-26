@@ -118,6 +118,7 @@
         {
             System.Console.WriteLine("about to start");
             await SimService.StartAsync(cancellationToken);
+            simResults = SimService.Results;
             System.Console.WriteLine("passed await");
         }
         catch(Exception e)

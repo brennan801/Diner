@@ -45,6 +45,11 @@
     <div class="col-2">
         <h3>Host</h3>
         <p>Host: @sim.HostPCQ.HostModel.State @if (sim.HostPCQ.HostModel.State == HostModel.States.SeatingParty) {<p>Party: @sim.HostPCQ.HostModel.PartyID</p> }</p>
+        <h3>Waiters</h3>
+        @foreach(WaiterModel waiter in sim.WaiterPCQ.WaiterModels)
+        {
+            <p>Waiter @waiter.ID: @waiter.State @if (waiter.State != WaiterModel.States.Free) { <p>Table: @waiter.PartyID</p> }</p>
+        }
     </div>
     <div class="col-2">
         <h3>Current Parties</h3>

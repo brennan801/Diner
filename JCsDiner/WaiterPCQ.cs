@@ -7,11 +7,25 @@ using System.Threading.Tasks;
 
 namespace JCsDiner
 {
+	public class WaiterModel
+    {
+        public WaiterModel(int id)
+        {
+			State = States.Free;
+			ID = id;
+        }
+        public int ID { get; set; }
+		public enum States { Free, GettingCheck, ReturningOrder, GettingOrder }
+		public States State { get; set; }
+		public int PartyID { get; set; }
+    }
+
     public class WaiterPCQ : IDisposable
 	{
 		int count = 0;
 		List<Thread> waiters;
-		readonly object lockForWaiterTasks = new object();
+        public List<WaiterModel> WaiterModels { get; set; }
+        readonly object lockForWaiterTasks = new object();
 		Queue<WaiterTask> getCheckTasks = new();
 		Queue<WaiterTask> getOrderTasks = new();
 		Queue<WaiterTask> returnOrderTasks = new();
@@ -19,15 +33,17 @@ namespace JCsDiner
 
         public WaiterPCQ()
         {
-
+			this.WaiterModels = new List<WaiterModel>();
         }
 		public WaiterPCQ(int numOfWaiters)
 		{
+			this.WaiterModels = new List<WaiterModel>();
 			waiters = new List<Thread>();
 			producerIsSendingTasks = true;
 			for (int i = 0; i < numOfWaiters; i++)
 			{
 				waiters.Add(new Thread(Waiter));
+				WaiterModels.Add(new WaiterModel(i));
             }
 			foreach(Thread waiter in waiters)
             {
@@ -99,9 +115,19 @@ namespace JCsDiner
 				}
 				if (task != null)
 				{
+					IEnumerable<WaiterModel> waiterQuery =
+						from waiter in WaiterModels
+						where waiter.ID == id
+						select waiter;
+					WaiterModel selectedWaiter = waiterQuery.FirstOrDefault();
+					if (task.GetType() == typeof(GetCheckTask)) { selectedWaiter.State = WaiterModel.States.GettingCheck; }
+					else if (task.GetType() == typeof(ReturnOrderTask)) { selectedWaiter.State = WaiterModel.States.ReturningOrder; }
+					else if (task.GetType() == typeof(GetOrderTask)) { selectedWaiter.State = WaiterModel.States.GettingOrder; }
+					selectedWaiter.PartyID = task.Party.ID;
 					task.StartTask(id);
 					Thread.Sleep(task.Time);
 					task.DoTask(id);
+					selectedWaiter.State = WaiterModel.States.Free;
 				}
 				else Thread.Sleep(1000);
 			}

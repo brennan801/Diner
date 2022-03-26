@@ -42,13 +42,19 @@
 
         <button @onclick="simulate">Simulate</button>
     </div>
-    <div class="col-3">
+    <div class="col-2">
+        <h3>Host</h3>
+        <p>Host: @sim.HostPCQ.HostModel.State @if (sim.HostPCQ.HostModel.State == HostModel.States.SeatingParty) {<p>Party: @sim.HostPCQ.HostModel.PartyID</p> }</p>
+    </div>
+    <div class="col-2">
+        <h3>Current Parties</h3>
         @foreach(Party party in sim.Restaurant.CurrentParties)
         {
-            <p>Party @party.ID: @party.State.Value</p>
+            <p>Party @party.ID: State - @party.State.Value , Size - @party.Customers</p>
         }
     </div>
-    <div class="col-3">
+    <div class="col-2">
+        <h3>Cooks</h3>
         @foreach(CookModel cook in sim.CookPCQ.Cooks)
         {
             <p>Cook @cook.ID: @cook.State @if (cook.State == CookModel.States.Cooking) { <p>Order: @cook.OrderID</p> }</p>

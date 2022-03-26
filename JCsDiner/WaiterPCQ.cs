@@ -17,6 +17,10 @@ namespace JCsDiner
 		Queue<WaiterTask> returnOrderTasks = new();
 		bool producerIsSendingTasks;
 
+        public WaiterPCQ()
+        {
+
+        }
 		public WaiterPCQ(int numOfWaiters)
 		{
 			waiters = new List<Thread>();

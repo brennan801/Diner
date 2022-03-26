@@ -7,15 +7,27 @@ using System.Threading.Tasks;
 
 namespace JCsDiner
 {
+	public class HostModel
+	{
+		public enum States { SeatingParty, Free }
+		public States State { get; set; }
+		public int PartyID {get; set;}
+        public HostModel()
+        {
+			State = States.Free;
+        }
+    }
     public class HostPCQ : IDisposable
     {
-		Thread host;
+        public HostModel HostModel { get; set; }
+        Thread host;
 		readonly object lockForHostTasks = new object();
 		Queue<HostTask> hostTasks = new();
 
         bool producerIsSendingTasks;
 		public HostPCQ()
 		{
+			HostModel = new HostModel();
 			producerIsSendingTasks = true;
 			host = new Thread(Host);
 			host.Start();
@@ -54,6 +66,8 @@ namespace JCsDiner
 					try
 					{
 						task.StartTask();
+						HostModel.State = HostModel.States.SeatingParty;
+						HostModel.PartyID = task.Party.ID;
 					}
 					catch(IndexOutOfRangeException e)
                     {
@@ -62,8 +76,10 @@ namespace JCsDiner
 						EnqueueTask(task);
 						continue;
                     }
+
 					Thread.Sleep(task.Time);
 					task.DoTask();
+					HostModel.State = HostModel.States.Free;
 				}
 				else Thread.Sleep(1000);
 			}

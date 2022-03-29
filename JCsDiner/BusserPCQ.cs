@@ -49,7 +49,7 @@ namespace JCsDiner
 				if (task != null)
 				{
 					task.StartTask();
-					Thread.Sleep(2000); // takes 2 seconds to 'clear' the table
+					Thread.Sleep(5000); // takes 5 seconds to 'clear' the table
 					task.DoTask();
 				}
 				else

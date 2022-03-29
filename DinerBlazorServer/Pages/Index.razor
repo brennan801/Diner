@@ -1,7 +1,11 @@
 ﻿@page "/"
+@using Blazor.Extensions
+@using Blazor.Extensions.Canvas.Canvas2D
 @using JCsDiner
 @using Services
 @inject SimulationHostedService SimService
+
+
 
 <PageTitle>Index</PageTitle>
 
@@ -66,6 +70,9 @@
         }
     </div>
 </div>
+<div class="row">
+    <BECanvas Width="300" Height="400" @ref="_canvasReference" ></BECanvas>
+</div>
 
 
 
@@ -92,6 +99,9 @@
     string result = "";
     SimulatorResults simResults = new();
     System.Threading.CancellationToken cancellationToken = new();
+    private Canvas2DContext _context;
+
+    protected BECanvasComponent _canvasReference;
 
     private void Simulator_StateChanged(object? sender, EventArgs e)
     {
@@ -130,5 +140,118 @@
             System.Console.WriteLine("Finally");
         }
         System.Console.WriteLine("we got here!");
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        this._context = await this._canvasReference.CreateCanvas2DAsync();
+        await this._context.ClearRectAsync(0, 0, 300, 400);
+        await this._context.SetFillStyleAsync("black");
+
+        await DrawTables();
+        await DrawLobby();
+
+        foreach(Party party in sim.Restaurant.CurrentParties)
+        {
+            if(party.State.Value != PartyState.States.WaitingInLobby)
+            {
+
+            }
+        }
+
+        int index = 0;
+        foreach(CookModel cook in sim.CookPCQ.Cooks)
+        {
+            var yPos = 20 + (10 * index);
+            await this._context.SetFillStyleAsync(getCookColor(cook));
+            await this._context.FillRectAsync(200, yPos, 5, 5);
+            index++;
+        }
+
+        //await this._context.SetFontAsync("10px serif");
+        //await this._context.StrokeTextAsync("Hello Blazor!!!", 10, 10);
+    }
+
+    public async Task DrawLobby()
+    {
+        int row = 0;
+        var waitingPartyQuery =
+            from party in sim.Restaurant.CurrentParties
+            where party.State.Value == PartyState.States.WaitingInLobby
+            select party;
+
+        foreach( Party party in waitingPartyQuery)
+        {
+            int size = party.Customers;
+            int fullRows = size / 4;
+            int leftOver = size % 4;
+
+            for(int i = 0; i < fullRows; i++)
+            {
+                int y = 10 + (4 * row);
+                await this._context.FillRectAsync(0, y, 2, 2);
+                await this._context.FillRectAsync(4, y, 2, 2);
+                await this._context.FillRectAsync(8, y, 2, 2);
+                await this._context.FillRectAsync(12, y, 2, 2);
+                row++;
+            }
+            for(int i = 0; i < leftOver; i++)
+            {
+                int x = 4 * i;
+                int y = 10 + (4 * row);
+                await this._context.FillRectAsync(x, y, 2, 2);
+            }
+            if(size % 4 != 0)
+            {
+                row++;
+            }
+            row++;
+        }
+    }
+
+    public async Task DrawTables()
+    {
+        int index = 0;
+        foreach(Table table in sim.Restaurant.Tables)
+        {
+            var x = ((20 * index) % 80) + 30;
+            int y = (25 * (index / 5)) + 10;
+            var count = table.numOfTables;
+            int w = 10 * count;
+
+            await this._context.SetFillStyleAsync(getTableColor(table));
+            await this._context.FillRectAsync(x, y, w, 20);
+
+            index += count;
+        }
+    }
+
+    public string getTableColor(Table table)
+    {
+        if (table.State == "clean" || table.State == "occupied") { return "black"; }
+        else return "red";
+    }
+
+    public string getCookColor(CookModel cook)
+    {
+        string color = "black";
+        switch ((int)cook.State)
+        {
+            case 0:
+                color = "green";
+                break;
+            case 1:
+                color = "orange";
+                break;
+            default: 
+                color = "black";
+                break;
+        }
+        return color;
+    }
+
+    public async Task AddDots()
+    {
+         await this._context.SetFillStyleAsync("red");
+         await this._context.FillRectAsync(8, 22, 2, 2);
     }
 }

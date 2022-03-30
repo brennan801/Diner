@@ -1,6 +1,7 @@
 ﻿@page "/"
 @using Blazor.Extensions
 @using Blazor.Extensions.Canvas.Canvas2D
+@using DinerBlazorServer.Data
 @using JCsDiner
 @using Services
 @inject SimulationHostedService SimService
@@ -46,7 +47,7 @@
 
         <button @onclick="simulate">Simulate</button>
     </div>
-    <div class="col-2">
+    @*<div class="col-2">
         <h3>Host</h3>
         <p>Host: @sim.HostPCQ.HostModel.State @if (sim.HostPCQ.HostModel.State == HostModel.States.SeatingParty) {<p>Party: @sim.HostPCQ.HostModel.PartyID</p> }</p>
         <h3>Waiters</h3>
@@ -68,8 +69,24 @@
         {
             <p>Cook @cook.ID: @cook.State @if (cook.State == CookModel.States.Cooking) { <p>Order: @cook.OrderID</p> }</p>
         }
+    </div>*@
+</div>
+
+<div class="row">
+    <div class="col-2">
+        <h4 class="text-center">Lobby</h4>
+    </div>
+    <div class="col-4">
+        <h4 class="text-center">Dining Room</h4>
+    </div>
+    <div class="col-2">
+        <h4 class="text-center">Waiters</h4>
+    </div>
+    <div class="col-2">
+        <h4 class="text-center">Cooks</h4>
     </div>
 </div>
+
 <div class="row">
     <BECanvas Width="300" Height="400" @ref="_canvasReference" ></BECanvas>
 </div>
@@ -99,6 +116,7 @@
     string result = "";
     SimulatorResults simResults = new();
     System.Threading.CancellationToken cancellationToken = new();
+    List<DrawnTable> DrawnTables = new();
     private Canvas2DContext _context;
 
     protected BECanvasComponent _canvasReference;
@@ -126,20 +144,14 @@
         SimService.CanStart = true;
         try
         {
-            System.Console.WriteLine("about to start");
             await SimService.StartAsync(cancellationToken);
             simResults = SimService.Results;
-            System.Console.WriteLine("passed await");
         }
         catch(Exception e)
         {
+            System.Console.WriteLine(e);
             throw;
         }
-        finally
-        {
-            System.Console.WriteLine("Finally");
-        }
-        System.Console.WriteLine("we got here!");
     }
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -149,26 +161,80 @@
 
         await DrawTables();
         await DrawLobby();
-
-        foreach(Party party in sim.Restaurant.CurrentParties)
-        {
-            if(party.State.Value != PartyState.States.WaitingInLobby)
-            {
-
-            }
-        }
-
-        int index = 0;
-        foreach(CookModel cook in sim.CookPCQ.Cooks)
-        {
-            var yPos = 20 + (10 * index);
-            await this._context.SetFillStyleAsync(getCookColor(cook));
-            await this._context.FillRectAsync(200, yPos, 5, 5);
-            index++;
-        }
+        await DrawWaiters();
+        await DrawCooks();
+        await DrawSeatedParties();
 
         //await this._context.SetFontAsync("10px serif");
         //await this._context.StrokeTextAsync("Hello Blazor!!!", 10, 10);
+    }
+
+    public async Task DrawSeatedParties()
+    {
+        var seatedParties =
+            from party in sim.Restaurant.CurrentParties
+            where party.State.Value != PartyState.States.WaitingInLobby
+            select party;
+
+        foreach(Party party in seatedParties)
+        {
+            var assignedTable = DrawnTables.First(t => t.ID == party.Table.ID);
+            for(int i = 0; i < party.Customers; i++)
+            {
+                await this._context.SetFillStyleAsync(getPartyColor(party));
+                await this._context.FillRectAsync(assignedTable.SeatPositions[i].x, assignedTable.SeatPositions[i].y, 2, 2);
+            }
+        }
+    }
+
+    public async Task DrawCooks()
+    {
+        int index = 0;
+        foreach(CookModel cook in sim.CookPCQ.Cooks)
+        {
+            var yPos = 5 + (10 * index);
+            await this._context.SetFillStyleAsync(getCookColor(cook));
+            await this._context.FillRectAsync(220, yPos, 5, 5);
+            index++;
+        }
+    }
+
+    public async Task DrawWaiters()
+    {
+        var FreeWaiters =
+            from waiter in sim.WaiterPCQ.WaiterModels
+            where waiter.State == WaiterModel.States.Free
+            select waiter;
+
+        await this._context.SetFillStyleAsync("black");
+
+        foreach(WaiterModel waiter in FreeWaiters)
+        {
+            int x = 170;
+            int y = 5 + (waiter.ID * 4);
+            int w = 3;
+            int h = 3;
+
+            await this._context.FillRectAsync(x, y, w, h);
+        }
+
+        var WorkingWaiters =
+            from waiter in sim.WaiterPCQ.WaiterModels
+            where waiter.State != WaiterModel.States.Free
+            select waiter;
+
+        foreach(WaiterModel waiter in WorkingWaiters)
+        {
+            var assignedTable = DrawnTables.First(t => t.ID == waiter.TableID);
+            int x = (assignedTable.LeftPos + assignedTable.RightPos) / 2;
+            int y = assignedTable.TopPos - 3;
+            int w = 3;
+            int h = 3;
+
+            await this._context.SetFillStyleAsync(getWaiterColor(waiter));
+
+            await this._context.FillRectAsync(x, y, w, h);
+        }
     }
 
     public async Task DrawLobby()
@@ -190,17 +256,17 @@
 
             for(int i = 0; i < fullRows; i++)
             {
-                int y = 10 + (4 * row);
-                await this._context.FillRectAsync(0, y, 2, 2);
-                await this._context.FillRectAsync(4, y, 2, 2);
-                await this._context.FillRectAsync(8, y, 2, 2);
-                await this._context.FillRectAsync(12, y, 2, 2);
+                int y = 5 + (4 * row);
+                await this._context.FillRectAsync(15, y, 2, 2);
+                await this._context.FillRectAsync(19, y, 2, 2);
+                await this._context.FillRectAsync(23, y, 2, 2);
+                await this._context.FillRectAsync(27, y, 2, 2);
                 row++;
             }
             for(int i = 0; i < leftOver; i++)
             {
-                int x = 4 * i;
-                int y = 10 + (4 * row);
+                int x = (4 * i) + 15;
+                int y = 5 + (4 * row);
                 await this._context.FillRectAsync(x, y, 2, 2);
             }
             if(size % 4 != 0)
@@ -214,17 +280,59 @@
     public async Task DrawTables()
     {
         int index = 0;
-        foreach(Table table in sim.Restaurant.Tables)
+        foreach (Table table in sim.Restaurant.Tables)
         {
-            var x = ((20 * index) % 80) + 30;
-            int y = (25 * (index / 4)) + 10;
+            var x = ((20 * index) % 80) + 65;
+            int y = (30 * (index / 4)) + 5;
             var count = table.numOfTables;
             int w = 10 * count;
+
+            if (!DrawnTables.Any(t => t.ID == table.ID))
+            {
+                DrawnTables.Add(new DrawnTable(table.ID, x, x + w, y, count));
+            }
+            else
+            {
+                DrawnTables.First<DrawnTable>(t => t.ID == table.ID);
+                DrawnTables.Remove(DrawnTables.Where(t => t.ID == table.ID).First());
+                DrawnTables.Add(new DrawnTable(table.ID, x, x + w, y, count));
+            }
 
             await this._context.SetFillStyleAsync(getTableColor(table));
             await this._context.FillRectAsync(x, y, w, 20);
 
             index += count;
+        }
+    }
+
+    public string getPartyColor(Party party)
+    {
+        switch ((int)party.State.Value)
+        {
+            case 0:
+                return "black";
+            case 1:
+                return "blue";
+            case 2: 
+                return "#7CFC00";
+            case 3:
+                return "#7CFC00";
+            case 4:
+                return "green";
+            case 5:
+                return "yellow";
+            case 6: 
+                return "yellow";
+            case 7:
+                return "orange";
+            case 8:
+                return "pink";
+            case 9: 
+                return "red";
+            case 10:
+                return "black";
+            default:
+                return "black";
         }
     }
 
@@ -253,9 +361,20 @@
         return color;
     }
 
-    public async Task AddDots()
+    public string getWaiterColor(WaiterModel waiter)
     {
-         await this._context.SetFillStyleAsync("red");
-         await this._context.FillRectAsync(8, 22, 2, 2);
+        switch ((int)waiter.State)
+        {
+            case 0:
+                return "black";
+            case 1:
+                return "red";
+            case 2: 
+                return "yellow";
+            case 3:
+                return "green";
+            default:
+                return "black";
+        }
     }
 }

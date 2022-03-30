@@ -18,6 +18,7 @@ namespace JCsDiner
 		public enum States { Free, GettingCheck, ReturningOrder, GettingOrder }
 		public States State { get; set; }
 		public int PartyID { get; set; }
+		public int TableID { get; set; }
     }
 
     public class WaiterPCQ : IDisposable
@@ -124,6 +125,7 @@ namespace JCsDiner
 					else if (task.GetType() == typeof(ReturnOrderTask)) { selectedWaiter.State = WaiterModel.States.ReturningOrder; }
 					else if (task.GetType() == typeof(GetOrderTask)) { selectedWaiter.State = WaiterModel.States.GettingOrder; }
 					selectedWaiter.PartyID = task.Party.ID;
+					selectedWaiter.TableID = task.Party.Table.ID;
 					task.StartTask(id);
 					Thread.Sleep(task.Time);
 					task.DoTask(id);

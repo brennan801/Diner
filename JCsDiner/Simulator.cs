@@ -43,6 +43,7 @@ namespace JCsDiner
         public CookPCQ CookPCQ { get; private set; }
         public HostPCQ HostPCQ { get; private set; }
         public WaiterPCQ WaiterPCQ { get; private set; }
+        public BusserPCQ BusserPCQ { get; private set; }
         //public List<Party> CurrentParties { get; set; }
 
         public event EventHandler StateChanged;
@@ -53,6 +54,7 @@ namespace JCsDiner
             this.CookPCQ = new CookPCQ();
             this.HostPCQ = new HostPCQ();
             this.WaiterPCQ = new WaiterPCQ();
+            this.BusserPCQ = new BusserPCQ();
         }
 
         public void RaiseStateChanged()
@@ -74,7 +76,7 @@ namespace JCsDiner
             this.Restaurant = new Restaurant(NumberOfTables);
             this.HostPCQ = new HostPCQ();
             this.WaiterPCQ = new WaiterPCQ(NumberOfWaiters);
-            var busserPCQ = new BusserPCQ();
+            this.BusserPCQ = new BusserPCQ();
             this.CookPCQ = new CookPCQ(NumberOfCooks);
             int partiesEntered = 0;
             int customersEntered = 0;
@@ -82,7 +84,7 @@ namespace JCsDiner
 
             using (HostPCQ)
             using (WaiterPCQ)
-            using (busserPCQ)
+            using (BusserPCQ)
             using (CookPCQ)
             {
                 while (customersServed < Customers)
@@ -141,7 +143,7 @@ namespace JCsDiner
                     {
                         if (table.State == "dirty")
                         {
-                            busserPCQ.EnqueueTask(new BusserTask(table, Restaurant));
+                            BusserPCQ.EnqueueTask(new BusserTask(table, Restaurant));
                         }
                     }
                     Thread.Sleep(1000);

@@ -29,14 +29,48 @@
                     break;
                 case 3: AddSeatPositionsFor3Table();
                     break;
+                case 4: AddSeatPositionsFor4Table();
+                    break;
                 default: AddSeatPositionsFor1Table();
                     break;
             }
         }
 
+        private void AddSeatPositionsFor4Table()
+        {
+            SeatPositions.Add((LeftPos - 2, TopPos));
+            SeatPositions.Add((RightPos, TopPos));
+            SeatPositions.Add((LeftPos - 2, TopPos + 9));
+            SeatPositions.Add((RightPos, TopPos + 9));
+            SeatPositions.Add((LeftPos - 2, TopPos + 18));
+            SeatPositions.Add((RightPos, TopPos + 18));
+            SeatPositions.Add((LeftPos + 4, TopPos - 2));
+            SeatPositions.Add((RightPos - 4, TopPos - 2));
+            SeatPositions.Add((LeftPos + 4, TopPos + 20));
+            SeatPositions.Add((RightPos - 4, TopPos + 20));
+            SeatPositions.Add((LeftPos + 8, TopPos - 2));
+            SeatPositions.Add((RightPos - 8, TopPos - 2));
+            SeatPositions.Add((LeftPos + 8, TopPos + 20));
+            SeatPositions.Add((RightPos - 8, TopPos + 20));
+            SeatPositions.Add((LeftPos + 12, TopPos + 20));
+            SeatPositions.Add((RightPos - 12, TopPos + 20));
+        }
+
         private void AddSeatPositionsFor3Table()
         {
-            throw new NotImplementedException();
+            SeatPositions.Add((LeftPos - 2, TopPos));
+            SeatPositions.Add((RightPos, TopPos));
+            SeatPositions.Add((LeftPos - 2, TopPos + 9));
+            SeatPositions.Add((RightPos, TopPos + 9));
+            SeatPositions.Add((LeftPos - 2, TopPos + 18));
+            SeatPositions.Add((RightPos, TopPos + 18));
+            SeatPositions.Add((LeftPos + 4, TopPos - 2));
+            SeatPositions.Add((RightPos - 4, TopPos - 2));
+            SeatPositions.Add((LeftPos + 4, TopPos + 20));
+            SeatPositions.Add((RightPos - 4, TopPos + 20));
+            SeatPositions.Add((LeftPos + 8, TopPos - 2));
+            SeatPositions.Add((RightPos - 8, TopPos -2));
+            SeatPositions.Add((RightPos - 8, TopPos + 20));
         }
 
         private void AddSeatPositionsFor2Table()

@@ -164,9 +164,36 @@
         await DrawWaiters();
         await DrawCooks();
         await DrawSeatedParties();
+        await DrawBusser();
 
         //await this._context.SetFontAsync("10px serif");
         //await this._context.StrokeTextAsync("Hello Blazor!!!", 10, 10);
+    }
+
+    public async Task DrawBusser()
+    {
+        var busser = sim.BusserPCQ.Busser;
+        if(busser.State == BusserModel.States.Free)
+        {
+            int x = 180;
+            int y = 5;
+            int w = 3;
+            int h = 3;
+
+            await this._context.SetFillStyleAsync("black");
+            await this._context.FillRectAsync(x, y, w, h);
+        }
+        else
+        {
+            var assignedTable = DrawnTables.First(t => t.ID == busser.TableID);
+            int x = (assignedTable.LeftPos + assignedTable.RightPos) / 2;
+            int y = assignedTable.TopPos + 20;
+            int w = 3;
+            int h = 3;
+
+            await this._context.SetFillStyleAsync("green");
+            await this._context.FillRectAsync(x, y, w, h);
+        }
     }
 
     public async Task DrawSeatedParties()
@@ -207,6 +234,15 @@
             select waiter;
 
         await this._context.SetFillStyleAsync("black");
+
+        foreach(WaiterModel waiter in sim.WaiterPCQ.WaiterModels)
+        {
+            double x = 170;
+            double y = 5 + (waiter.ID * 4);
+            int w = 3;
+            int h = 3;
+
+        }
 
         foreach(WaiterModel waiter in FreeWaiters)
         {

@@ -10,6 +10,7 @@ namespace JCsDiner
 {
     public class SimulatorArguments
     {
+        public string Name { get; set; }
         public int NumberOfWaiters { get; set; }
         public int NumberOfCooks { get; set; }
         public int Customers { get; set; }
@@ -20,6 +21,7 @@ namespace JCsDiner
     }
     public class SimulatorResults
     {
+        public int ID { get; set; }
         public string Name { get; set; }
         public int Runtime { get; set; }
         public int NumberOfCustomers { get; set; }
@@ -32,6 +34,7 @@ namespace JCsDiner
     }
     public class Simulator
     {
+        public string Name { get; set;}
         public int NumberOfWaiters { get; set; }
         public int NumberOfCooks { get; set; }
         public int Customers { get; private set; }
@@ -47,6 +50,7 @@ namespace JCsDiner
         //public List<Party> CurrentParties { get; set; }
 
         public event EventHandler StateChanged;
+        public SimulatorResults Results { get; private set; }
 
         public Simulator()
         {
@@ -55,6 +59,7 @@ namespace JCsDiner
             this.HostPCQ = new HostPCQ();
             this.WaiterPCQ = new WaiterPCQ();
             this.BusserPCQ = new BusserPCQ();
+            this.Results = new();
         }
 
         public void RaiseStateChanged()
@@ -62,8 +67,9 @@ namespace JCsDiner
             StateChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        public SimulatorResults Run(SimulatorArguments simArgs)
+        public void Run(SimulatorArguments simArgs)
         {
+            this.Name = simArgs.Name;
             AveragePartySize = simArgs.AveragePartySize;
             this.Customers = simArgs.Customers;
             this.NumberOfWaiters = simArgs.NumberOfWaiters;
@@ -160,8 +166,9 @@ namespace JCsDiner
             {
                 Console.Write($"{table.ID} ");
             }
-            SimulatorResults results = new()
+            Results = new()
             {
+                Name = Name,
                 Runtime = beatNumber,
                 NumberOfCustomers = Customers,
                 NumberOfWaiters = NumberOfWaiters,
@@ -171,7 +178,8 @@ namespace JCsDiner
                 SetAveragePartySize = AveragePartySize,
                 ActualAveragePartySize = customersEntered / partiesEntered
             };
-            return results;
+            Console.WriteLine("raising state changed");
+            RaiseStateChanged();
         }
 
         public Party TryGenerateParty(int id, int timeSinceLastEnteredParty)

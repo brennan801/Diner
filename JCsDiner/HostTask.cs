@@ -31,6 +31,7 @@ namespace JCsDiner
             {
                 throw new IndexOutOfRangeException(e.Message);
             }
+            Party.State = new PartyBeingSeated(Party);
             Table.SetParty(Party);
             Party.Table = Table;
         }

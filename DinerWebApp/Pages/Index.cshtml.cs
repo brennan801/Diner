@@ -50,10 +50,10 @@ namespace DinerWebApp.Pages
                 AveragePartyEntryTime = entryTime,
                 AverageEatingTime = eatingTime
             };
-            SimulatorResults results = WebSimulator.Run(simArgs);
-            Results = results;
-            results.Name = name;
-            dbService.addRun(results);
+            //SimulatorResults results = WebSimulator.Run(simArgs);
+            //Results = results;
+            //results.Name = name;
+            //dbService.addRun(results);
 
 
         }

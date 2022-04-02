@@ -5,103 +5,107 @@
 @using JCsDiner
 @using Services
 @inject SimulationHostedService SimService
+@inject DinerDbContext dbContext
 
 
 
 <PageTitle>Index</PageTitle>
 
-<div class="row">
+<div class="row align-items-center">
 
     <div class="col-6">
+        <div class="py-1">
         <label for="name">Simulation Name:</label>
         <input @bind=simName  type="text" min="1" placeholder="Simulation Name" required />
-        <br />
+        </div>
 
+        <div class="py-1">
         <label for="parties">Number of Parties:</label>
         <input @bind=parties name="parties" type="number" min="1" max="999" required />
-        <br />
+        </div>
 
+        <div class="py-1">
         <label for="waiters">Number of Waiters:</label>
         <input @bind=waiters name="waiters" type="number" min="1" max="99" required />
-        <br />
+        </div>
 
+        <div class="py-1">
         <label for="cooks">Number of Cooks:</label>
         <input @bind=cooks name="cooks" type="number" min="1" max="99" required/>
-        <br />
+        </div>
 
+        <div class="py-1">
         <label for="tables">Number of Tables:</label>
         <input @bind=tables name="tables" type="number" min="3" max="99" required />
-        <br />
+        </div>
 
+        <div class="py-1">
         <label for="partySize">Average Party Size:</label>
         <input @bind=partySize name="partySize" type="number" min="1" max="13" required />
-        <br />
+        </div>
 
+        <div class="py-1">
         <label for="entryTime">Average Party Entry Time:</label>
         <input @bind=entryTime name="entryTime" type="range" min="1" max="10"/>
-        <br />
+        </div>
 
+        <div class="py-1">
         <label for="eatingTime">Average Party Eat Time:</label>
         <input @bind=eatingTime name="eatingTime" type="range" min="4" max="14"/>
-        <br />
+        </div>
 
+        <div class="py-3">
         <button @onclick="simulate">Simulate</button>
+        </div>
     </div>
-    @*<div class="col-2">
-        <h3>Host</h3>
-        <p>Host: @sim.HostPCQ.HostModel.State @if (sim.HostPCQ.HostModel.State == HostModel.States.SeatingParty) {<p>Party: @sim.HostPCQ.HostModel.PartyID</p> }</p>
-        <h3>Waiters</h3>
-        @foreach(WaiterModel waiter in sim.WaiterPCQ.WaiterModels)
-        {
-            <p>Waiter @waiter.ID: @waiter.State @if (waiter.State != WaiterModel.States.Free) { <p>Table: @waiter.PartyID</p> }</p>
-        }
+    <div class="col-6 rounded border border-5 border-dark align-items-center">
+        <div class="row text-center">
+            <h3 class="text-center">Previous Run's Results:</h3>
+            <div class="col-6">
+                <p>Simulation: @sim.Results.Name</p>
+                <p>Run Time: @sim.Results.Runtime</p>
+                <p>Parties: @sim.Results.NumberOfCustomers</p>
+                <p>Waiters: @sim.Results.NumberOfWaiters</p>
+            </div>
+            <div class="col-6">
+                <p>Cooks: @sim.Results.NumberOfCooks</p>
+                <p>Tables: @sim.Results.NumberOfTables</p>
+                <p>Avg Party Size: @sim.Results.ActualAveragePartySize</p>
+                <p>Avg Entry Time: @sim.Results.AverageEntryTime</p>
+            </div>
+        </div>
+        <div class="row justify-content-md-center">
+            <div class="col-6 text-center">
+                <button class="button" @onclick="saveRun">SaveRun</button>
+            </div>
+        </div>
     </div>
-    <div class="col-2">
-        <h3>Current Parties</h3>
-        @foreach(Party party in sim.Restaurant.CurrentParties)
-        {
-            <p>Party @party.ID: State - @party.State.Value , Size - @party.Customers</p>
-        }
-    </div>
-    <div class="col-2">
-        <h3>Cooks</h3>
-        @foreach(CookModel cook in sim.CookPCQ.Cooks)
-        {
-            <p>Cook @cook.ID: @cook.State @if (cook.State == CookModel.States.Cooking) { <p>Order: @cook.OrderID</p> }</p>
-        }
-    </div>*@
 </div>
 
 <div class="row">
-    <div class="col-2">
-        <h4 class="text-center">Lobby</h4>
+    <div class="col-1">
+        <h5 class="text-center">Lobby</h5>
+    </div>
+    <div class="col-1">
+        <h5 class="text-center">Host</h5>
     </div>
     <div class="col-4">
-        <h4 class="text-center">Dining Room</h4>
+        <h5 class="text-center">Dining Room</h5>
+    </div>
+    <div class="col-1">
+        <h5 class="text-center">Waiters</h5>
+    </div>
+    <div class="col-1">
+        <h5 class="text-center">Busser</h5>
     </div>
     <div class="col-2">
-        <h4 class="text-center">Waiters</h4>
-    </div>
-    <div class="col-2">
-        <h4 class="text-center">Cooks</h4>
+        <h5 class="text-center">Cooks</h5>
     </div>
 </div>
 
 <div class="row">
-    <BECanvas Width="300" Height="400" @ref="_canvasReference" ></BECanvas>
+    <BECanvas Width="300" Height="100" @ref="_canvasReference" ></BECanvas>
 </div>
-
-
-
-<h3>Results:</h3>
-<p>Simulation: @simResults.Name</p>
-<p>Run Time: @simResults.Runtime</p>
-<p>parties: @simResults.NumberOfCustomers</p>
-<p>waiters: @simResults.NumberOfWaiters</p>
-<p>cooks: @simResults.NumberOfCooks</p>
-<p>tables: @simResults.NumberOfTables</p>
-<p>avg party size: @simResults.ActualAveragePartySize</p>
-<p>avg entry time: @simResults.AverageEntryTime</p>
 
 @code{
     Simulator sim = new();
@@ -126,12 +130,19 @@
         InvokeAsync(() => StateHasChanged());
     }
 
-    async Task simulate()
+    private async Task saveRun()
+    {
+        await dbContext.AddAsync(sim.Results);
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task simulate()
     {
         sim = SimService.Simulator;
         SimService.StateChanged += Simulator_StateChanged;
         SimulatorArguments simArgs = new()
         {
+            Name = simName,
             Customers = parties,
             NumberOfWaiters = waiters,
             NumberOfCooks = cooks,
@@ -145,7 +156,6 @@
         try
         {
             await SimService.StartAsync(cancellationToken);
-            simResults = SimService.Results;
         }
         catch(Exception e)
         {
@@ -161,13 +171,53 @@
 
         await DrawTables();
         await DrawLobby();
-        await DrawWaiters();
-        await DrawCooks();
+        await DrawHost();
         await DrawSeatedParties();
+        await DrawWaiters();
         await DrawBusser();
+        await DrawCooks();
 
         //await this._context.SetFontAsync("10px serif");
         //await this._context.StrokeTextAsync("Hello Blazor!!!", 10, 10);
+    }
+
+    public async Task DrawHost()
+    {
+        HostModel host = sim.HostPCQ.HostModel;
+
+        if(host.State == HostModel.States.Free)
+        {
+            await this._context.SetFillStyleAsync("black");
+            await this._context.FillRectAsync(35, 5, 3, 3);
+        }
+        else
+        {
+            int row = 0;
+            await this._context.SetFillStyleAsync("blue");
+            await this._context.FillRectAsync(35, 5, 3, 3);
+            var assignedParty = sim.Restaurant.CurrentParties.First(p => p.State.Value == PartyState.States.BeingSeated);
+            int size = assignedParty.Customers;
+            int fullRows = size / 4;
+            int leftOver = size % 4;
+
+            for(int i = 0; i < fullRows; i++)
+            {
+                int y = 15 + (4 * row);
+                await this._context.FillRectAsync(32, y, 2, 2);
+                await this._context.FillRectAsync(36, y, 2, 2);
+                await this._context.FillRectAsync(40, y, 2, 2);
+                await this._context.FillRectAsync(44, y, 2, 2);
+                row++;
+            }
+            for(int i = 0; i < leftOver; i++)
+            {
+                int x = (4 * i) + 32;
+                int y = 15 + (4 * row);
+                await this._context.FillRectAsync(x, y, 2, 2);
+            }
+        }
+
+
     }
 
     public async Task DrawBusser()
@@ -175,7 +225,7 @@
         var busser = sim.BusserPCQ.Busser;
         if(busser.State == BusserModel.States.Free)
         {
-            int x = 180;
+            int x = 190;
             int y = 5;
             int w = 3;
             int h = 3;
@@ -200,7 +250,7 @@
     {
         var seatedParties =
             from party in sim.Restaurant.CurrentParties
-            where party.State.Value != PartyState.States.WaitingInLobby
+            where party.State.Value != PartyState.States.WaitingInLobby && party.State.Value != PartyState.States.BeingSeated
             select party;
 
         foreach(Party party in seatedParties)
@@ -235,18 +285,9 @@
 
         await this._context.SetFillStyleAsync("black");
 
-        foreach(WaiterModel waiter in sim.WaiterPCQ.WaiterModels)
-        {
-            double x = 170;
-            double y = 5 + (waiter.ID * 4);
-            int w = 3;
-            int h = 3;
-
-        }
-
         foreach(WaiterModel waiter in FreeWaiters)
         {
-            int x = 170;
+            int x = 165;
             int y = 5 + (waiter.ID * 4);
             int w = 3;
             int h = 3;
@@ -293,15 +334,15 @@
             for(int i = 0; i < fullRows; i++)
             {
                 int y = 5 + (4 * row);
-                await this._context.FillRectAsync(15, y, 2, 2);
-                await this._context.FillRectAsync(19, y, 2, 2);
-                await this._context.FillRectAsync(23, y, 2, 2);
-                await this._context.FillRectAsync(27, y, 2, 2);
+                await this._context.FillRectAsync(2, y, 2, 2);
+                await this._context.FillRectAsync(6, y, 2, 2);
+                await this._context.FillRectAsync(10, y, 2, 2);
+                await this._context.FillRectAsync(14, y, 2, 2);
                 row++;
             }
             for(int i = 0; i < leftOver; i++)
             {
-                int x = (4 * i) + 15;
+                int x = (4 * i) + 2;
                 int y = 5 + (4 * row);
                 await this._context.FillRectAsync(x, y, 2, 2);
             }

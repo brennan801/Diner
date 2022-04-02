@@ -1,0 +1,50 @@
+﻿@page "/previousRuns"
+@using DinerBlazorServer.Services
+@using JCsDiner
+@inject DinerDbContext dbContext
+
+<h3>PreviousRuns</h3>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Row</th>
+      <th scope="col">Name</th>
+      <th scope="col">RunTime</th>
+      <th scope="col"># Of Parties</th>
+      <th scope="col"># Of Waiters</th>
+      <th scope="col"># Of Cooks</th>
+      <th scope="col"># Of Tables</th>
+      <th scope="col">Avg Party Entry Time</th>
+      <th scope="col">Set Avg Party Size</th>
+      <th scope="col">Actual Avg Party Size</th>
+    </tr>
+  </thead>
+  <tbody>
+        @foreach(SimulatorResults result in results)
+        {
+            <tr>
+                <td>@result.ID</td>
+                <td>@result.Name</td>
+                <td>@result.Runtime</td>
+                <td>@result.NumberOfCustomers</td>
+                <td>@result.NumberOfWaiters</td>
+                <td>@result.NumberOfCooks</td>
+                <td>@result.NumberOfTables</td>
+                <td>@result.AverageEntryTime</td>
+                <td>@result.SetAveragePartySize</td>
+                <td>@result.ActualAveragePartySize</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    List<SimulatorResults> results = new();
+
+    protected override void OnInitialized()
+    {
+        results = dbContext.Results.OrderBy(r => r.ID).ToList();
+    }
+
+}

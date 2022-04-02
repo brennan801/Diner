@@ -27,6 +27,17 @@ namespace DinerBlazorServer.Services
             RaiseStateChanged();
         }
 
+        public override async Task StopAsync(CancellationToken stoppingToken)
+        {
+            Console.WriteLine(
+                "Consume Scoped Service Hosted Service is stopping.");
+
+            Simulator.StopSim();
+            CanStart = false;
+
+            await base.StopAsync(stoppingToken);
+        }
+
         private void Simulator_StateChanged(object? sender, EventArgs e)
         {
             StateChanged?.Invoke(this, EventArgs.Empty);

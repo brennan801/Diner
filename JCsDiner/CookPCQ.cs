@@ -21,6 +21,7 @@ namespace JCsDiner
 		public List<CookModel> Cooks { get; private set; }
 		readonly object lockForWaiterTasks = new object();
 		Queue<CookTask> cookTasks = new();
+		public int RunSpeed { get; set; }
 
 		bool producerIsSendingTasks;
 
@@ -29,8 +30,9 @@ namespace JCsDiner
 			CookThreads = new List<Thread>();
 			Cooks = new List<CookModel>();
         }
-		public CookPCQ(int numOfCooks)
+		public CookPCQ(int numOfCooks, int runSpeed)
 		{
+			RunSpeed = runSpeed;
 			CookThreads = new List<Thread>();
 			Cooks = new List<CookModel>();
 			producerIsSendingTasks = true;
@@ -84,11 +86,11 @@ namespace JCsDiner
 					CookModel selectedCook = cookQuery.FirstOrDefault();
 					selectedCook.State = CookModel.States.Cooking;
 					selectedCook.OrderID = task.Order.Table.Party.ID;
-					Thread.Sleep(task.Time);
+					Thread.Sleep(task.Time * RunSpeed);
 					task.DoTask(id);
 					selectedCook.State = CookModel.States.Free;
 				}
-				else Thread.Sleep(1000);
+				else Thread.Sleep(RunSpeed);
 			}
 		}
 

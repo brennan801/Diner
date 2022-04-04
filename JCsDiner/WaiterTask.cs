@@ -24,7 +24,7 @@ namespace JCsDiner
             CookPCQ = cookPCQ;
             Restaurant = restaurant;
             Party = party;
-            Time = Party.Customers * 1000;
+            Time = Party.Customers;
         }
 
         public override void DoTask(int id)
@@ -49,7 +49,7 @@ namespace JCsDiner
     {
         public GetCheckTask(Party party)
         {
-            Time = 1000;
+            Time = 1;
             Party = party;
         }
 
@@ -71,7 +71,7 @@ namespace JCsDiner
 
         public ReturnOrderTask(Order order, int averageEatingTime)
         {
-            Time = 1000;
+            Time = 1;
             Order = order;
             AverageEatingTime = averageEatingTime;
             Party = order.Table.Party;

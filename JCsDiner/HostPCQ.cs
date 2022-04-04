@@ -23,14 +23,21 @@ namespace JCsDiner
         Thread host;
 		readonly object lockForHostTasks = new object();
 		Queue<HostTask> hostTasks = new();
-
+		public int RunSpeed { get; set; }
         bool producerIsSendingTasks;
-		public HostPCQ()
+
+        public HostPCQ()
+        {
+			HostModel = new();
+		}
+
+		public HostPCQ(int runSpeed)
 		{
 			HostModel = new HostModel();
 			producerIsSendingTasks = true;
 			host = new Thread(Host);
 			host.Start();
+			RunSpeed = runSpeed;
 		}
 
 		public void EnqueueTask(HostTask task)
@@ -77,11 +84,11 @@ namespace JCsDiner
 						continue;
                     }
 
-					Thread.Sleep(task.Time);
+					Thread.Sleep(task.Time * RunSpeed);
 					task.DoTask();
 					HostModel.State = HostModel.States.Free;
 				}
-				else Thread.Sleep(1000);
+				else Thread.Sleep(RunSpeed);
 			}
 		}
 

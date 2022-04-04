@@ -54,12 +54,17 @@
         <input @bind=eatingTime disabled=@sim.IsRunning name="eatingTime" type="range" min="4" max="14"/>
         </div>
 
+        <div class="py-1">
+        <label for="runSpeed">Simulation Run Speed:</label>
+        <select @bind="runSpeed" name="runSpeed">
+            <option value="Slow">Slow</option>
+            <option value="Fast">Fast</option>
+        </select>
+        </div>
+
         <div class="row justify-content-around">
             <div class="col-3 py-3">
                 <button @onclick="simulate" disabled=@sim.IsRunning>Simulate</button>
-            </div>
-            <div class="col-3 py-3">
-                <button @onclick="cancel" disabled=@isNotRunning>Cancel</button>
             </div>
         </div>
     </div>
@@ -89,32 +94,43 @@
     </div>
 </div>
 
-<div class="rounded border border-5 border-dark my-5 p-3">
-    <div class="row">
-        <div class="col-1">
-            <h5 class="text-center">Lobby</h5>
+
+
+    <div class="rounded border border-5 border-dark my-5 p-3">
+        <div class="row">
+            @if (runSpeed == "Slow")
+            {
+            <div class="col-1">
+                <h5 class="text-center">Lobby</h5>
+            </div>
+            <div class="col-1">
+                <h5 class="text-center">Host</h5>
+            </div>
+            <div class="col-4">
+                <h5 class="text-center">Dining Room</h5>
+            </div>
+            <div class="col-2">
+                <h5 class="text-center">Waiters</h5>
+            </div>
+            <div class="col-2">
+                <h5 class="text-center">Busser</h5>
+            </div>
+            <div class="col-2">
+                <h5 class="text-center">Cooks</h5>
+            </div>
+            }else
+            {
+                <div>
+                    <h5 class="text-center">Simulation Progress</h5>
+                </div>
+            }
         </div>
-        <div class="col-1">
-            <h5 class="text-center">Host</h5>
-        </div>
-        <div class="col-4">
-            <h5 class="text-center">Dining Room</h5>
-        </div>
-        <div class="col-2">
-            <h5 class="text-center">Waiters</h5>
-        </div>
-        <div class="col-2">
-            <h5 class="text-center">Busser</h5>
-        </div>
-        <div class="col-2">
-            <h5 class="text-center">Cooks</h5>
+        <div class="row">
+            <BECanvas Width="300" Height="200" @ref="_canvasReference" ></BECanvas>
         </div>
     </div>
 
-    <div class="row">
-        <BECanvas Width="300" Height="100" @ref="_canvasReference" ></BECanvas>
-    </div>
-</div>
+
 
 @code{
     bool isNotRunning = true;
@@ -127,6 +143,7 @@
     int partySize = 4;
     int entryTime = 4;
     int eatingTime = 6;
+    string runSpeed = "Slow";
     string result = "";
     SimulatorResults simResults = new();
     System.Threading.CancellationToken cancellationToken = new();
@@ -146,11 +163,6 @@
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task cancel()
-    {
-        await SimService.StopAsync(cancellationToken);
-    }
-
     public async Task simulate()
     {
         sim = SimService.Simulator;
@@ -164,10 +176,13 @@
             NumberOfTables = tables,
             AveragePartySize = partySize,
             AveragePartyEntryTime = entryTime,
-            AverageEatingTime = eatingTime
+            AverageEatingTime = eatingTime,
+            RunSpeed = runSpeed
         };
         SimService.Arguments = simArgs;
         SimService.CanStart = true;
+        await this._context.ClearRectAsync(0, 0, 300, 400);
+
         try
         {
             await SimService.StartAsync(cancellationToken);
@@ -182,16 +197,26 @@
     {
         isNotRunning = !sim.IsRunning;
         this._context = await this._canvasReference.CreateCanvas2DAsync();
-        await this._context.ClearRectAsync(0, 0, 300, 400);
         await this._context.SetFillStyleAsync("black");
 
-        await DrawTables();
-        await DrawLobby();
-        await DrawHost();
-        await DrawSeatedParties();
-        await DrawWaiters();
-        await DrawBusser();
-        await DrawCooks();
+        if(sim.RunSpeed == 1000)
+        {
+
+            await this._context.ClearRectAsync(0, 0, 300, 400);
+            await DrawTables();
+            await DrawLobby();
+            await DrawHost();
+            await DrawSeatedParties();
+            await DrawWaiters();
+            await DrawBusser();
+            await DrawCooks();
+        }
+
+        else
+        {
+            await DrawCompletionBar();
+        }
+
 
         //await this._context.SetFontAsync("10px serif");
         //await this._context.StrokeTextAsync("Hello Blazor!!!", 10, 10);
@@ -396,6 +421,33 @@
 
             index += count;
         }
+    }
+
+    public async Task DrawCompletionBar()
+    {
+        var servedParties = sim.PartiesServed;
+        var enteredParties = sim.PartiesEntered;
+        var totalParties = sim.Customers;
+        if(enteredParties == 0)
+        {
+            await this._context.ClearRectAsync(0, 0, 300, 400);
+        }
+        if(totalParties > 0)
+        {
+            await DrawCompletionBarBoundry();
+            await _context.SetFillStyleAsync("green");
+            double progress = ((((.5 * servedParties) + (.5 * enteredParties)) / totalParties)) * 100;
+            await _context.FillRectAsync(100, 25, progress, 25);
+        }
+    }
+
+    public async Task DrawCompletionBarBoundry()
+    {
+        await _context.SetFillStyleAsync("black");
+        await _context.FillRectAsync(98, 23, 2, 28);
+        await _context.FillRectAsync(98, 50, 104, 2);
+        await _context.FillRectAsync(98, 23, 104, 2);
+        await _context.FillRectAsync(200, 23, 2, 28);
     }
 
     public string getPartyColor(Party party)

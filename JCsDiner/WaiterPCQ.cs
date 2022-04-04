@@ -26,6 +26,8 @@ namespace JCsDiner
 		int count = 0;
 		List<Thread> waiters;
         public List<WaiterModel> WaiterModels { get; set; }
+        public int RunSpeed { get; }
+
         readonly object lockForWaiterTasks = new object();
 		Queue<WaiterTask> getCheckTasks = new();
 		Queue<WaiterTask> getOrderTasks = new();
@@ -36,7 +38,7 @@ namespace JCsDiner
         {
 			this.WaiterModels = new List<WaiterModel>();
         }
-		public WaiterPCQ(int numOfWaiters)
+		public WaiterPCQ(int numOfWaiters, int runSpeed)
 		{
 			this.WaiterModels = new List<WaiterModel>();
 			waiters = new List<Thread>();
@@ -50,7 +52,8 @@ namespace JCsDiner
             {
 				waiter.Start();
             }
-		}
+            RunSpeed = runSpeed;
+        }
 
 		public void EnqueueTask(WaiterTask task)
 		{
@@ -127,11 +130,11 @@ namespace JCsDiner
 					selectedWaiter.PartyID = task.Party.ID;
 					selectedWaiter.TableID = task.Party.Table.ID;
 					task.StartTask(id);
-					Thread.Sleep(task.Time);
+					Thread.Sleep(task.Time * RunSpeed);
 					task.DoTask(id);
 					selectedWaiter.State = WaiterModel.States.Free;
 				}
-				else Thread.Sleep(1000);
+				else Thread.Sleep(RunSpeed);
 			}
 		}
 

@@ -6,7 +6,7 @@
         public CookTask(Order order)
         {
             Order = order;
-            Time = Order.Platers * 2000 + Order.Appetizers * 1000;
+            Time = Order.Platers * 2 + Order.Appetizers;
         }
         public void DoTask(int id)
         {

@@ -12,7 +12,7 @@ namespace JCsDiner
         public HostTask(Party party, Restaurant restaurant)
         {
             Party = party;
-            Time = 2000;
+            Time = 2;
             Restaurant = restaurant;
         }
         public void DoTask()

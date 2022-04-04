@@ -1,6 +1,7 @@
 ﻿@page "/previousRuns"
 @using DinerBlazorServer.Services
 @using JCsDiner
+@using Z.EntityFramework.Plus
 @inject DinerDbContext dbContext
 
 <h3>PreviousRuns</h3>
@@ -44,6 +45,8 @@
 
     protected override void OnInitialized()
     {
+        dbContext.Results.Where(r => r.Runtime == 0).Delete();
+        dbContext.SaveChanges();
         results = dbContext.Results.OrderBy(r => r.ID).ToList();
     }
 

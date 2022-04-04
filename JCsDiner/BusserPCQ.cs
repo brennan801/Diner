@@ -24,13 +24,19 @@ namespace JCsDiner
         readonly object _locker = new object();
 		Queue<BusserTask> ClearTableTasks = new Queue<BusserTask>();
 		bool takingTasks;
+        public int RunSpeed { get; set; }
 
-		public BusserPCQ()
+        public BusserPCQ()
+        {
+			Busser = new();
+        }
+		public BusserPCQ(int runSpeed)
 		{
 			takingTasks = true;
 			_worker = new Thread(BusBoy);
 			_worker.Start();
 			Busser = new();
+			RunSpeed = runSpeed;
 		}
 
 		public void EnqueueTask(BusserTask task)
@@ -63,12 +69,12 @@ namespace JCsDiner
 					Busser.State = BusserModel.States.Cleaning;
 					Busser.TableID = task.Table.ID;
 					task.StartTask();
-					Thread.Sleep(5000); // takes 3 seconds to 'clear' the table
+					Thread.Sleep(RunSpeed * 3); 
 					task.DoTask();
 					Busser.State = BusserModel.States.Free;
 				}
 				else
-					Thread.Sleep(1000);
+					Thread.Sleep(RunSpeed);
 			}
 		}
 	}

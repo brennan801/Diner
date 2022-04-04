@@ -18,6 +18,7 @@ namespace JCsDiner
         public int AveragePartyEntryTime { get; set; }
         public int NumberOfTables { get; set; }
         public int AverageEatingTime { get; set; }
+        public string RunSpeed { get; set; }
     }
     public class SimulatorResults
     {
@@ -34,6 +35,7 @@ namespace JCsDiner
     }
     public class Simulator
     {
+        public int RunSpeed { get; set; }
         public bool IsRunning { get; set; }
         public string Name { get; set;}
         public int NumberOfWaiters { get; set; }
@@ -52,8 +54,9 @@ namespace JCsDiner
 
         public event EventHandler StateChanged;
         public SimulatorResults Results { get; private set; }
-        public bool CanRun { get; private set; }
-        public bool Stopped { get; private set; }
+        public int PartiesEntered { get; set; }
+        public int PartiesServed { get; set; }
+     
 
         public Simulator()
         {
@@ -63,14 +66,8 @@ namespace JCsDiner
             this.WaiterPCQ = new WaiterPCQ();
             this.BusserPCQ = new BusserPCQ();
             this.Results = new();
-            CanRun = true;
-            Stopped = false;
-        }
-
-        public void StopSim()
-        {
-            CanRun = false;
-            Stopped = true;
+            PartiesEntered = 0;
+            PartiesServed = 0;
         }
 
         public void RaiseStateChanged()
@@ -80,6 +77,7 @@ namespace JCsDiner
 
         public void Run(SimulatorArguments simArgs)
         {
+            this.RunSpeed = GetRunSpeed(simArgs.RunSpeed);
             this.Name = simArgs.Name;
             AveragePartySize = simArgs.AveragePartySize;
             this.Customers = simArgs.Customers;
@@ -89,124 +87,126 @@ namespace JCsDiner
             NumberOfTables = simArgs.NumberOfTables;
             AverageEatingTime = simArgs.AverageEatingTime;
             int beatNumber = 0;
-            int customersServed = 0;
+            PartiesServed = 0;
             this.Restaurant = new Restaurant(NumberOfTables);
-            this.HostPCQ = new HostPCQ();
-            this.WaiterPCQ = new WaiterPCQ(NumberOfWaiters);
-            this.BusserPCQ = new BusserPCQ();
-            this.CookPCQ = new CookPCQ(NumberOfCooks);
-            int partiesEntered = 0;
+            this.HostPCQ = new HostPCQ(RunSpeed);
+            this.WaiterPCQ = new WaiterPCQ(NumberOfWaiters, RunSpeed);
+            this.BusserPCQ = new BusserPCQ(RunSpeed);
+            this.CookPCQ = new CookPCQ(NumberOfCooks, RunSpeed);
+            PartiesEntered = 0;
             int customersEntered = 0;
             int timeSinceLastEnteredParty = 0;
             this.IsRunning = true;
 
-            while (CanRun)
-                using (HostPCQ)
-                using (WaiterPCQ)
-                using (BusserPCQ)
-                using (CookPCQ)
-                {
-                    while (customersServed < Customers)
-                    {
-                        if (customersServed + Restaurant.CurrentParties.Count() < Customers)
-                        {
-                            Party newParty = TryGenerateParty(partiesEntered, timeSinceLastEnteredParty);
-                            if (newParty is not null)
-                            {
-                                partiesEntered++;
-                                timeSinceLastEnteredParty = 0;
-                                customersEntered += newParty.Customers;
-                                Restaurant.CurrentParties.Add(newParty);
-                                newParty.EnterLobbyTime = beatNumber;
-                                HostPCQ.EnqueueTask(new HostTask(newParty, Restaurant));
-                            }
-                        }
-
-                        var partiesToRemove = new List<Party>();
-                        foreach (Party party in Restaurant.CurrentParties)
-                        {
-                            if (party.State.GetType() == typeof(PartyWaitingToOrder))
-                            {
-                                WaiterPCQ.EnqueueTask(new GetOrderTask(party, CookPCQ, Restaurant));
-                            }
-                            else if (party.State.GetType() == typeof(PartyWaitingForCheck))
-                            {
-                                WaiterPCQ.EnqueueTask(new GetCheckTask(party));
-                            }
-                            else if (party.State.GetType() == typeof(PartyLeft))
-                            {
-                                partiesToRemove.Add(party);
-                                Restaurant.CurrentOrders.Remove(party.Order);
-                                customersServed++;
-                                Console.WriteLine($"The restraurant has served {customersServed} parties");
-                            }
-                        }
-                        foreach (Order order in Restaurant.CurrentOrders)
-                        {
-                            if (order.State == "waiting to be returned")
-                            {
-                                WaiterPCQ.EnqueueTask(new ReturnOrderTask(order, AverageEatingTime));
-                            }
-
-                        }
-                        foreach (Party party in Restaurant.CurrentParties)
-                        {
-                            party.Run1(Restaurant);
-                        }
-                        foreach (Party party in partiesToRemove)
-                        {
-                            Restaurant.CurrentParties.Remove(party);
-                        }
-
-                        foreach (Table table in Restaurant.Tables)
-                        {
-                            if (table.State == "dirty")
-                            {
-                                BusserPCQ.EnqueueTask(new BusserTask(table, Restaurant));
-                            }
-                        }
-                        Thread.Sleep(1000);
-                        beatNumber++;
-                        timeSinceLastEnteredParty++;
-                        Console.WriteLine();
-                        RaiseStateChanged();
-                    }
-                    CanRun = false;
-                }
-            if (!Stopped)
+            using (HostPCQ)
+            using (WaiterPCQ)
+            using (BusserPCQ)
+            using (CookPCQ)
             {
-                Console.WriteLine($"All parties have been served. Total Run Time: {beatNumber}");
-                Console.WriteLine($"Average Party Size: {customersEntered / partiesEntered}");
-                Console.WriteLine($"Restaurant ended with {Restaurant.Tables.Count} tables");
-                foreach (Table table in Restaurant.Tables)
+                while (PartiesServed < Customers)
                 {
-                    Console.Write($"{table.ID} ");
+                    if (PartiesServed + Restaurant.CurrentParties.Count() < Customers)
+                    {
+                        Party newParty = TryGenerateParty(PartiesEntered, timeSinceLastEnteredParty);
+                        if (newParty is not null)
+                        {
+                            PartiesEntered++;
+                            timeSinceLastEnteredParty = 0;
+                            customersEntered += newParty.Customers;
+                            Restaurant.CurrentParties.Add(newParty);
+                            newParty.EnterLobbyTime = beatNumber;
+                            HostPCQ.EnqueueTask(new HostTask(newParty, Restaurant));
+                        }
+                    }
+
+                    var partiesToRemove = new List<Party>();
+                    foreach (Party party in Restaurant.CurrentParties)
+                    {
+                        if (party.State.GetType() == typeof(PartyWaitingToOrder))
+                        {
+                            WaiterPCQ.EnqueueTask(new GetOrderTask(party, CookPCQ, Restaurant));
+                        }
+                        else if (party.State.GetType() == typeof(PartyWaitingForCheck))
+                        {
+                            WaiterPCQ.EnqueueTask(new GetCheckTask(party));
+                        }
+                        else if (party.State.GetType() == typeof(PartyLeft))
+                        {
+                            partiesToRemove.Add(party);
+                            Restaurant.CurrentOrders.Remove(party.Order);
+                            PartiesServed++;
+                            Console.WriteLine($"The restraurant has served {PartiesServed} parties");
+                        }
+                    }
+                    foreach (Order order in Restaurant.CurrentOrders)
+                    {
+                        if (order.State == "waiting to be returned")
+                        {
+                            WaiterPCQ.EnqueueTask(new ReturnOrderTask(order, AverageEatingTime));
+                        }
+
+                    }
+                    foreach (Party party in Restaurant.CurrentParties)
+                    {
+                        party.Run1(Restaurant);
+                    }
+                    foreach (Party party in partiesToRemove)
+                    {
+                        Restaurant.CurrentParties.Remove(party);
+                    }
+
+                    foreach (Table table in Restaurant.Tables)
+                    {
+                        if (table.State == "dirty")
+                        {
+                            BusserPCQ.EnqueueTask(new BusserTask(table, Restaurant));
+                        }
+                    }
+                    Thread.Sleep(RunSpeed);
+                    beatNumber++;
+                    timeSinceLastEnteredParty++;
+                    Console.WriteLine($"PartiesServed: {PartiesServed} ");
+                    RaiseStateChanged();
                 }
-                Results = new()
-                {
-                    Name = Name,
-                    Runtime = beatNumber,
-                    NumberOfCustomers = Customers,
-                    NumberOfWaiters = NumberOfWaiters,
-                    NumberOfCooks = NumberOfCooks,
-                    NumberOfTables = NumberOfTables,
-                    AverageEntryTime = AveragePartyEntryTime,
-                    SetAveragePartySize = AveragePartySize,
-                    ActualAveragePartySize = customersEntered / partiesEntered
-                };
-                Console.WriteLine("raising state changed");
-                this.IsRunning = false;
-                RaiseStateChanged();
+            }
+            Console.WriteLine($"All parties have been served. Total Run Time: {beatNumber}");
+            Console.WriteLine($"Average Party Size: {customersEntered / PartiesEntered}");
+            Console.WriteLine($"Restaurant ended with {Restaurant.Tables.Count} tables");
+            foreach (Table table in Restaurant.Tables)
+            {
+                Console.Write($"{table.ID} ");
+            }
+            Results = new()
+            {
+                Name = Name,
+                Runtime = beatNumber,
+                NumberOfCustomers = Customers,
+                NumberOfWaiters = NumberOfWaiters,
+                NumberOfCooks = NumberOfCooks,
+                NumberOfTables = NumberOfTables,
+                AverageEntryTime = AveragePartyEntryTime,
+                SetAveragePartySize = AveragePartySize,
+                ActualAveragePartySize = customersEntered / PartiesEntered
+            };
+            Console.WriteLine("raising state changed");
+            this.IsRunning = false;
+            RaiseStateChanged();
+
+        }
+
+        private int GetRunSpeed(string runSpeed)
+        {
+            if(runSpeed == "Fast")
+            {
+                return 50;
+            }
+            else if(runSpeed == "Slow")
+            {
+                return 1000;
             }
             else
             {
-                this.Restaurant = new Restaurant();
-                this.CookPCQ = new CookPCQ();
-                this.HostPCQ = new HostPCQ();
-                this.WaiterPCQ = new WaiterPCQ();
-                this.BusserPCQ = new BusserPCQ();
-                this.IsRunning = false;
-                RaiseStateChanged();
+                return 1000;
             }
         }
 

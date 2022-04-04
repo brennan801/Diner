@@ -6,6 +6,20 @@
 
 <h3>PreviousRuns</h3>
 
+<label for="order">Order By:</label>
+<select @bind="order" name="order">
+    <option value="ID">ID</option>
+    <option value="Name">Name</option>
+    <option value="RunTime">Run Time</option>
+    <option value="Parties"># Of Parties</option>
+    <option value="Waiters"># Of Waiters</option>
+    <option value="Cooks"># Of Cooks</option>
+    <option value="Tables"># Of Tables</option>
+    <option value="Entry">Entry Time</option>
+    <option value="PartySize">Party Size</option>
+</select>
+<button @onclick="OrderResults">Order</button>
+
 <table class="table">
   <thead>
     <tr>
@@ -42,6 +56,7 @@
 
 @code {
     List<SimulatorResults> results = new();
+    string order = "ID";
 
     protected override void OnInitialized()
     {
@@ -50,4 +65,40 @@
         results = dbContext.Results.OrderBy(r => r.ID).ToList();
     }
 
+    public void OrderResults()
+    {
+        if(order == "ID")
+        {
+            results = dbContext.Results.OrderBy(r => r.ID).ToList();
+        }
+        else if(order == "Name")
+        {
+            results = dbContext.Results.OrderBy(r => r.Name).ToList();
+        }else if(order == "RunTime")
+        {
+            results = dbContext.Results.OrderBy(r => r.Runtime).ToList();
+        }else if(order == "Parties")
+        {
+            results = dbContext.Results.OrderBy(r => r.NumberOfCustomers).ToList();
+        }else if(order == "Waiters")
+        {
+            results = dbContext.Results.OrderBy(r => r.NumberOfWaiters).ToList();
+        }else if(order == "Cooks")
+        {
+            results = dbContext.Results.OrderBy(r => r.NumberOfCooks).ToList();
+        }else if(order == "Tables")
+        {
+            results = dbContext.Results.OrderBy(r => r.NumberOfTables).ToList();
+        }else if(order == "Entry")
+        {
+            results = dbContext.Results.OrderBy(r => r.AverageEntryTime).ToList();
+        }else if(order == "PartySize")
+        {
+            results = dbContext.Results.OrderBy(r => r.ActualAveragePartySize).ToList();
+        }
+        else
+        {
+            results = dbContext.Results.OrderBy(r => r.ID).ToList();
+        }
+    }
 }

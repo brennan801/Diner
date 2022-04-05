@@ -73,28 +73,28 @@
         }
         else if(order == "Name")
         {
-            results = dbContext.Results.OrderBy(r => r.Name).ToList();
+            results = dbContext.Results.OrderBy(r => r.Name).ThenBy(r => r.Runtime).ToList();
         }else if(order == "RunTime")
         {
-            results = dbContext.Results.OrderBy(r => r.Runtime).ToList();
+            results = dbContext.Results.OrderBy(r => r.Runtime).ThenBy(r => r.Runtime).ToList();
         }else if(order == "Parties")
         {
-            results = dbContext.Results.OrderBy(r => r.NumberOfCustomers).ToList();
+            results = dbContext.Results.OrderBy(r => r.NumberOfCustomers).ThenBy(r => r.Runtime).ToList();
         }else if(order == "Waiters")
         {
-            results = dbContext.Results.OrderBy(r => r.NumberOfWaiters).ToList();
+            results = dbContext.Results.OrderBy(r => r.NumberOfWaiters).ThenBy(r => r.Runtime).ToList();
         }else if(order == "Cooks")
         {
-            results = dbContext.Results.OrderBy(r => r.NumberOfCooks).ToList();
+            results = dbContext.Results.OrderBy(r => r.NumberOfCooks).ThenBy(r => r.Runtime).ToList();
         }else if(order == "Tables")
         {
-            results = dbContext.Results.OrderBy(r => r.NumberOfTables).ToList();
+            results = dbContext.Results.OrderBy(r => r.NumberOfTables).ThenBy(r => r.Runtime).ToList();
         }else if(order == "Entry")
         {
-            results = dbContext.Results.OrderBy(r => r.AverageEntryTime).ToList();
+            results = dbContext.Results.OrderBy(r => r.AverageEntryTime).ThenBy(r => r.Runtime).ToList();
         }else if(order == "PartySize")
         {
-            results = dbContext.Results.OrderBy(r => r.ActualAveragePartySize).ToList();
+            results = dbContext.Results.OrderBy(r => r.ActualAveragePartySize).ThenBy(r => r.Runtime).ToList();
         }
         else
         {

@@ -17,7 +17,3 @@
 	* If slow is chosen, the simulation takes one second per cycle and the simulation is displayed below.
 	* If fast is chosen, the simulation takes 100 milliseconds per cycle and a progress bar is displayed below. 
 3. (In Blue): Click to run the simulation!
-
-* Run In Razor Pages:
-	* Run the DockerCompose file
-

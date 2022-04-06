@@ -6,7 +6,7 @@
 	* Build The DinerBlazorServer Project and run the .dll file
 * Run  the docker container:
 	* Navigate to solution directory
-	* Run docker-compose up --build
+	* Run `docker-compose up --build`
 	* Website will be running on localhost port 5000
 
 ### Interact With The Website

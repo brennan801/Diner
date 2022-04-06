@@ -1,9 +1,15 @@
 # Diner Simulation "SimulEAT"
 
-* Run In Blazor Pages:
+### Run The Project
+* Run .dll file: 
+	* Clone Repository
 	* Build The DinerBlazorServer Project and run the .dll file
-	* Enter Information into the form on the left:
+* Run  the docker container:
+	* Navigate to solution directory
+	* Run docker-compose up --build
+	* Website will be running on localhost port 5000
 
+### Interact With The Website
 <img src="./DinerBlazorServer/wwwroot/images/FormShot.jpg" width="300px"/>
 
 1. (In Red): Enter arguements to change the results of the simulation
